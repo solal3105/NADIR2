@@ -1,0 +1,1020 @@
+<meta charset="utf-8">
+<title>Rafraîchir son logement : le bon moment pour ouvrir les fenêtres</title>
+<style>
+  :root{
+    --bg:#000; --ink:#fff; --dim:#8c8c8c; --faint:#5a5a5a;
+    --line:#242424; --line2:#3a3a3a;
+    --hot:#ff3b1d; --cold:#3ea6ff; --go:#5ad17a;
+    --maxw:1120px;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--sans); line-height:1.55;
+    font-size:clamp(15px,1.05vw,17px);
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 clamp(18px,5vw,64px)}
+  ::selection{background:var(--ink); color:var(--bg)}
+
+  .eyebrow{font-family:var(--mono); font-size:.75rem; text-transform:uppercase; color:var(--dim)}
+  h1,h2{margin:0; font-weight:800; text-transform:uppercase; text-wrap:balance;
+    letter-spacing:-.035em; line-height:.92}
+  h2{font-size:clamp(2rem,6.5vw,4.4rem)}
+  h3{margin:0; font-weight:700; font-size:clamp(1.2rem,2.6vw,1.7rem); letter-spacing:-.02em}
+  p{margin:0 0 1.1em; max-width:64ch}
+  strong{font-weight:700}
+  em{font-style:normal; border-bottom:1px solid var(--faint)}
+
+  section{padding:clamp(56px,10vh,120px) 0}
+  .rule{border:0; border-top:1px solid var(--line); margin:0}
+  .rule.bold{border-top-color:var(--line2)}
+  .idx{font-family:var(--mono); font-size:.82rem; color:var(--dim);
+    display:flex; gap:1.2em; align-items:baseline; margin-bottom:2rem}
+  .idx b{color:var(--ink); font-weight:400}
+
+  /* hero */
+  .hero{padding:clamp(84px,15vh,200px) 0 clamp(46px,7vh,84px)}
+  .hero h1{font-size:clamp(3rem,13vw,11rem); letter-spacing:-.05em}
+  .hero .sub{margin-top:2rem; max-width:52ch; font-size:clamp(1.1rem,1.9vw,1.45rem);
+    color:var(--dim); line-height:1.4}
+  .hero .sub b{color:var(--ink); font-weight:600}
+  .scroll{margin-top:3.4rem; font-family:var(--mono); font-size:.75rem;
+    color:var(--faint); text-transform:uppercase}
+
+  /* big plain statement */
+  .lead{font-size:clamp(1.7rem,4.4vw,3rem); font-weight:700; line-height:1.12;
+    letter-spacing:-.025em; max-width:20ch; margin:0}
+  .lead .cold{color:var(--cold)} .lead .hot{color:var(--hot)} .lead .go{color:var(--go)}
+  .say{font-size:clamp(1.05rem,1.7vw,1.25rem); color:var(--dim); max-width:56ch; margin-top:1.8rem}
+  .say b{color:var(--ink); font-weight:600}
+
+  /* day timeline */
+  .day{display:grid; gap:1px; background:var(--line); border:1px solid var(--line);
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); margin-top:2.6rem}
+  .day .slot{background:var(--bg); padding:1.7rem 1.5rem; display:grid; gap:.7rem;
+    align-content:start}
+  .day .when{font-family:var(--mono); font-size:.85rem; color:var(--cold)}
+  .day .slot.warm .when{color:var(--hot)}
+  .day .do{font-size:clamp(1.3rem,2.6vw,1.7rem); font-weight:800; letter-spacing:-.02em;
+    text-transform:uppercase; line-height:1}
+  .day .note{color:var(--dim); font-size:.96rem; line-height:1.45}
+
+  /* stat callout */
+  .stat{border-left:2px solid var(--go); padding-left:1.6rem}
+  .stat .num{font-family:var(--mono); font-weight:400; letter-spacing:-.02em;
+    font-size:clamp(3.4rem,11vw,7rem); line-height:.85; color:var(--go)}
+  .stat .num .u{font-size:.24em; color:var(--dim)}
+  .stat p{color:var(--dim); margin:1rem 0 0}
+
+  /* plain tips columns / split */
+  .cols{display:grid; gap:2.4rem 3rem; grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .cols h3{margin-bottom:.8rem}
+  .cols p{color:var(--dim)} .cols p b{color:var(--ink)}
+  .split{display:grid; gap:2.6rem 4rem; grid-template-columns:minmax(0,.85fr) minmax(0,1fr);
+    align-items:center}
+  @media(max-width:720px){.split{grid-template-columns:1fr; gap:2.2rem}}
+
+  /* formula (inside disclosures) */
+  .formula{font-family:var(--mono); font-size:.92rem; border:1px solid var(--line);
+    padding:1.1rem 1.2rem; margin:1.4rem 0; overflow-x:auto; white-space:nowrap; color:var(--ink)}
+  .formula .c{color:var(--dim)} .formula .hot{color:var(--hot)} .formula .cold{color:var(--cold)}
+
+  /* progressive disclosure */
+  .digest details{border-top:1px solid var(--line)}
+  .digest details:last-child{border-bottom:1px solid var(--line)}
+  summary{cursor:pointer; list-style:none; padding:1.15rem 0; display:flex; gap:1.4rem;
+    align-items:baseline; justify-content:space-between; font-family:var(--mono);
+    font-size:.9rem; color:var(--ink)}
+  summary::-webkit-details-marker{display:none}
+  summary:hover{color:var(--ink)}
+  summary:focus-visible{outline:2px solid var(--ink); outline-offset:4px}
+  summary .mk{flex:none; color:var(--faint); font-size:1.1em}
+  summary .mk::after{content:"＋"}
+  details[open]>summary .mk::after{content:"−"}
+  details[open]>summary{color:var(--ink)}
+  details[open]>summary .mk{color:var(--ink)}
+  .disc{padding:.2rem 0 1.9rem; max-width:64ch}
+  .disc p{color:var(--dim)} .disc p b{color:var(--ink)}
+  .inline-why{margin-top:.4rem}
+  .inline-why summary{padding:.6rem 0; font-size:.72rem}
+
+  /* fail banner */
+  .fail{border:1px solid var(--hot); padding:1.6rem 1.8rem}
+  .fail p{margin:0; color:var(--dim)} .fail p b{color:var(--hot)}
+
+  /* ledger */
+  .ledger{border-top:1px solid var(--line2); margin-top:2rem}
+  .ledger .row{display:grid; grid-template-columns:auto 1fr; gap:1.4rem 2rem;
+    padding:1.5rem 0; border-bottom:1px solid var(--line); align-items:start}
+  .ledger .n{font-family:var(--mono); font-size:.9rem; color:var(--go)}
+  .ledger .t{font-size:clamp(1.1rem,2.2vw,1.45rem); font-weight:600; letter-spacing:-.01em}
+  .ledger .t small{display:block; font-weight:400; font-size:.86rem; color:var(--dim);
+    margin-top:.5rem; letter-spacing:0; font-family:var(--mono); line-height:1.5}
+
+  /* live weather range slider */
+  input[type=range]{-webkit-appearance:none; appearance:none; height:18px;
+    background:transparent; cursor:pointer; margin:0}
+  input[type=range]::-webkit-slider-runnable-track{height:1px; background:var(--line2)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; appearance:none;
+    width:13px; height:13px; margin-top:-6px; background:var(--ink); border:0; border-radius:0}
+  input[type=range]::-moz-range-track{height:1px; background:var(--line2)}
+  input[type=range]::-moz-range-thumb{width:13px; height:13px; background:var(--ink);
+    border:0; border-radius:0}
+  input[type=range]:focus-visible{outline:2px solid var(--ink); outline-offset:4px}
+
+  /* tonight : live weather */
+  .tn-card{border:1px solid var(--line); margin-top:2.4rem}
+  .tn-controls{display:flex; flex-wrap:wrap; gap:1rem 1.4rem; align-items:center;
+    padding:1.4rem 1.5rem; border-bottom:1px solid var(--line)}
+  .tn-btn{background:transparent; color:var(--ink); border:1px solid var(--line2);
+    padding:.6em 1.1em; font-family:var(--mono); font-size:.85rem; cursor:pointer}
+  .tn-btn:hover{background:var(--ink); color:var(--bg)}
+  .tn-btn:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
+  .tn-controls .or{color:var(--faint); font-family:var(--mono); font-size:.8rem}
+  #tn-cityform{display:flex; gap:.5rem}
+  #tn-city{background:transparent; border:0; border-bottom:1px solid var(--line2);
+    color:var(--ink); font-family:var(--sans); font-size:.95rem; padding:.4em .2em; min-width:130px}
+  #tn-city:focus{outline:none; border-bottom-color:var(--ink)}
+  .tn-ti{display:flex; align-items:center; gap:.8rem; color:var(--dim);
+    font-family:var(--mono); font-size:.85rem}
+  .tn-ti input[type=range]{width:110px}
+  .tn-ti output{color:var(--ink)}
+  .tn-controls2{gap:1.4rem 2rem}
+  .tn-field{display:flex; flex-direction:column; gap:.5rem}
+  .tn-lab{font-family:var(--mono); font-size:.72rem; color:var(--dim)}
+  .toggle{display:inline-flex; border:1px solid var(--line2)}
+  .toggle button{background:transparent; color:var(--dim); border:0; cursor:pointer;
+    font-family:var(--mono); font-size:.8rem; padding:.5em .9em}
+  .toggle button+button{border-left:1px solid var(--line2)}
+  .toggle button[aria-pressed=true]{background:var(--ink); color:var(--bg)}
+  .toggle button:focus-visible{outline:2px solid var(--ink); outline-offset:2px}
+  .tn-eff{display:grid; gap:.75rem; padding:1.3rem 1.5rem}
+  .tn-effrow{display:grid; grid-template-columns:1fr auto; gap:.35rem 1rem; align-items:baseline}
+  .tn-effrow .lab{font-family:var(--mono); font-size:.82rem; color:var(--dim)}
+  .tn-effrow .val{font-family:var(--mono); font-size:.95rem; color:var(--cold)}
+  .tn-effrow .bar{grid-column:1/-1; height:3px; background:var(--line)}
+  .tn-effrow .bar i{display:block; height:100%; background:var(--cold)}
+  .tn-effrow.total{border-top:1px solid var(--line2); padding-top:.7rem; margin-top:.15rem}
+  .tn-effrow.total .lab{color:var(--ink)}
+  .tn-effrow.total .val{color:var(--go); font-size:1.15rem}
+  .tn-src{padding:0 1.5rem 1.4rem; font-family:var(--mono); font-size:.72rem; color:var(--faint); margin:0}
+
+  /* scène : le graphe immersif plein écran */
+  html{scroll-behavior:smooth}
+  .stage{min-height:100svh; display:flex; flex-direction:column; border-bottom:1px solid var(--line2)}
+  .stage-top{display:flex; flex-wrap:wrap; gap:.9rem 2.4rem; align-items:center;
+    justify-content:space-between; padding:1rem clamp(16px,3vw,36px); border-bottom:1px solid var(--line)}
+  .brand{display:flex; flex-direction:column; gap:.3rem}
+  .brand strong{font-weight:800; text-transform:uppercase; letter-spacing:-.02em;
+    font-size:1.02rem; line-height:1}
+  .stage-net{display:flex; flex-wrap:wrap; gap:.8rem 1rem; align-items:center}
+  .stage-chart-wrap{position:relative; flex:1; min-height:340px; background:#050505}
+  #tn-chart{position:absolute; inset:0}
+  #tn-chart svg{display:block; width:100%; height:100%}
+  .stage-verdict{position:absolute; left:clamp(16px,3.4vw,44px); bottom:clamp(48px,9vh,76px);
+    pointer-events:none; max-width:min(94vw,1000px);
+    opacity:0; transform:translateY(18px);
+    animation:tnUp .7s 1.05s cubic-bezier(.22,.7,.25,1) forwards}
+  .stage-verdict .tn-big{font-size:clamp(2.5rem,7.2vw,7rem); line-height:.88;
+    text-shadow:0 2px 26px rgba(0,0,0,.85)}
+  .tn-headsub{font-family:var(--mono); font-size:clamp(.78rem,1.4vw,.95rem); color:var(--dim);
+    margin-top:.9rem; text-shadow:0 1px 12px rgba(0,0,0,.9)}
+  .tn-headsub b{color:var(--ink); font-weight:400}
+  .tn-demo{font-family:var(--mono); font-size:.78rem; color:var(--dim); margin-bottom:.8rem;
+    text-shadow:0 1px 10px rgba(0,0,0,.9)}
+  .tn-loc{font-family:var(--mono); font-size:clamp(.9rem,1.7vw,1.1rem); color:var(--ink);
+    text-transform:uppercase; margin-bottom:.8rem; text-shadow:0 1px 10px rgba(0,0,0,.9)}
+  .tn-loc i{display:inline-block; width:10px; height:10px; background:var(--go); margin-right:.65em}
+  .tn-loc.demo i{background:var(--dim)}
+
+  /* illustrations : brutalisme suisse, trait 2px, accents signifiants */
+  .sec-head{display:flex; justify-content:space-between; align-items:flex-end;
+    gap:1.8rem 3rem; flex-wrap:wrap}
+  .ill{margin:0; flex:none}
+  .ill svg{display:block; width:clamp(160px,24vw,236px); height:auto}
+  .day .pic{width:44px; height:44px; display:block; margin-bottom:.4rem}
+  .stage-bar{display:flex; flex-wrap:wrap; gap:1.1rem 2.2rem; align-items:center;
+    padding:.95rem clamp(16px,3vw,36px); border-top:1px solid var(--line)}
+  .cue{margin-left:auto; font-family:var(--mono); font-size:.78rem; text-transform:uppercase;
+    color:var(--dim); border:0}
+  .cue:hover{color:var(--ink)}
+  .stage-top{opacity:0; animation:tnUp .6s .05s ease-out forwards}
+  .stage-chart-wrap{opacity:0; animation:tnFade .7s .2s ease forwards}
+  .stage-bar{opacity:0; animation:tnUp .6s .45s ease-out forwards}
+  #tn-chart path.draw{stroke-dasharray:1; stroke-dashoffset:1;
+    animation:tnDraw 1.4s .45s cubic-bezier(.4,0,.2,1) forwards}
+  #tn-chart .fadein{opacity:0; animation:tnFade .9s 1.25s ease forwards}
+  @keyframes tnUp{from{opacity:0; transform:translateY(16px)} to{opacity:1; transform:none}}
+  @keyframes tnDraw{to{stroke-dashoffset:0}}
+  @keyframes tnFade{to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .stage-top,.stage-bar,.stage-chart-wrap,.stage-verdict{opacity:1; transform:none}
+    #tn-chart path.draw{stroke-dasharray:none; stroke-dashoffset:0}
+    #tn-chart .fadein{opacity:1}
+  }
+  #tn-status{color:var(--dim); font-family:var(--mono); font-size:.78rem}
+  #tn-verdict{padding:1.3rem 1.5rem 1.6rem; border-top:1px solid var(--line)}
+  .tn-big{font-size:clamp(1.6rem,4.4vw,2.7rem); font-weight:800; text-transform:uppercase;
+    letter-spacing:-.03em; line-height:1; color:var(--go); margin-bottom:.7rem}
+  #tn-verdict p{color:var(--dim); margin:.5rem 0 0}
+  .tn-note{color:var(--faint); font-size:.9rem}
+
+  footer{padding:clamp(56px,9vh,110px) 0 8vh; color:var(--faint)}
+  footer .src{font-family:var(--mono); font-size:.72rem; line-height:1.9;
+    color:var(--dim); columns:2; column-gap:2.4rem}
+  @media(max-width:560px){footer .src{columns:1}}
+</style>
+
+  <!-- ============ SCÈNE : LE GRAPHE IMMERSIF ============ -->
+  <header class="stage">
+    <div class="stage-top">
+      <div class="brand">
+        <strong>Ouvrir au bon moment</strong>
+        <span class="eyebrow">garder son logement frais · sans climatisation</span>
+      </div>
+      <div class="stage-net">
+        <button class="tn-btn" id="tn-geo" type="button">Utiliser ma position</button>
+        <span class="or">ou</span>
+        <form id="tn-cityform"><input id="tn-city" type="text" placeholder="votre ville" aria-label="Votre ville"><button class="tn-btn" type="submit">OK</button></form>
+        <div id="tn-status"></div>
+      </div>
+    </div>
+
+    <div class="stage-chart-wrap">
+      <div id="tn-chart"></div>
+      <div id="tn-head" class="stage-verdict"></div>
+    </div>
+
+    <div class="stage-bar">
+      <label class="tn-ti">chez moi, maintenant <output id="tn-tival">26 °C</output>
+        <input id="tn-ti" type="range" min="20" max="34" step="0.5" value="26" aria-label="Température chez vous"></label>
+      <div class="tn-field">
+        <span class="tn-lab">inertie des murs</span>
+        <div class="toggle" id="tn-mass" role="group" aria-label="Inertie des murs">
+          <button type="button" data-k="leg">légers</button>
+          <button type="button" data-k="moy" aria-pressed="true">moyens</button>
+          <button type="button" data-k="lou">lourds</button>
+        </div>
+      </div>
+      <div class="tn-field">
+        <span class="tn-lab">ventilation</span>
+        <div class="toggle" id="tn-air" role="group" aria-label="Ventilation">
+          <button type="button" data-k="fai">faible</button>
+          <button type="button" data-k="moy" aria-pressed="true">moyenne</button>
+          <button type="button" data-k="for">forte</button>
+        </div>
+      </div>
+      <a class="cue" href="#situation">↓ Tout comprendre</a>
+    </div>
+  </header>
+
+<div class="wrap">
+
+  <!-- ============ VOS CHIFFRES ============ -->
+  <section id="situation">
+    <div class="idx"><b>→</b><span>Vos chiffres, en détail</span></div>
+    <p class="say">La clim refroidit l'air. Ouvrir au bon moment refroidit les
+      <b>murs</b>, qui gardent la fraîcheur toute la journée. Voici ce que vos
+      réglages donnent, poste par poste :</p>
+    <div class="tn-card">
+      <div id="tn-eff" class="tn-eff"></div>
+      <div id="tn-verdict"></div>
+      <p class="tn-src">Modèle deux nœuds (air + masse), pas horaire sur 30 h. Ouverture pilotée par l'écart de température avec hystérésis (ouvre sous -0,75 °C, referme à -0,25 °C). Hypothèses : pièce type de 20 m² / 50 m³, état initial des murs déduit de votre température actuelle (équilibre fenêtres fermées), apports de 450 W le jour et 150 W la nuit. Capacités thermiques d'après EN ISO 13790, débits de 3 / 8 / 15 vol/h. À titre indicatif.</p>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ============ LA RÈGLE ============ -->
+  <section id="pourquoi">
+    <div class="sec-head">
+      <p class="lead">Ouvrez <span class="cold">la nuit</span>.<br>Fermez tout au
+        <span class="hot">lever du soleil</span>.</p>
+      <figure class="ill"><svg viewBox="0 0 240 152" role="img" aria-label="La nuit, maison ouverte, l'air frais traverse. Le jour, volets fermés, le soleil rebondit.">
+        <circle cx="52" cy="24" r="9" fill="#fff"/>
+        <path d="M18 60 L53 32 L88 60" fill="none" stroke="#fff" stroke-width="2"/>
+        <rect x="22" y="60" width="62" height="56" fill="none" stroke="#fff" stroke-width="2"/>
+        <line x1="4" y1="90" x2="66" y2="90" stroke="#3ea6ff" stroke-width="2"/>
+        <polygon points="76,90 64,85 64,95" fill="#3ea6ff"/>
+        <circle cx="188" cy="24" r="10" fill="#ff3b1d"/>
+        <path d="M154 60 L189 32 L224 60" fill="none" stroke="#fff" stroke-width="2"/>
+        <rect x="158" y="60" width="62" height="56" fill="none" stroke="#fff" stroke-width="2"/>
+        <line x1="166" y1="74" x2="212" y2="74" stroke="#fff" stroke-width="2"/>
+        <line x1="166" y1="84" x2="212" y2="84" stroke="#fff" stroke-width="2"/>
+        <line x1="166" y1="94" x2="212" y2="94" stroke="#fff" stroke-width="2"/>
+        <line x1="166" y1="104" x2="212" y2="104" stroke="#fff" stroke-width="2"/>
+        <line x1="180" y1="34" x2="174" y2="44" stroke="#ff3b1d" stroke-width="2"/>
+        <line x1="174" y1="44" x2="162" y2="38" stroke="#ff3b1d" stroke-width="2"/>
+        <polygon points="158,36 168,36 164,44" fill="#ff3b1d"/>
+        <text x="53" y="140" fill="#8c8c8c" font-family="ui-monospace,monospace" font-size="10" text-anchor="middle">NUIT · OUVERT</text>
+        <text x="189" y="140" fill="#8c8c8c" font-family="ui-monospace,monospace" font-size="10" text-anchor="middle">JOUR · FERMÉ</text>
+      </svg></figure>
+    </div>
+    <p class="say">Si vous ne deviez retenir qu'<b>une seule chose</b>, ce serait celle-ci.
+      La nuit, l'air frais refroidit vos murs ; le jour, fenêtres et volets fermés, ces
+      murs frais absorbent la chaleur et gardent l'intérieur agréable. Tout le reste n'est
+      que du détail, <b>à ouvrir seulement si ça vous intéresse</b>.</p>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ============ JOURNÉE TYPE ============ -->
+  <section>
+    <div class="idx"><b>01</b><span>Votre journée, geste par geste</span></div>
+    <h2>Quoi faire,<br>et quand</h2>
+
+    <div class="day">
+      <div class="slot">
+        <svg class="pic" viewBox="0 0 44 44" aria-hidden="true"><circle cx="36" cy="8" r="4" fill="#fff"/><rect x="10" y="12" width="24" height="24" fill="none" stroke="#fff" stroke-width="2"/><line x1="2" y1="24" x2="26" y2="24" stroke="#3ea6ff" stroke-width="2"/><polygon points="34,24 25,20 25,28" fill="#3ea6ff"/></svg>
+        <div class="when">La nuit · surtout la fin de nuit</div>
+        <div class="do">Ouvrez<br>en grand</div>
+        <div class="note">C'est le moment le plus frais, juste avant le lever du jour.
+          Ouvrez deux fenêtres <b>opposées</b> pour créer un courant d'air.
+          <details class="inline-why"><summary>Pourquoi si tard ? <span class="mk"></span></summary>
+            <div class="disc"><p>Le sol a rayonné sa chaleur vers le ciel toute la nuit :
+              il fait donc le plus froid <em>juste avant l'aube</em>, pas à minuit. À cet
+              instant, l'écart avec l'intérieur est maximal, et chaque minute d'ouverture
+              rapporte le plus de fraîcheur.</p></div>
+          </details>
+        </div>
+      </div>
+      <div class="slot warm">
+        <svg class="pic" viewBox="0 0 44 44" aria-hidden="true"><circle cx="36" cy="8" r="4.5" fill="#ff3b1d"/><rect x="10" y="12" width="24" height="24" fill="none" stroke="#fff" stroke-width="2"/><line x1="13" y1="19" x2="31" y2="19" stroke="#fff" stroke-width="2"/><line x1="13" y1="25" x2="31" y2="25" stroke="#fff" stroke-width="2"/><line x1="13" y1="31" x2="31" y2="31" stroke="#fff" stroke-width="2"/></svg>
+        <div class="when">Au lever du soleil</div>
+        <div class="do">Fermez<br>tout</div>
+        <div class="note">D'abord les fenêtres, puis les <b>volets et rideaux</b>. Vous
+          enfermez la fraîcheur de la nuit à l'intérieur.
+          <details class="inline-why"><summary>Pourquoi les volets ? <span class="mk"></span></summary>
+            <div class="disc"><p>La plus grosse entrée de chaleur l'été, c'est le
+              <em>soleil direct</em> à travers les vitres. Un volet ou un store
+              <b>extérieur</b> bloque cette chaleur avant qu'elle n'entre, bien plus
+              efficacement qu'un rideau intérieur.</p></div>
+          </details>
+        </div>
+      </div>
+      <div class="slot warm">
+        <svg class="pic" viewBox="0 0 44 44" aria-hidden="true"><circle cx="36" cy="8" r="4.5" fill="#ff3b1d"/><rect x="10" y="12" width="24" height="24" fill="none" stroke="#fff" stroke-width="2"/><line x1="15" y1="17" x2="29" y2="31" stroke="#fff" stroke-width="2"/><line x1="29" y1="17" x2="15" y2="31" stroke="#fff" stroke-width="2"/></svg>
+        <div class="when">Toute la journée</div>
+        <div class="do">Restez<br>fermé</div>
+        <div class="note">Même si vous avez chaud : dehors, il fait <b>plus chaud
+          encore</b>. Ouvrir ne ferait qu'entrer de la chaleur.
+          <details class="inline-why"><summary>Et si j'étouffe ? <span class="mk"></span></summary>
+            <div class="disc"><p>Un très court passage pour aérer ne ruine pas tout. Mais
+              tant qu'il fait plus chaud dehors que dedans, garder fermé est gagnant. Un
+              ventilateur, lui, ne refroidit pas la pièce mais vous rafraîchit
+              <em>vous</em> : utilisez-le à la place.</p></div>
+          </details>
+        </div>
+      </div>
+      <div class="slot">
+        <svg class="pic" viewBox="0 0 44 44" aria-hidden="true"><circle cx="36" cy="8" r="4.5" fill="none" stroke="#ff3b1d" stroke-width="2"/><rect x="10" y="12" width="24" height="24" fill="none" stroke="#fff" stroke-width="2"/><line x1="2" y1="24" x2="26" y2="24" stroke="#3ea6ff" stroke-width="2"/><polygon points="34,24 25,20 25,28" fill="#3ea6ff"/></svg>
+        <div class="when">Le soir venu</div>
+        <div class="do">Rouvrez<br>quand ça baisse</div>
+        <div class="note">Souvent en fin de soirée. La règle d'or : <b>ne rouvrez que
+          lorsqu'il fait plus frais dehors que dedans</b>. Sinon, patientez encore.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ============ CE QUI SE PASSE ============ -->
+  <section>
+    <div class="idx"><b>02</b><span>Pourquoi ça marche</span></div>
+    <div class="sec-head">
+      <h2>Ce qui se passe<br>dans vos murs</h2>
+      <figure class="ill"><svg viewBox="0 0 240 152" role="img" aria-label="Le jour, le mur absorbe la chaleur ; la nuit, il la restitue à l'air frais.">
+        <circle cx="36" cy="34" r="10" fill="#ff3b1d"/>
+        <circle cx="204" cy="34" r="8" fill="#fff"/>
+        <rect x="104" y="24" width="32" height="104" fill="none" stroke="#fff" stroke-width="2"/>
+        <line x1="108" y1="118" x2="132" y2="94" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+        <line x1="108" y1="92" x2="132" y2="68" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+        <line x1="108" y1="66" x2="132" y2="42" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+        <line x1="54" y1="62" x2="92" y2="62" stroke="#ff3b1d" stroke-width="2"/><polygon points="100,62 90,57 90,67" fill="#ff3b1d"/>
+        <line x1="54" y1="86" x2="92" y2="86" stroke="#ff3b1d" stroke-width="2"/><polygon points="100,86 90,81 90,91" fill="#ff3b1d"/>
+        <line x1="54" y1="110" x2="92" y2="110" stroke="#ff3b1d" stroke-width="2"/><polygon points="100,110 90,105 90,115" fill="#ff3b1d"/>
+        <line x1="140" y1="62" x2="178" y2="62" stroke="#3ea6ff" stroke-width="2"/><polygon points="186,62 176,57 176,67" fill="#3ea6ff"/>
+        <line x1="140" y1="86" x2="178" y2="86" stroke="#3ea6ff" stroke-width="2"/><polygon points="186,86 176,81 176,91" fill="#3ea6ff"/>
+        <line x1="140" y1="110" x2="178" y2="110" stroke="#3ea6ff" stroke-width="2"/><polygon points="186,110 176,105 176,115" fill="#3ea6ff"/>
+        <text x="70" y="144" fill="#8c8c8c" font-family="ui-monospace,monospace" font-size="10" text-anchor="middle">JOUR · ABSORBE</text>
+        <text x="170" y="144" fill="#8c8c8c" font-family="ui-monospace,monospace" font-size="10" text-anchor="middle">NUIT · RESTITUE</text>
+      </svg></figure>
+    </div>
+    <p class="say">Dehors, la température suit une vague sur 24 heures : au plus bas juste
+      avant l'aube, au plus haut en milieu d'après-midi. Chez vous, cette vague arrive
+      <b>plus douce et en retard</b>, parce que vos murs absorbent puis relâchent la
+      chaleur lentement. Tout l'art consiste à remplir ces murs de fraîcheur pendant la
+      nuit, pour qu'ils tiennent la journée.</p>
+
+    <div class="split" style="margin-top:3rem">
+      <div class="stat">
+        <div class="num">−4,7<span class="u"> °C</span></div>
+        <p>sur le pic de chaleur de la journée, quand on combine des murs lourds et une
+          bonne ventilation nocturne. Les deux ensemble, pas l'un sans l'autre.</p>
+      </div>
+      <div>
+        <p style="color:var(--dim)">Des murs lourds seuls (pierre, béton) aplanissent déjà
+          beaucoup la chaleur : ils peuvent abaisser le pic d'environ <b style="color:var(--ink)">3,7 °C</b>.
+          Mais sans air frais la nuit pour les vider de la chaleur du jour, ils finissent
+          par se saturer.</p>
+        <p style="color:var(--dim)">À l'inverse, ouvrir dans un logement très léger rafraîchit
+          sur le moment, puis tout remonte aussitôt : rien ne <b style="color:var(--ink)">stocke</b>
+          la fraîcheur. C'est le couplage des deux qui gagne.</p>
+      </div>
+    </div>
+
+    <div class="digest" style="margin-top:2.4rem">
+      <details>
+        <summary>Le détail : amortissement &amp; déphasage <span class="mk"></span></summary>
+        <div class="disc">
+          <p>Vos murs se comportent comme une <b>éponge à chaleur</b>. Ils font deux choses
+            à la température intérieure : ils en réduisent l'ampleur (<em>amortissement</em>)
+            et ils en retardent le pic de plusieurs heures (<em>déphasage</em>). Plus un
+            bâtiment est lourd, plus ces deux effets sont marqués.</p>
+          <p>Un point de physique surprenant : sur une saison entière, la température
+            <em>moyenne</em> chez vous reste celle du dehors. Les murs ne changent pas la
+            moyenne, seulement les hauts et les bas. C'est pour ça qu'ouvrir <em>au bon
+            moment</em>, pour attraper le creux de fraîcheur de la nuit, change tout.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ============ OUVRIR OU FERMER ============ -->
+  <section>
+    <div class="idx"><b>03</b><span>La règle, en trois questions</span></div>
+    <div class="sec-head">
+      <h2>Ouvrir,<br>ou fermer ?</h2>
+      <figure class="ill"><svg viewBox="0 0 240 152" role="img" aria-label="Ouvrir si dehors est plus frais que chez vous, et si l'air est sec.">
+        <rect x="52" y="28" width="16" height="88" fill="none" stroke="#fff" stroke-width="2"/>
+        <rect x="55" y="80" width="10" height="33" fill="#3ea6ff"/>
+        <rect x="116" y="28" width="16" height="88" fill="none" stroke="#fff" stroke-width="2"/>
+        <rect x="119" y="48" width="10" height="65" fill="#ff3b1d"/>
+        <line x1="98" y1="60" x2="86" y2="72" stroke="#5ad17a" stroke-width="2.5"/>
+        <line x1="86" y1="72" x2="98" y2="84" stroke="#5ad17a" stroke-width="2.5"/>
+        <path d="M196 40 C 187 58 182 68 182 79 a14 14 0 1 0 28 0 C 210 68 205 58 196 40 Z" fill="none" stroke="#fff" stroke-width="2"/>
+        <line x1="176" y1="104" x2="216" y2="46" stroke="#ff3b1d" stroke-width="2.5"/>
+        <text x="60" y="134" fill="#8c8c8c" font-family="ui-monospace,monospace" font-size="10" text-anchor="middle">DEHORS</text>
+        <text x="124" y="134" fill="#8c8c8c" font-family="ui-monospace,monospace" font-size="10" text-anchor="middle">CHEZ VOUS</text>
+        <text x="196" y="134" fill="#8c8c8c" font-family="ui-monospace,monospace" font-size="10" text-anchor="middle">AIR SEC</text>
+      </svg></figure>
+    </div>
+    <p class="say">Avant d'ouvrir, posez-vous trois questions. Si les trois réponses sont
+      <b>oui</b>, ouvrez en grand. Si une seule est non, gardez fermé.</p>
+
+    <div class="ledger">
+      <div class="row"><div class="n">1</div><div class="t">Fait-il plus frais dehors que chez vous ?
+        <small>avec une vraie marge (environ 2 °C de moins), sinon le gain est nul</small></div></div>
+      <div class="row"><div class="n">2</div><div class="t">L'air du dehors est-il sec ?
+        <small>un air frais mais moite fait entrer de l'humidité, sans réel bénéfice</small></div></div>
+      <div class="row"><div class="n">3</div><div class="t">Avez-vous vraiment trop chaud chez vous ?
+        <small>s'il fait déjà bon, inutile de refroidir vos murs davantage</small></div></div>
+    </div>
+
+    <div class="digest" style="margin-top:2.4rem">
+      <details>
+        <summary>Pourquoi l'humidité compte, pas que la température <span class="mk"></span></summary>
+        <div class="disc">
+          <p>On croit qu'il suffit qu'il fasse plus frais dehors. Presque : de l'air frais
+            mais <b>très humide</b> transporte, à cause de la vapeur d'eau qu'il contient,
+            <em>plus</em> d'énergie que votre air intérieur. En le faisant entrer, vous
+            importez de l'eau : moiteur, condensation sur les surfaces froides, sensation
+            d'inconfort, sans réel gain.</p>
+          <p>Les spécialistes parlent d'<em>enthalpie</em> (chaleur et humidité réunies)
+            plutôt que de température seule. En clair : ouvrez quand il fait plus frais
+            <b>et</b> que l'air est sec. Un bon repère est un point de rosée extérieur sous
+            environ 12 °C.</p>
+          <div class="formula">
+            <span class="c">gain réel si</span>&nbsp; <span class="hot">T_ext</span> &lt;
+            <span class="cold">T_int</span> &nbsp;<span class="c">ET</span>&nbsp; air pas trop humide
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ============ COURANT D'AIR ============ -->
+  <section>
+    <div class="idx"><b>04</b><span>Faire entrer l'air, beaucoup</span></div>
+    <div class="sec-head">
+      <h2>Un vrai<br>courant d'air</h2>
+      <figure class="ill"><svg viewBox="0 0 240 152" role="img" aria-label="L'air frais entre en bas, se réchauffe, et sort par le haut de l'autre côté.">
+        <path d="M28 56 L120 20 L212 56" fill="none" stroke="#fff" stroke-width="2"/>
+        <rect x="40" y="56" width="160" height="68" fill="none" stroke="#fff" stroke-width="2"/>
+        <line x1="6" y1="102" x2="58" y2="102" stroke="#3ea6ff" stroke-width="2"/>
+        <polygon points="68,102 56,97 56,107" fill="#3ea6ff"/>
+        <line x1="68" y1="102" x2="148" y2="72" stroke="rgba(255,255,255,.5)" stroke-width="2"/>
+        <line x1="148" y1="72" x2="208" y2="50" stroke="#ff3b1d" stroke-width="2"/>
+        <polygon points="218,46 206,44 209,55" fill="#ff3b1d"/>
+        <line x1="176" y1="62" x2="176" y2="118" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+        <line x1="170" y1="62" x2="182" y2="62" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+        <line x1="170" y1="118" x2="182" y2="118" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+        <text x="186" y="94" fill="#8c8c8c" font-family="ui-monospace,monospace" font-size="10">h</text>
+        <text x="34" y="144" fill="#8c8c8c" font-family="ui-monospace,monospace" font-size="10">BAS · FRAIS</text>
+        <text x="212" y="144" fill="#8c8c8c" font-family="ui-monospace,monospace" font-size="10" text-anchor="end">HAUT · CHAUD</text>
+      </svg></figure>
+    </div>
+    <p class="say">Ouvrir, oui, mais <b>faire circuler</b> l'air, c'est bien mieux. Deux
+      leviers : le <b>vent</b>, qui pousse l'air d'une façade à l'autre, et la
+      <b>hauteur</b>, car l'air chaud monte et s'échappe par le haut en aspirant du frais
+      par le bas.</p>
+
+    <div class="cols" style="margin-top:2.8rem">
+      <div>
+        <h3>Deux façades</h3>
+        <p>Un courant qui traverse renouvelle bien plus d'air que deux fenêtres du même
+          côté. Et c'est la <b>plus petite</b> ouverture qui limite tout : ouvrez large des
+          deux côtés.</p>
+      </div>
+      <div>
+        <h3>Jouez la hauteur</h3>
+        <p>Ouvrez en bas <b>et</b> en haut (rez plus étage, ou fenêtre basse plus cage
+          d'escalier). L'air chaud s'évacue par le haut et aspire du frais par le bas, tout
+          seul.</p>
+      </div>
+      <div>
+        <h3>Profitez du vent</h3>
+        <p>Même une petite brise change beaucoup, surtout la nuit quand l'écart de
+          température s'atténue. Placez l'entrée d'air du côté exposé au vent.</p>
+      </div>
+    </div>
+
+    <div class="digest" style="margin-top:2.4rem">
+      <details>
+        <summary>Le détail : les formules du débit d'air <span class="mk"></span></summary>
+        <div class="disc">
+          <p>Le débit se mesure en <em>renouvellements d'air par heure</em> : combien de
+            fois tout l'air de la pièce est remplacé en une heure. Deux règles d'ingénieur
+            (source : OMS) l'estiment :</p>
+          <div class="formula">
+            <span class="cold">par le vent</span>&nbsp;&nbsp; ren./h = 0.65 · v · A<sub>min</sub> · 3600 / V
+          </div>
+          <div class="formula" style="margin-top:-.4rem">
+            <span class="hot">par la hauteur</span>&nbsp;&nbsp; ren./h = 0.15 · A<sub>min</sub> · 3600 · √( ΔT · h ) / V
+          </div>
+          <p><em>v</em> est la vitesse du vent, <em>A<sub>min</sub></em> la plus petite
+            ouverture, <em>h</em> la hauteur entre ouvertures, <em>ΔT</em> l'écart de
+            température, <em>V</em> le volume de la pièce. Le débit par la hauteur croît en
+            <b>√(ΔT · h)</b> : doubler la hauteur ou l'écart aide, mais avec un rendement
+            décroissant. On vise <b>10 renouvellements par heure ou plus</b> pendant la
+            purge nocturne.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ============ QUAND ÇA NE MARCHE PAS ============ -->
+  <section>
+    <div class="idx"><b>05</b><span>La limite honnête</span></div>
+    <div class="sec-head">
+      <p class="lead">Sans nuit fraîche,<br>rien à stocker.</p>
+      <figure class="ill"><svg viewBox="0 0 240 152" role="img" aria-label="Nuit moite : ouvrir n'apporte rien, restez fermé.">
+        <circle cx="120" cy="26" r="12" fill="#ff3b1d"/>
+        <path d="M16 58 q8 -7 16 0 t16 0" fill="none" stroke="rgba(255,59,29,.55)" stroke-width="2"/>
+        <path d="M16 72 q8 -7 16 0 t16 0" fill="none" stroke="rgba(255,59,29,.55)" stroke-width="2"/>
+        <path d="M192 58 q8 -7 16 0 t16 0" fill="none" stroke="rgba(255,59,29,.55)" stroke-width="2"/>
+        <path d="M192 72 q8 -7 16 0 t16 0" fill="none" stroke="rgba(255,59,29,.55)" stroke-width="2"/>
+        <path d="M80 80 L120 52 L160 80" fill="none" stroke="#fff" stroke-width="2"/>
+        <rect x="88" y="80" width="64" height="46" fill="none" stroke="#fff" stroke-width="2"/>
+        <line x1="18" y1="104" x2="70" y2="104" stroke="#3ea6ff" stroke-width="2"/>
+        <polygon points="80,104 68,99 68,109" fill="#3ea6ff"/>
+        <line x1="38" y1="90" x2="58" y2="118" stroke="#ff3b1d" stroke-width="2.5"/>
+        <line x1="58" y1="90" x2="38" y2="118" stroke="#ff3b1d" stroke-width="2.5"/>
+        <text x="120" y="146" fill="#8c8c8c" font-family="ui-monospace,monospace" font-size="10" text-anchor="middle">NUIT MOITE · RESTEZ FERMÉ</text>
+      </svg></figure>
+    </div>
+    <div class="fail" style="margin-top:2rem">
+      <p><b>Nuit tropicale, canicule humide.</b> Quand la nuit ne descend jamais vraiment
+        (chaleur qui colle, air moite), ouvrir n'aide plus : il n'y a pas de fraîcheur à
+        aller chercher. Dans ce cas, mieux vaut rester <b>fermé et à l'ombre</b> toute la
+        journée, et compter sur l'inertie des murs et les volets baissés.</p>
+    </div>
+    <div class="cols" style="margin-top:2.6rem">
+      <div><h3>Sécurité</h3><p>Ouvrir la nuit : privilégiez l'oscillo-battant, un
+        entrebâilleur, les étages, ou une grille.</p></div>
+      <div><h3>Bruit &amp; pollens</h3><p>Ouvrez côté rue calme. Les pollens culminent tôt
+        le matin : raccourcissez le créneau si vous y êtes sensible.</p></div>
+      <div><h3>Le ventilateur</h3><p>Il ne refroidit pas la pièce, mais il vous rafraîchit
+        vous. Parfait en journée, fenêtres fermées.</p></div>
+    </div>
+  </section>
+
+  <hr class="rule bold">
+
+  <!-- ============ RÉCAP ============ -->
+  <section>
+    <div class="idx"><b>∑</b><span>À retenir</span></div>
+    <h2>Le résumé,<br>en cinq points</h2>
+    <div class="ledger">
+      <div class="row"><div class="n">1</div><div class="t">Ouvrez la nuit, surtout en fin de nuit
+        <small>c'est le moment le plus frais, l'écart avec l'intérieur est maximal avant l'aube</small></div></div>
+      <div class="row"><div class="n">2</div><div class="t">Fermez fenêtres ET volets au lever du soleil
+        <small>vous piégez la fraîcheur dedans et bloquez le soleil dehors</small></div></div>
+      <div class="row"><div class="n">3</div><div class="t">N'ouvrez que s'il fait plus frais, et sec, dehors
+        <small>sinon vous importez de la chaleur, ou de l'humidité qui colle</small></div></div>
+      <div class="row"><div class="n">4</div><div class="t">Faites un vrai courant d'air : deux façades, du bas vers le haut
+        <small>c'est ce qui rafraîchit vraiment les murs pendant la nuit</small></div></div>
+      <div class="row"><div class="n">5</div><div class="t">Par canicule humide, restez fermé et à l'ombre
+        <small>pas de nuit fraîche, rien à stocker : misez sur l'inertie et les volets</small></div></div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ============ POUR LES CURIEUX ============ -->
+  <section>
+    <div class="idx"><b>+</b><span>Pour aller plus loin</span></div>
+    <h2>Si vous voulez<br>tout comprendre</h2>
+    <p class="say">Vous n'avez besoin de rien de ce qui suit pour rafraîchir votre
+      logement. Mais si la physique vous amuse, voici ce qu'il y a sous le capot.</p>
+
+    <div class="digest" style="margin-top:2rem">
+      <details>
+        <summary>Pourquoi on refroidit les murs, pas l'air <span class="mk"></span></summary>
+        <div class="disc">
+          <p>L'air d'une pièce ne stocke presque rien : quelques dizaines de kilojoules. Les
+            murs, le sol, les cloisons en stockent <b>mille à dix mille fois plus</b>.
+            Rafraîchir l'air dix minutes est inutile si les parois sont à 27 °C : elles
+            réchauffent l'air en une demi-heure.</p>
+          <p>Le vrai levier, c'est donc de refroidir cette <em>masse</em>. La nuit, l'air
+            frais la décharge de la chaleur du jour. Le lendemain, fermée, elle agit comme
+            un puits qui absorbe soleil, appareils et occupants, et écrête le pic de
+            chaleur. C'est un <b>cycle de stockage</b>, pas un simple coup d'air frais.</p>
+        </div>
+      </details>
+      <details>
+        <summary>Peut-on prévoir le bon moment à l'avance <span class="mk"></span></summary>
+        <div class="disc">
+          <p>Oui. On modélise un logement comme un petit circuit électrique (modèle
+            <em>RC</em>) à deux réservoirs de chaleur : l'air, et la masse des murs. Deux
+            équations suffisent à prédire la température intérieure à environ
+            <b>1,4 °C près</b>.</p>
+          <p>Couplé à la météo, ce modèle permet un <em>contrôle prédictif</em> : décider
+            d'ouvrir <b>avant</b> que la chaleur n'arrive. Sur des bâtiments réels, on a
+            économisé jusqu'à <b>40 %</b> d'énergie de refroidissement ainsi. Bonne nouvelle
+            pour vous : les meilleurs indices du lendemain sont tout simples, la température
+            d'<b>il y a 24 h</b> et celle de <b>l'heure qui vient</b>.</p>
+          <div class="formula" style="white-space:normal">
+            air : m·c<sub>p</sub> dT/dt = échanges avec le dehors + les murs + apports + <span class="cold">ventilation</span><br>
+            murs : m*·C* dT*/dt = échange avec l'air
+          </div>
+        </div>
+      </details>
+      <details>
+        <summary>Comment mesurer si une stratégie marche <span class="mk"></span></summary>
+        <div class="disc">
+          <p>On additionne les <em>degrés-heures</em> passés au-dessus d'un seuil de
+            confort : une sorte de dette de chaleur accumulée sur la période. Plus elle est
+            basse, plus la stratégie d'ouverture est efficace.</p>
+          <div class="formula">
+            dette de chaleur = Σ ( température − seuil de confort ), quand c'est positif
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <footer>
+    <div class="eyebrow" style="margin-bottom:1.6rem">D'où ça vient · littérature vérifiée</div>
+    <div class="src">
+      MIT CoolVent : bases de la ventilation naturelle ·
+      OMS / NCBI NBK143285 : formules de débit d'air ·
+      Building &amp; Environment 2021 : murs lourds et ventilation nocturne ·
+      Yam et al., Energy &amp; Buildings 2007 : bilan thermique ·
+      Kolokotroni et al. 1998 : rafraîchissement nocturne ·
+      PMC3708435 : limite en climat chaud-humide ·
+      AIVC : humidité et contrôle enthalpique ·
+      arXiv 1806.08999 : modèle RC et contrôle prédictif ·
+      PMC10576096 : degrés-heures ·
+      AIRAH 2015 : seuils d'ouverture ·
+      Energy &amp; Buildings 2012 : effet du vent.
+    </div>
+    <p style="margin-top:2.2rem; font-family:var(--mono); font-size:.72rem; color:var(--faint)">
+      Exemples illustratifs. Les chiffres viennent d'études sur des cas précis et ne se
+      transposent pas tels quels à un logement donné.</p>
+  </footer>
+
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const $ = s => document.querySelector(s);
+  const chart=$("#tn-chart"), statusEl=$("#tn-status"), verdictEl=$("#tn-verdict"),
+        effEl=$("#tn-eff"), headEl=$("#tn-head");
+  const tiRange=$("#tn-ti"), tiOut=$("#tn-tival");
+  const HOT="#ff3b1d", COLD="#3ea6ff", GO="#5ad17a", DIM="#8c8c8c", FAINT="#5a5a5a",
+        LINE="#2a2a2a", INK="#fff";
+  const pad2 = n => String(n).padStart(2,"0");
+  const escH = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+  const hourLabel = d => pad2(d.getHours())+"h";
+  const avg = a => a.reduce((s,x)=>s+x,0)/a.length;
+  let raw=null, Ti=+tiRange.value, MASS="moy", AIR="moy";
+  let firstDraw=true;   // anime le tracé au premier rendu et à chaque nouvelle source météo
+
+  function setStatus(m){ statusEl.textContent=m||""; statusEl.style.display=m?"block":"none"; }
+
+  async function geocode(city){
+    const r=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=fr&format=json`);
+    const j=await r.json();
+    if(!j.results||!j.results.length) throw new Error("introuvable");
+    const g=j.results[0];
+    return {lat:g.latitude, lon:g.longitude, name:g.name+(g.country_code?" ("+g.country_code+")":"")};
+  }
+  async function forecast(lat, lon, name){
+    const u=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,dew_point_2m&forecast_days=3&timezone=auto`;
+    const j=await (await fetch(u)).json();
+    return { times:j.hourly.time.map(t=>new Date(t)), temp:j.hourly.temperature_2m,
+             dew:j.hourly.dew_point_2m, place:name, demo:false };
+  }
+  function demoData(){
+    const now=new Date(); now.setMinutes(0,0,0);
+    const times=[],temp=[],dew=[];
+    for(let k=-1;k<33;k++){ const d=new Date(now.getTime()+k*3600e3);
+      const h=d.getHours()+d.getMinutes()/60;
+      times.push(d); temp.push(+(26-8*Math.cos(2*Math.PI*(h-5)/24)).toFixed(1)); dew.push(12); }
+    return {times,temp,dew,place:"Exemple",demo:true};
+  }
+  function nextDay(){
+    const now=new Date();
+    let i0=raw.times.findIndex(t=>t>=now); if(i0<0)i0=0; i0=Math.max(0,i0-1);
+    const n=Math.min(30, raw.times.length-i0);   // 30 h : inclut le pic de demain après-midi, celui que la nuit peut encore aider
+    return { times:raw.times.slice(i0,i0+n), temp:raw.temp.slice(i0,i0+n),
+             dew:raw.dew.slice(i0,i0+n), place:raw.place, demo:raw.demo };
+  }
+
+  // Modèle deux nœuds (air + masse), inertie et ventilation séparées.
+  // La ventilation refroidit vite l'AIR ; l'air refroidit lentement la MASSE selon son inertie.
+  const A_FL=20, VOL=50, RHOCP=1206;                  // pièce réf. 20 m² au sol, 50 m³ ; ρ·cp air
+  const CAIR=150000;                                  // J/K : air + mobilier léger
+  const KAPPA={leg:110000, moy:165000, lou:260000};   // EN ISO 13790, capacité interne J/(m²·K)
+  const ACH  ={fai:3, moy:8, for:15};                 // renouvellements/h, fenêtre ouverte
+  const HAM=300, HENV=50;                             // W/K : couplage air-masse ; enveloppe + infiltration
+  const QDAY=450, QNIGHT=150;                         // W : apports internes (+ solaire résiduel, volets fermés)
+  const SUB=10;                                       // sous-pas horaires (stabilité numérique)
+
+  const OPEN_TH=0.75, CLOSE_TH=0.25;   // hystérésis : on ouvre sous -0,75 °C d'écart, on referme quand il repasse sous -0,25 °C
+  function simIndoor(d, mass, air){
+    const n=d.temp.length, Cm=KAPPA[mass]*A_FL, Hv=RHOCP*ACH[air]*VOL/3600, dt=3600/SUB;
+    // état initial : la température de la masse est DÉDUITE de la mesure de l'utilisateur,
+    // en résolvant l'équilibre de l'air à t=0 fenêtres fermées (dTa/dt = 0).
+    // Ainsi la courbe démarre exactement à la température saisie, sans saut artificiel.
+    const hr0=d.times[0].getHours(), Q0=(hr0>=7 && hr0<20)?QDAY:QNIGHT;
+    let Ta=Ti, Tm=Ti - (HENV*(d.temp[0]-Ti) + Q0)/HAM;
+    let isOpen=false;
+    const T=[Ta], open=[];
+    for(let i=0;i<n;i++){
+      // décision dynamique vs l'air intérieur courant, avec hystérésis (pas d'oscillation)
+      if(isOpen){ if(d.temp[i] > Ta - CLOSE_TH) isOpen=false; }
+      else      { if(d.temp[i] < Ta - OPEN_TH)  isOpen=true;  }
+      open.push(isOpen);
+      if(i===n-1) break;
+      const hr=d.times[i].getHours(), Q=(hr>=7 && hr<20)?QDAY:QNIGHT;
+      const Hao=HENV+(isOpen?Hv:0);
+      for(let s=0;s<SUB;s++){
+        const dTa=(dt/CAIR)*(Hao*(d.temp[i]-Ta)+HAM*(Tm-Ta)+Q);
+        const dTm=(dt/Cm)*(HAM*(Ta-Tm));
+        Ta+=dTa; Tm+=dTm;
+      }
+      T.push(Ta);
+    }
+    return {T, open};
+  }
+  const peakDrop=(d,mass,air,pM)=> Math.max(0, d.temp[pM]-simIndoor(d,mass,air).T[pM]);
+
+  function render(){
+    if(!raw) return;
+    const d=nextDay(), n=d.temp.length;
+    const sim=simIndoor(d, MASS, AIR), indoor=sim.T, open=sim.open;
+    const runs=[]; let s=-1;
+    for(let i=0;i<n;i++){ if(open[i]){ if(s<0)s=i; } else if(s>=0){ runs.push([s,i-1]); s=-1; } }
+    if(s>=0) runs.push([s,n-1]);
+    let mi=0; for(let i=1;i<n;i++) if(d.temp[i]<d.temp[mi]) mi=i;
+    // le pic pertinent : le plus chaud APRÈS le début du premier créneau (celui qu'on peut encore influencer)
+    const p0=runs.length?runs[0][0]:0;
+    let pM=p0; for(let i=p0+1;i<n;i++) if(d.temp[i]>d.temp[pM]) pM=i;
+    drawChart(d, runs, mi, pM, indoor);
+    drawEff(d, pM);
+    drawVerdict(d, mi, pM, runs, indoor, open);
+    firstDraw=false;   // les rendus suivants (curseurs) sont instantanés
+  }
+
+  function drawChart(d, runs, mi, pM, indoor){
+    const n=d.temp.length;
+    // le graphe épouse son conteneur : plein écran sur la scène d'accueil
+    const box=chart.getBoundingClientRect();
+    const W=Math.max(560, box.width||820), H=Math.max(300, box.height||420);
+    const P={l:58,r:24,t:26,b:46};
+    const vals=[...d.temp, ...indoor];
+    const lo=Math.min(...vals)-1.5, hi=Math.max(...vals)+1.5;
+    const X=i=> P.l + (i/(n-1))*(W-P.l-P.r);
+    const Y=t=> P.t + (1-(t-lo)/(hi-lo))*(H-P.t-P.b);
+    const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+    const line=(arr,color,w,extra)=>{ let p=""; for(let i=0;i<n;i++) p+=(i?"L":"M")+X(i).toFixed(1)+" "+Y(arr[i]).toFixed(1)+" ";
+      return `<path d="${p}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linejoin="round"${extra||""}/>`; };
+    const fade=firstDraw?' class="fadein"':'';
+    let g="";
+
+    // créneau d'ouverture conseillé
+    for(const r of runs){
+      const xa=X(Math.max(0,r[0]-0.5)), xb=X(Math.min(n-1,r[1]+0.5));
+      g+=`<rect x="${xa.toFixed(1)}" y="${P.t}" width="${(xb-xa).toFixed(1)}" height="${H-P.t-P.b}" fill="rgba(90,209,122,0.10)"${fade}/>`;
+    }
+    // graduations de température (axe vertical)
+    const span=hi-lo, tstep= span>18?5 : span>9?4 : 2;
+    for(let tp=Math.ceil(lo/tstep)*tstep; tp<=hi; tp+=tstep){
+      const y=Y(tp);
+      g+=`<line x1="${P.l}" y1="${y.toFixed(1)}" x2="${W-P.r}" y2="${y.toFixed(1)}" stroke="rgba(255,255,255,0.06)"/>`;
+      g+=`<text x="${(P.l-7)}" y="${(y+4).toFixed(1)}" fill="${DIM}" font-family="ui-monospace,monospace" font-size="11" text-anchor="end">${tp}°</text>`;
+    }
+    // "plus frais que dehors" : écart entre dehors et l'intérieur (efficacité visible)
+    let ft=""; for(let i=0;i<n;i++) ft+=(i?"L":"M")+X(i).toFixed(1)+" "+Y(Math.max(d.temp[i],indoor[i])).toFixed(1)+" ";
+    for(let i=n-1;i>=0;i--) ft+="L"+X(i).toFixed(1)+" "+Y(indoor[i]).toFixed(1)+" ";
+    g+=`<path d="${ft}Z" fill="rgba(62,166,255,0.14)"${fade}/>`;
+
+    // graduations horaires
+    for(let i=0;i<n;i+=3){
+      const x=X(i);
+      g+=`<line x1="${x.toFixed(1)}" y1="${H-P.b}" x2="${x.toFixed(1)}" y2="${H-P.b+4}" stroke="${LINE}"/>`;
+      g+=`<text x="${x.toFixed(1)}" y="${H-P.b+16}" fill="${DIM}" font-family="ui-monospace,monospace" font-size="11" text-anchor="middle">${hourLabel(d.times[i])}</text>`;
+    }
+    // passage(s) à minuit
+    let dayLab=false;
+    for(let i=1;i<n;i++) if(d.times[i].getHours()===0){
+      const x=X(i);
+      g+=`<line x1="${x.toFixed(1)}" y1="${P.t}" x2="${x.toFixed(1)}" y2="${H-P.b}" stroke="rgba(255,255,255,0.14)" stroke-dasharray="3 5"/>`;
+      if(!dayLab){ g+=`<text x="${(x+5).toFixed(1)}" y="${H-P.b-8}" fill="${DIM}" font-family="ui-monospace,monospace" font-size="10">demain</text>`; dayLab=true; }
+    }
+    // dégradé sous la courbe intérieure + halo lumineux : la courbe "chez vous" est la star
+    g+=`<defs><linearGradient id="gIn" x1="0" y1="0" x2="0" y2="1">`+
+       `<stop offset="0" stop-color="${COLD}" stop-opacity="0.20"/>`+
+       `<stop offset="1" stop-color="${COLD}" stop-opacity="0"/></linearGradient></defs>`;
+    let gi=""; for(let i=0;i<n;i++) gi+=(i?"L":"M")+X(i).toFixed(1)+" "+Y(indoor[i]).toFixed(1)+" ";
+    gi+=`L${X(n-1).toFixed(1)} ${H-P.b} L${X(0).toFixed(1)} ${H-P.b} Z`;
+    g+=`<path d="${gi}" fill="url(#gIn)"${fade}/>`;
+    g+=line(indoor, "rgba(62,166,255,0.10)", 11, fade);
+    g+=line(indoor, "rgba(62,166,255,0.18)", 5, fade);
+    // dehors (léger) puis chez vous (net) ; tracé animé au premier rendu
+    g+=line(d.temp, "rgba(255,255,255,0.34)", 1.5, firstDraw?' pathLength="1" class="draw"':'');
+    g+=line(indoor, COLD, 2.6, firstDraw?' pathLength="1" class="draw" style="animation-delay:.9s"':'');
+    // noms des courbes à leur extrémité (remplace la légende)
+    let yO=Y(d.temp[n-1]), yI=Y(indoor[n-1]);
+    if(Math.abs(yO-yI)<18){ const c=(yO+yI)/2, s=yO<=yI?1:-1; yO=c-9*s; yI=c+9*s; }
+    g+=`<text x="${(W-P.r-2).toFixed(1)}" y="${(yO-8).toFixed(1)}" fill="rgba(255,255,255,0.6)" font-family="ui-monospace,monospace" font-size="12" text-anchor="end"${fade}>dehors</text>`;
+    g+=`<text x="${(W-P.r-2).toFixed(1)}" y="${(yI+16).toFixed(1)}" fill="${COLD}" font-family="ui-monospace,monospace" font-size="12" text-anchor="end"${fade}>chez vous</text>`;
+
+    // cote d'efficacité au moment le plus chaud (fond en même temps que les zones)
+    const gap=d.temp[pM]-indoor[pM];
+    if(gap>0.6){
+      const bx=X(pM), y1=Y(d.temp[pM]), y2=Y(indoor[pM]);
+      g+=`<g${fade}>`;
+      g+=`<line x1="${bx.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${bx.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${INK}" stroke-width="1.5"/>`;
+      g+=`<line x1="${(bx-4).toFixed(1)}" y1="${y1.toFixed(1)}" x2="${(bx+4).toFixed(1)}" y2="${y1.toFixed(1)}" stroke="${INK}" stroke-width="1.5"/>`;
+      g+=`<line x1="${(bx-4).toFixed(1)}" y1="${y2.toFixed(1)}" x2="${(bx+4).toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${INK}" stroke-width="1.5"/>`;
+      const right=bx>W-150, tx=right?bx-8:bx+8;
+      g+=`<text x="${tx.toFixed(1)}" y="${((y1+y2)/2+4).toFixed(1)}" fill="${INK}" font-family="ui-monospace,monospace" font-size="12" text-anchor="${right?"end":"start"}">${gap.toFixed(1)}°C plus frais</text>`;
+      g+=`</g>`;
+    }
+    // repère min dehors
+    const mx=X(mi), my=Y(d.temp[mi]);
+    g+=`<circle cx="${mx.toFixed(1)}" cy="${my.toFixed(1)}" r="3.5" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1.5"/>`;
+    g+=`<text x="${mx.toFixed(1)}" y="${(my+16).toFixed(1)}" fill="${DIM}" font-family="ui-monospace,monospace" font-size="11" text-anchor="middle">dehors, min ${d.temp[mi].toFixed(0)}°</text>`;
+    // maintenant
+    g+=`<line x1="${X(0).toFixed(1)}" y1="${P.t}" x2="${X(0).toFixed(1)}" y2="${H-P.b}" stroke="rgba(255,255,255,0.35)" stroke-width="1"/>`;
+    g+=`<text x="${(X(0)+4).toFixed(1)}" y="${(P.t+11)}" fill="${DIM}" font-family="ui-monospace,monospace" font-size="11">maintenant</text>`;
+    // lieu
+    g+=`<text x="${(W-P.r).toFixed(1)}" y="${(P.t+11)}" fill="${INK}" font-family="ui-monospace,monospace" font-size="12" text-anchor="end">${esc(d.place)}</text>`;
+
+    chart.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Température extérieure et intérieure modélisée selon l'inertie et la ventilation choisies">${g}</svg>`;
+  }
+
+  function drawEff(d, pM){
+    // décomposition additive : base + murs + ventilation + synergie = total
+    const total=peakDrop(d,MASS,AIR,pM);
+    const base =peakDrop(d,"leg","fai",pM);                       // ouvrir la nuit / fermer le jour, même en logement défavorable
+    const mE=Math.max(0, peakDrop(d,MASS,"fai",pM)-base);         // apport propre des murs (vs légers)
+    const aE=Math.max(0, peakDrop(d,"leg",AIR,pM)-base);          // apport propre de la ventilation (vs faible)
+    const syn=Math.max(0, total-base-mE-aE);                      // ce que les deux font ensemble en plus
+    const massLab={leg:"légers",moy:"moyens",lou:"lourds"}[MASS];
+    const airLab ={fai:"faible",moy:"moyenne",for:"forte"}[AIR];
+    const SC=8;   // échelle des barres, en °C
+    const row=(lab,v)=>`<div class="tn-effrow"><span class="lab">${lab}</span><span class="val">+${v.toFixed(1)} °C</span><div class="bar"><i style="width:${Math.min(100,v/SC*100).toFixed(0)}%"></i></div></div>`;
+    effEl.innerHTML=
+      row("ouvrir la nuit, fermer le jour (quel que soit le logement)", base)+
+      row(`murs ${massLab} (vs légers)`, mE)+
+      row(`ventilation ${airLab} (vs faible)`, aE)+
+      (syn>=0.15? row("synergie murs et ventilation", syn):"")+
+      `<div class="tn-effrow total"><span class="lab">au plus chaud, plus frais que dehors</span><span class="val">${total.toFixed(1)} °C</span></div>`;
+  }
+
+  function drawVerdict(d, mi, pM, runs, indoor, open){
+    const coolT=d.temp[mi].toFixed(0), coolH=hourLabel(d.times[mi]);
+    // le titre géant en tête de carte, précédé d'un rappel si les données sont fictives
+    const demoLine = d.demo ? `<div class="tn-demo">exemple : indiquez votre ville pour votre créneau réel</div>` : "";
+    let big="", detail="", sub="";
+    if(!runs.length){
+      big=`<div class="tn-big" style="color:${HOT}">Gardez fermé</div>`;
+      sub=`<div class="tn-headsub">pas d'air plus frais à venir · volets baissés · détails plus bas ↓</div>`;
+      detail=`<p>Sur les prochaines heures, il ne fera pas vraiment plus frais que chez vous
+        (${Ti.toFixed(0)} °C). Ouvrir ferait entrer de la chaleur. Fermez, baissez les
+        volets, et attendez une vraie nuit fraîche.</p>`;
+    } else {
+      const endOf=r=>pad2((d.times[r[1]].getHours()+1)%24)+"h";
+      const fmt=r=>`de ${hourLabel(d.times[r[0]])} à ${endOf(r)}`;
+      const first=runs[0], second=runs[1];   // chronologique : le prochain créneau d'abord
+      big=`<div class="tn-big">${open[0] ? `Ouvrez maintenant, jusqu'à ${endOf(first)}` : `Ouvrez ${fmt(first)}`}</div>`;
+      let miIn=0; for(let i=1;i<indoor.length;i++) if(indoor[i]<indoor[miIn]) miIn=i;
+      const nightMin=indoor[miIn], cooler=(d.temp[pM]-indoor[pM]);
+      const nightTxt = (Ti-nightMin)<0.8
+        ? `l'intérieur reste stable autour de <b style="color:${COLD}">${nightMin.toFixed(0)}°</b>, amorti par l'inertie`
+        : `l'intérieur redescend vers <b style="color:${COLD}">${nightMin.toFixed(0)}°</b> au plus frais`;
+      detail=`<p>Pendant ce créneau, il fait plus frais dehors que chez vous. Le plus frais dehors
+        vers ${coolH} (${coolT} °C).${second?` Une seconde fenêtre s'ouvre ${fmt(second)}.`:""}
+        Fermez tout dès que l'écart se referme.</p>
+        <p>Avec vos réglages, ${nightTxt}, et reste
+        <b style="color:${COLD}">${cooler.toFixed(1)} °C plus frais</b> que dehors au plus chaud
+        (${hourLabel(d.times[pM])}).</p>`;
+      sub=`<div class="tn-headsub">le plus frais dehors vers ${coolH} (${coolT}°) · au plus chaud,
+        <b>${cooler.toFixed(1)} °C plus frais</b> que dehors · détails plus bas ↓</div>`;
+      const dws=[]; for(let i=0;i<open.length;i++) if(open[i]) dws.push(d.dew[i]);   // humidité des heures réellement ouvertes
+      if(dws.length && avg(dws)>16) detail+=`<p class="tn-note">L'air sera assez humide pendant ce créneau : aérez, mais surveillez la moiteur et la condensation.</p>`;
+    }
+    if(d.demo) detail+=`<p class="tn-note">Données fictives. Ouvrez la page via http://localhost, puis indiquez votre ville ou votre position pour votre météo réelle.</p>`;
+    // la ville, bien visible au-dessus du verdict (carré vert = données météo réelles)
+    const loc=`<div class="tn-loc${d.demo?' demo':''}"><i></i>${escH(d.place)}</div>`;
+    headEl.innerHTML=loc+demoLine+big+sub;
+    verdictEl.innerHTML=detail;
+  }
+
+  const fail = (prefix,e) => setStatus(prefix + (e && e.message ? " ("+e.message+")" : ""));
+
+  // events
+  $("#tn-geo").addEventListener("click", ()=>{
+    if(!window.isSecureContext){
+      setStatus("La localisation exige https ou localhost. Ouvrez la page via http://localhost, ou tapez votre ville ci-dessus.");
+      return;
+    }
+    if(!navigator.geolocation){ setStatus("Géolocalisation indisponible sur ce navigateur. Tapez votre ville."); return; }
+    setStatus("Localisation en cours…");
+    navigator.geolocation.getCurrentPosition(async pos=>{
+      try{ setStatus("Récupération de la météo…");
+        raw=await forecast(pos.coords.latitude, pos.coords.longitude, "Votre position");
+        setStatus(""); firstDraw=true; render();
+      }catch(e){ fail("Météo indisponible", e); }
+    }, err=>{
+      setStatus(err.code===1 ? "Autorisation refusée. Tapez votre ville ci-dessus."
+              : err.code===2 ? "Position indisponible. Tapez votre ville."
+              : "Localisation trop longue. Tapez votre ville.");
+    }, {timeout:9000, maximumAge:600000});
+  });
+  $("#tn-cityform").addEventListener("submit", async e=>{
+    e.preventDefault();
+    const c=$("#tn-city").value.trim(); if(!c) return;
+    try{ setStatus("Recherche de « "+c+" »…");
+      const g=await geocode(c); setStatus("Récupération de la météo…");
+      raw=await forecast(g.lat, g.lon, g.name); setStatus(""); firstDraw=true; render();
+    }catch(err){
+      if(err.message==="introuvable") setStatus("Ville introuvable. Vérifiez l'orthographe.");
+      else fail("Connexion impossible (page ouverte en local ?). Servez-la via http://localhost", err);
+    }
+  });
+  tiRange.addEventListener("input", ()=>{ Ti=+tiRange.value; tiOut.textContent=Ti.toFixed(0)+" °C"; render(); });
+
+  // toggles inertie / ventilation
+  function wire(id, set){
+    const box=document.getElementById(id);
+    box.addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return;
+      set(b.dataset.k); [...box.children].forEach(x=>x.setAttribute("aria-pressed", x===b)); render(); });
+  }
+  wire("tn-mass", k=>MASS=k);
+  wire("tn-air",  k=>AIR=k);
+
+  // start with a demo so there is always a chart
+  raw=demoData(); render();
+
+  // re-rendu au redimensionnement (le graphe épouse le viewport) ; on ignore le tick initial
+  let roW=chart.getBoundingClientRect().width, roH=chart.getBoundingClientRect().height;
+  new ResizeObserver(es=>{
+    const r=es[0].contentRect;
+    if(Math.abs(r.width-roW)<1 && Math.abs(r.height-roH)<1) return;
+    roW=r.width; roH=r.height;
+    if(raw) render();
+  }).observe(chart);
+  if(!window.isSecureContext)
+    setStatus("Astuce : pour votre météo réelle, ouvrez cette page via http://localhost. Sur un fichier ouvert directement, la localisation est bloquée par le navigateur.");
+})();
+</script>

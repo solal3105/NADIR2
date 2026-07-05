@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+  <html lang="en" dir="ltr" prefix="og: https://ogp.me/ns#" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-57LP9EG3BD"></script>
+<script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments)};gtag("js", new Date());gtag("set", "developer_id.dMDhkMT", true);gtag("config", "G-57LP9EG3BD", {"groups":"default","page_placeholder":"PLACEHOLDER_page_location","allow_ad_personalization_signals":false,"cookie_domain":"we.stanford.edu","cookie_prefix":"su","cookie_expires":15552000});</script>
+<link rel="canonical" href="https://we.stanford.edu/model-predictive-control-naturally-ventilated-buildings" />
+<meta property="og:site_name" content="Wind Engineering Lab" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://we.stanford.edu/model-predictive-control-naturally-ventilated-buildings" />
+<meta property="og:title" content="Model Predictive Control for Naturally Ventilated Buildings" />
+<meta property="og:image" content="https://we.stanford.edu/sites/g/files/sbiybj18756/files/styles/card_1192x596/public/media/image/mpc_graphic_3.png?h=ed15ed2e&amp;itok=hbJchncm" />
+<meta property="og:image:url" content="https://we.stanford.edu/sites/g/files/sbiybj18756/files/styles/card_1192x596/public/media/image/mpc_graphic_3.png?h=ed15ed2e&amp;itok=hbJchncm" />
+<meta property="og:image:alt" content="Illustration of day and night modes of Y2E2" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Model Predictive Control for Naturally Ventilated Buildings" />
+<meta name="twitter:image" content="https://we.stanford.edu/sites/g/files/sbiybj18756/files/styles/card_1192x596/public/media/image/mpc_graphic_3.png?h=ed15ed2e&amp;itok=hbJchncm" />
+<meta name="twitter:image:alt" content="Illustration of day and night modes of Y2E2" />
+<meta name="Generator" content="Drupal 11 (https://www.drupal.org)" />
+<meta name="MobileOptimized" content="width" />
+<meta name="HandheldFriendly" content="true" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" href="/profiles/custom/soe_profile/themes/soe_basic/favicon.ico" type="image/vnd.microsoft.icon" />
+
+
+              <link rel="apple-touch-icon" sizes="60x60" href="https://www-media.stanford.edu/assets/favicon/apple-touch-icon-60x60.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="https://www-media.stanford.edu/assets/favicon/apple-touch-icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="76x76" href="https://www-media.stanford.edu/assets/favicon/apple-touch-icon-76x76.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="https://www-media.stanford.edu/assets/favicon/apple-touch-icon-114x114.png" />
+        <link rel="apple-touch-icon" sizes="120x120" href="https://www-media.stanford.edu/assets/favicon/apple-touch-icon-120x120.png" />
+        <link rel="apple-touch-icon" sizes="144x144" href="https://www-media.stanford.edu/assets/favicon/apple-touch-icon-144x144.png" />
+        <link rel="apple-touch-icon" sizes="152x152" href="https://www-media.stanford.edu/assets/favicon/apple-touch-icon-152x152.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="https://www-media.stanford.edu/assets/favicon/apple-touch-icon-180x180.png" />
+
+        <link rel="icon" type="image/png" href="https://www-media.stanford.edu/assets/favicon/favicon-196x196.png" sizes="196x196" />
+        <link rel="icon" type="image/png" href="https://www-media.stanford.edu/assets/favicon/favicon-192x192.png" sizes="192x192" />
+        <link rel="icon" type="image/png" href="https://www-media.stanford.edu/assets/favicon/favicon-128.png" sizes="128x128" />
+        <link rel="icon" type="image/png" href="https://www-media.stanford.edu/assets/favicon/favicon-96x96.png" sizes="96x96" />
+        <link rel="icon" type="image/png" href="https://www-media.stanford.edu/assets/favicon/favicon-32x32.png" sizes="32x32" />
+        <link rel="icon" type="image/png" href="https://www-media.stanford.edu/assets/favicon/favicon-16x16.png" sizes="16x16" />
+      
+    <link rel="mask-icon" href="https://www-media.stanford.edu/assets/favicon/safari-pinned-tab.svg" color="#ffffff">
+    <meta name="application-name" content="Stanford University"/>
+    <meta name="msapplication-TileColor" content="#FFFFFF" />
+    <meta name="msapplication-TileImage" content="https://www-media.stanford.edu/assets/favicon/mstile-144x144.png" />
+    <meta name="msapplication-square70x70logo" content="https://www-media.stanford.edu/assets/favicon/mstile-70x70.png" />
+    <meta name="msapplication-square150x150logo" content="https://www-media.stanford.edu/assets/favicon/mstile-150x150.png" />
+    <meta name="msapplication-square310x310logo" content="https://www-media.stanford.edu/assets/favicon/mstile-310x310.png" />
+
+    <title>Model Predictive Control for Naturally Ventilated Buildings | Wind Engineering Lab</title>
+    <link rel="stylesheet" media="all" href="/sites/g/files/sbiybj18756/files/css/css_5k7YBSDD2qjRxSCtNno23ElSev4cu2g-LdQgt_1A8H0.css?delta=0&amp;language=en&amp;theme=soe_basic&amp;include=eJyNUW1yhCAMvRCFIzERo9IGwhAYl9sXW7fqzjjdP0zeB3kJOCbOAz_MiBNUKgofhXz8MmOuCUjvUE0cC6woHNCcar3isEH516Bl8UF91pCkQC62euM4JI64iQtmvopncFUIGteiEmSYM6RFnrMejK4x1YG8LDgqYbQDiHcGiBLMKKr3ihPnced_zhfSbk5bWkIxkUfUT_ljEw7z7zT2NE1fyTqmGuLhSpknT2ilNOoN9xXu5Euevea9WP9y9QAxYn7DOPdnwNzecGYEd17tjStrE7-2-dZ5wytpUjBsP4Gq-p5ZCubYX4od0MTckT7V39EnFsY" />
+<link rel="stylesheet" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+<link rel="stylesheet" media="all" href="https://use.fontawesome.com/releases/v5.13.1/css/v4-shims.css" />
+<link rel="stylesheet" media="all" href="/sites/g/files/sbiybj18756/files/css/css_0CSg3V7Be_DP2uAZ2eQ-SZSs0GgKrOUv66Xz7kmSj0w.css?delta=3&amp;language=en&amp;theme=soe_basic&amp;include=eJyNUW1yhCAMvRCFIzERo9IGwhAYl9sXW7fqzjjdP0zeB3kJOCbOAz_MiBNUKgofhXz8MmOuCUjvUE0cC6woHNCcar3isEH516Bl8UF91pCkQC62euM4JI64iQtmvopncFUIGteiEmSYM6RFnrMejK4x1YG8LDgqYbQDiHcGiBLMKKr3ihPnced_zhfSbk5bWkIxkUfUT_ljEw7z7zT2NE1fyTqmGuLhSpknT2ilNOoN9xXu5Euevea9WP9y9QAxYn7DOPdnwNzecGYEd17tjStrE7-2-dZ5wytpUjBsP4Gq-p5ZCubYX4od0MTckT7V39EnFsY" />
+<link rel="stylesheet" media="all" href="/sites/g/files/sbiybj18756/files/css/css_maW5VhubkQo09fjglCTHQcXLqAseyl4rswI_Gtp4hgQ.css?delta=4&amp;language=en&amp;theme=soe_basic&amp;include=eJyNUW1yhCAMvRCFIzERo9IGwhAYl9sXW7fqzjjdP0zeB3kJOCbOAz_MiBNUKgofhXz8MmOuCUjvUE0cC6woHNCcar3isEH516Bl8UF91pCkQC62euM4JI64iQtmvopncFUIGteiEmSYM6RFnrMejK4x1YG8LDgqYbQDiHcGiBLMKKr3ihPnced_zhfSbk5bWkIxkUfUT_ljEw7z7zT2NE1fyTqmGuLhSpknT2ilNOoN9xXu5Euevea9WP9y9QAxYn7DOPdnwNzecGYEd17tjStrE7-2-dZ5wytpUjBsP4Gq-p5ZCubYX4od0MTckT7V39EnFsY" />
+<link rel="stylesheet" media="print" href="/sites/g/files/sbiybj18756/files/css/css_PF7Y2jVocJoNNPjfDvrEej9xAT4LAM8IStPJ1n89R2c.css?delta=5&amp;language=en&amp;theme=soe_basic&amp;include=eJyNUW1yhCAMvRCFIzERo9IGwhAYl9sXW7fqzjjdP0zeB3kJOCbOAz_MiBNUKgofhXz8MmOuCUjvUE0cC6woHNCcar3isEH516Bl8UF91pCkQC62euM4JI64iQtmvopncFUIGteiEmSYM6RFnrMejK4x1YG8LDgqYbQDiHcGiBLMKKr3ihPnced_zhfSbk5bWkIxkUfUT_ljEw7z7zT2NE1fyTqmGuLhSpknT2ilNOoN9xXu5Euevea9WP9y9QAxYn7DOPdnwNzecGYEd17tjStrE7-2-dZ5wytpUjBsP4Gq-p5ZCubYX4od0MTckT7V39EnFsY" />
+<link rel="stylesheet" media="all" href="/sites/g/files/sbiybj18756/files/css/css_zp6CQkRAUk2pXlYQprfbrwg3aat_lPL_ddlLthop67s.css?delta=6&amp;language=en&amp;theme=soe_basic&amp;include=eJyNUW1yhCAMvRCFIzERo9IGwhAYl9sXW7fqzjjdP0zeB3kJOCbOAz_MiBNUKgofhXz8MmOuCUjvUE0cC6woHNCcar3isEH516Bl8UF91pCkQC62euM4JI64iQtmvopncFUIGteiEmSYM6RFnrMejK4x1YG8LDgqYbQDiHcGiBLMKKr3ihPnced_zhfSbk5bWkIxkUfUT_ljEw7z7zT2NE1fyTqmGuLhSpknT2ilNOoN9xXu5Euevea9WP9y9QAxYn7DOPdnwNzecGYEd17tjStrE7-2-dZ5wytpUjBsP4Gq-p5ZCubYX4od0MTckT7V39EnFsY" />
+<link rel="stylesheet" media="print" href="/sites/g/files/sbiybj18756/files/css/css_xM7OhGsXtwVVZe1zFfDdqjE-wznqujnMatSI1NgkSbM.css?delta=7&amp;language=en&amp;theme=soe_basic&amp;include=eJyNUW1yhCAMvRCFIzERo9IGwhAYl9sXW7fqzjjdP0zeB3kJOCbOAz_MiBNUKgofhXz8MmOuCUjvUE0cC6woHNCcar3isEH516Bl8UF91pCkQC62euM4JI64iQtmvopncFUIGteiEmSYM6RFnrMejK4x1YG8LDgqYbQDiHcGiBLMKKr3ihPnced_zhfSbk5bWkIxkUfUT_ljEw7z7zT2NE1fyTqmGuLhSpknT2ilNOoN9xXu5Euevea9WP9y9QAxYn7DOPdnwNzecGYEd17tjStrE7-2-dZ5wytpUjBsP4Gq-p5ZCubYX4od0MTckT7V39EnFsY" />
+
+    
+
+                      <script>
+          gtag('config', 'G-BECJQXLNCY', {cookie_domain: window.location.host, cookie_prefix: "sws", "ga-expire": 15552000});
+        </script>
+                </head>
+            <body class="sws-acsf page-model-predictive-control-naturally-ventilated-buildings section-model-predictive-control-naturally-ventilated-buildings not-front role--anonymous">
+    
+      <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas>
+    
+
+<header class="su-masthead su-masthead--right" data-nosnippet>
+
+              <a href="#main-content" class="visually-hidden focusable su-skipnav su-skipnav--content">
+          Skip to main content
+        </a>
+        <a href="#secondary-navigation" class="visually-hidden focusable su-skipnav su-skipnav--secondary">
+          Skip to secondary navigation
+        </a>
+      
+      
+<div class="su-brand-bar su-brand-bar--default">
+  <div class="su-brand-bar__container"><a  class="su-brand-bar__logo" href="https://www.stanford.edu">Stanford University<span class="su-brand-bar__link--a11y"> (link is external)</span>
+  </a></div>
+</div>
+
+<section class="su-masthead--inner" aria-label="Page logo, menu and search">
+                  <div class="region region-header">
+            <div  id="block-soe-basic-branding" class="su-lockup su-lockup--option-p">
+    <a href="https://we.stanford.edu/" >
+  <div class="su-lockup__cell1">
+          <div class="su-lockup__wordmark-wrapper">
+      <span class="su-lockup__wordmark">Stanford</span>
+              <span class="su-lockup__line4" >Engineering</span>
+          </div>
+    </div>          <div class="su-lockup__cell2">
+            <span class="su-lockup__line1" >Wind Engineering Lab</span>
+      
+      
+          </div>
+            </a>
+  </div>
+
+
+          </div>
+                          <div class="region region-search">
+            <div id="block-soe-basic-header-links" class="config-pages-block block-config-pages block-soe-basic-header-links">
+  
+    
+      <div class="config_pages config_pages--type--stanford-basic-site-settings config_pages--view-mode--site-settings-header config_pages--stanford-basic-site-settings--site-settings-header">
+  
+</div>
+
+  </div>
+
+<div  class="su-site-search su-site-search" role="search">
+ <form action="/search" method="get" accept-charset="UTF-8">
+  <label class="su-site-search__sr-label" for="key">Search this site</label>
+  <input  type="text" id="key" name="key" class="su-site-search__input" placeholder="Search this site" maxlength="128">
+  <button  type="submit" name="search" class="su-site-search__submit su-sr-only-text">Submit Search</button></form>
+</div>
+
+
+          </div>
+                          <div class="region region-menu">
+            <div id="block-soe-basic-main-navigation" class="system-menu-block main">
+      <nav class="su-multi-menu su-multi-menu--buttons su-multi-menu--right no-js" aria-label="main menu">
+    <button class="su-multi-menu__nav-toggle su-multi-menu__nav-toggle--right " aria-expanded="false">Menu</button>
+    <ul class="su-multi-menu__menu su-multi-menu__menu-lv1"><li class="su-multi-menu__item"><a class="su-multi-menu__link" href="/home"><span class="su-multi-menu__link-text-wrapper">Home</span></a></li><li class="su-multi-menu__item su-multi-menu__item--parent"><a class="su-multi-menu__link" href="/research"><span class="su-multi-menu__link-text-wrapper">Research</span></a><ul class="su-multi-menu__menu su-multi-menu__menu-lv2"><li class="su-multi-menu__item"><a class="su-multi-menu__link" href="/research/keynote-talks-and-seminars"><span class="su-multi-menu__link-text-wrapper">Keynote Talks and Seminars</span></a></li><li class="su-multi-menu__item"><a class="su-multi-menu__link" href="/research/research-projects"><span class="su-multi-menu__link-text-wrapper">Research Projects</span></a></li></ul></li><li class="su-multi-menu__item"><a class="su-multi-menu__link" href="/publications"><span class="su-multi-menu__link-text-wrapper">Publications</span></a></li><li class="su-multi-menu__item"><a class="su-multi-menu__link" href="/about"><span class="su-multi-menu__link-text-wrapper">About</span></a></li><li class="su-multi-menu__item"><a class="su-multi-menu__link" href="/news" data-toggle="tooltip" title="News"><span class="su-multi-menu__link-text-wrapper">News</span></a></li><li class="su-multi-menu__item"><a class="su-multi-menu__link" href="/people" data-toggle="tooltip" title="A listing of people types"><span class="su-multi-menu__link-text-wrapper">People</span></a></li></ul></nav>
+
+  </div>
+
+
+          </div>
+              </section>
+    </header><main class="page-content" id="page-content"><div data-drupal-messages-fallback class="hidden"></div>
+<div id="block-soe-basic-content" class="system-main-block block-system block-soe-basic-content">
+  
+    
+      
+
+<section class="node--stanford-page node-page--stanford-page node basic-page node--layout-full">
+      <div class="content">
+    
+
+
+
+
+<div class="jumpstart-ui--one-column">
+    <div  class="main-region">
+      
+
+<div class="field-block node-stanford-page-su-page-banner block-layout-builder">
+  
+    
+      
+
+
+
+
+            <div class="node stanford-page su-page-banner entity-reference-revisions label-hidden"><div class="ptype-stanford-banner">
+<div class="ds-entity--paragraph ds-entity--stanford-banner">
+  <div data-contextual-id="paragraph:root_parent_type=node&amp;root_parent=131&amp;paragraph=576:changed=1655238588&amp;ds_bundle=stanford_banner&amp;ds_view_mode=default&amp;langcode=en" data-contextual-token="WdKUWTk5M5-R_m2eZhehNE36LLFAPyQGR_1FLUw6q7c" data-drupal-ajax-container=""></div>
+<div class="su-hero ">
+
+        <div class="su-hero__media">
+            <div class="media-entity-wrapper image">
+  
+  
+
+
+
+
+            <div class="media image field-media-image label-hidden">    <picture>
+                  <source srcset="/sites/g/files/sbiybj18756/files/styles/breakpoint_2xl_1x/public/media/image/mpc_graphic_3.png.webp?itok=dvS2dR66 1x, /sites/g/files/sbiybj18756/files/styles/breakpoint_2xl_2x/public/media/image/mpc_graphic_3.png.webp?itok=lNrBadei 2x" media="screen and (min-width: 1500px)" type="image/webp" width="1500" height="806"/>
+              <source srcset="/sites/g/files/sbiybj18756/files/styles/breakpoint_2xl_1x/public/media/image/mpc_graphic_3.png.webp?itok=dvS2dR66 1x, /sites/g/files/sbiybj18756/files/styles/breakpoint_2xl_2x/public/media/image/mpc_graphic_3.png.webp?itok=lNrBadei 2x" media="screen and (min-width: 1200px)" type="image/webp" width="1500" height="806"/>
+              <source srcset="/sites/g/files/sbiybj18756/files/styles/breakpoint_xl_1x/public/media/image/mpc_graphic_3.png.webp?itok=tBT94j_m 1x, /sites/g/files/sbiybj18756/files/styles/breakpoint_xl_2x/public/media/image/mpc_graphic_3.png.webp?itok=XqJfHMJ5 2x" media="screen and (min-width: 992px)" type="image/webp" width="1200" height="645"/>
+              <source srcset="/sites/g/files/sbiybj18756/files/styles/breakpoint_lg_1x/public/media/image/mpc_graphic_3.png.webp?itok=CKVgJoyO 1x, /sites/g/files/sbiybj18756/files/styles/breakpoint_lg_2x/public/media/image/mpc_graphic_3.png.webp?itok=OY_Fg8JR 2x" media="screen and (min-width: 768px)" type="image/webp" width="992" height="533"/>
+              <source srcset="/sites/g/files/sbiybj18756/files/styles/breakpoint_md_1x/public/media/image/mpc_graphic_3.png.webp?itok=04Dfpgma 1x, /sites/g/files/sbiybj18756/files/styles/breakpoint_md_2x/public/media/image/mpc_graphic_3.png.webp?itok=ebWT4dO6 2x" media="screen and (min-width: 576px)" type="image/webp" width="768" height="413"/>
+              <source srcset="/sites/g/files/sbiybj18756/files/styles/breakpoint_sm_1x/public/media/image/mpc_graphic_3.png.webp?itok=uBZlRGvN 1x, /sites/g/files/sbiybj18756/files/styles/breakpoint_sm_2x/public/media/image/mpc_graphic_3.png.webp?itok=-lw380az 2x" media="(min-width: 0em)" type="image/webp" width="576" height="309"/>
+              <source srcset="/sites/g/files/sbiybj18756/files/styles/breakpoint_2xl_1x/public/media/image/mpc_graphic_3.png?itok=dvS2dR66 1x, /sites/g/files/sbiybj18756/files/styles/breakpoint_2xl_2x/public/media/image/mpc_graphic_3.png?itok=lNrBadei 2x" media="screen and (min-width: 1500px)" type="image/png" width="1500" height="806"/>
+              <source srcset="/sites/g/files/sbiybj18756/files/styles/breakpoint_2xl_1x/public/media/image/mpc_graphic_3.png?itok=dvS2dR66 1x, /sites/g/files/sbiybj18756/files/styles/breakpoint_2xl_2x/public/media/image/mpc_graphic_3.png?itok=lNrBadei 2x" media="screen and (min-width: 1200px)" type="image/png" width="1500" height="806"/>
+              <source srcset="/sites/g/files/sbiybj18756/files/styles/breakpoint_xl_1x/public/media/image/mpc_graphic_3.png?itok=tBT94j_m 1x, /sites/g/files/sbiybj18756/files/styles/breakpoint_xl_2x/public/media/image/mpc_graphic_3.png?itok=XqJfHMJ5 2x" media="screen and (min-width: 992px)" type="image/png" width="1200" height="645"/>
+              <source srcset="/sites/g/files/sbiybj18756/files/styles/breakpoint_lg_1x/public/media/image/mpc_graphic_3.png?itok=CKVgJoyO 1x, /sites/g/files/sbiybj18756/files/styles/breakpoint_lg_2x/public/media/image/mpc_graphic_3.png?itok=OY_Fg8JR 2x" media="screen and (min-width: 768px)" type="image/png" width="992" height="533"/>
+              <source srcset="/sites/g/files/sbiybj18756/files/styles/breakpoint_md_1x/public/media/image/mpc_graphic_3.png?itok=04Dfpgma 1x, /sites/g/files/sbiybj18756/files/styles/breakpoint_md_2x/public/media/image/mpc_graphic_3.png?itok=ebWT4dO6 2x" media="screen and (min-width: 576px)" type="image/png" width="768" height="413"/>
+              <source srcset="/sites/g/files/sbiybj18756/files/styles/breakpoint_sm_1x/public/media/image/mpc_graphic_3.png?itok=uBZlRGvN 1x, /sites/g/files/sbiybj18756/files/styles/breakpoint_sm_2x/public/media/image/mpc_graphic_3.png?itok=-lw380az 2x" media="(min-width: 0em)" type="image/png" width="576" height="309"/>
+                  <img loading="lazy" width="1729" height="929" src="/sites/g/files/sbiybj18756/files/styles/breakpoint_2xl_2x/public/media/image/mpc_graphic_3.png?itok=lNrBadei" alt="Illustration of day and night modes of Y2E2" />
+
+  </picture>
+
+</div>
+      
+</div>
+
+      </div>
+    
+  </div>
+
+</div>
+</div>
+</div>
+      
+  </div>
+
+    </div>
+</div>
+
+
+
+  
+
+<div class="jumpstart-ui--one-column centered-container node-stanford-page-title">
+    <div  class="main-region flex-12-of-12">
+      
+
+<div class="field-block node-stanford-page-title block-layout-builder">
+  
+    
+      <div class="node stanford-page title string label-hidden"><h1>Model Predictive Control for Naturally Ventilated Buildings</h1>
+</div>
+
+  </div>
+
+    </div>
+</div>
+
+
+    
+<div class="jumpstart-ui--two-column flex-container centered-container">
+
+  
+      <div  class="flex-12-of-12 main-region">
+      <div class="jumpstart-ui-skipnav-main-anchor block-jumpstart-ui">
+  
+    
+      <div id="main-content" tabindex="-1" class="visually-hidden focusable">Main content start</div>
+
+  </div>
+
+
+<div class="field-block node-stanford-page-su-page-components block-layout-builder">
+  
+    
+      
+
+
+
+
+      <div class="node stanford-page su-page-components entity-reference-revisions label-hidden">
+              <div class="paragraph-item ptype-stanford-layout">  <div class="ptype-stanford-layout paragraph paragraph--type--stanford-layout paragraph--view-mode--default">
+          
+
+
+
+
+
+  <div class="layout-background">
+    <div class="layout layout--layout-paragraphs-one-column">
+
+              <div  class="layout__region layout__region--main">
+            <div class="ptype-stanford-wysiwyg paragraph paragraph--type--stanford-wysiwyg paragraph--view-mode--default">
+          
+
+
+
+
+            <div class="su-wysiwyg-text paragraph stanford-wysiwyg text-long label-hidden"><h3><strong>Motivation</strong></h3>
+
+<p>Natural ventilation systems can reduce active cooling requirements for buildings while also improving occupant thermal comfort and indoor air quality. The performance of these systems rely on the design of robust and optimal control strategies to exploit the benefits of natural ventilation. Model predictive control is an optimal control technique in which a building model is used to predict the response of the building to certain control inputs under future operating conditions and select a particular control strategy that optimizes for two objectives: minimizing active energy use and maximizing thermal comfort. This project develops a framework for developing a model predictive control strategy of a naturally-ventilated building using the Yang and Yamazaki Environment and Energy Building (Y2E2) as a case study. We illustrate the potential for building energy efficiency improvements and progress towards real-time optimal control of the building.</p></div>
+      
+      </div>
+
+        </div>
+      
+    </div>
+  </div>
+
+
+      </div>
+</div>
+              <div class="paragraph-item ptype-stanford-layout">  <div class="ptype-stanford-layout paragraph paragraph--type--stanford-layout paragraph--view-mode--default">
+          
+
+
+
+
+
+  <div class="layout-background">
+    <div class="layout layout--layout-paragraphs-one-column">
+
+              <div  class="layout__region layout__region--main">
+            <div class="ptype-stanford-wysiwyg paragraph paragraph--type--stanford-wysiwyg paragraph--view-mode--default">
+          
+
+
+
+
+            <div class="su-wysiwyg-text paragraph stanford-wysiwyg text-long label-hidden"><h3><strong>Results</strong></h3>
+
+<p>We developed a building thermal model for Y2E2 by splitting each floor into four zones: atria (with actuated windows to provide natural ventilation), south offices (with active cooling), interior offices (with active cooling), and north offices. We solve the heat and mass balance in each zone at each timestep in the simulation, including the effects of natural ventilation, heat transfer between the internal air and surfaces (walls, floors, etc), and internal loads.</p>
+
+<p>This thermal model was validated over a six day period. Overall, the model captures the diurnal temperature variation and agrees with the experimental observations. The root mean square error for the four zones are as follows: atrium, 0.07 K; north offices, 0.01 K; south offices, 0.04 K; interior offices, 0.03 K</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p></div>
+      
+      </div>
+
+        </div>
+      
+    </div>
+  </div>
+
+
+      </div>
+</div>
+              <div class="paragraph-item ptype-stanford-layout">  <div class="ptype-stanford-layout paragraph paragraph--type--stanford-layout paragraph--view-mode--default">
+          
+
+
+
+
+
+  <div class="layout-background">
+    <div class="layout layout--layout-paragraphs-one-column">
+
+              <div  class="layout__region layout__region--main">
+            <div class="ptype-stanford-gallery paragraph paragraph--type--stanford-gallery paragraph--view-mode--default">
+          
+
+
+
+
+            <div class="su-margin-bottom-2 su-wysiwyg-text paragraph stanford-gallery su-gallery-description text-long label-hidden"><p>Temperature evolution for the six day validation case.</p></div>
+      
+
+
+
+
+      <div class="su-margin-bottom-2 paragraph stanford-gallery su-gallery-images entity-reference label-hidden">
+              <div><div class="media-entity-wrapper stanford_gallery_images">
+  
+  
+
+
+
+
+            <div class="media stanford-gallery-images su-gallery-image image label-hidden">
+<a href="https://we.stanford.edu/sites/g/files/sbiybj18756/files/styles/breakpoint_2xl_2x/public/media/image/gallery/validation_temps_0.png?itok=l9uXVUbZ" aria-controls="colorbox" role="button"  title="" data-colorbox-gallery="gallery-all" class="colorbox" aria-controls="colorbox-KqJyCgh9LOk" data-cbox-img-attrs="{&quot;alt&quot;:&quot;Temperature evolution from MPC validation.&quot;}"><img id="colorbox-KqJyCgh9LOk" src="/sites/g/files/sbiybj18756/files/styles/cta_1x_596x397/public/media/image/gallery/validation_temps_0.png?h=08b866d1&amp;itok=oyTcPPeG" width="596" height="397" alt="Temperature evolution from MPC validation." loading="lazy" />
+
+</a>
+</div>
+      
+</div>
+</div>
+          </div>
+  
+      </div>
+
+        </div>
+      
+    </div>
+  </div>
+
+
+      </div>
+</div>
+              <div class="paragraph-item ptype-stanford-layout">  <div class="ptype-stanford-layout paragraph paragraph--type--stanford-layout paragraph--view-mode--default">
+          
+
+
+
+
+
+  <div class="layout-background">
+    <div class="layout layout--layout-paragraphs-one-column">
+
+              <div  class="layout__region layout__region--main">
+            <div class="ptype-stanford-wysiwyg paragraph paragraph--type--stanford-wysiwyg paragraph--view-mode--default">
+          
+
+
+
+
+            <div class="su-wysiwyg-text paragraph stanford-wysiwyg text-long label-hidden"><p>The model predictive control system uses this physics-based model and weather forecast to predict the building's response to control actions. We simulate the building dynamics over a two day horizon (including an initial 24-hour period to spin-up the simulation), optimize a control strategy over that period, implement the first step of that optimal control input, and then repeat the process for the next point in time.&nbsp;The design variables are temperature set points (constant over 2-hour time intervals) and the times when the atrium windows open and close each day.&nbsp;There are two competing objective functions which we aim to minimize: active cooling energy and thermal discomfort.</p></div>
+      
+      </div>
+
+        </div>
+      
+    </div>
+  </div>
+
+
+      </div>
+</div>
+              <div class="paragraph-item ptype-stanford-layout">  <div class="ptype-stanford-layout paragraph paragraph--type--stanford-layout paragraph--view-mode--default">
+          
+
+
+
+
+
+  <div class="layout-background">
+    <div class="layout layout--layout-paragraphs-one-column">
+
+              <div  class="layout__region layout__region--main">
+            <div class="ptype-stanford-gallery paragraph paragraph--type--stanford-gallery paragraph--view-mode--default">
+          
+
+
+
+
+            <div class="su-margin-bottom-2 su-wysiwyg-text paragraph stanford-gallery su-gallery-description text-long label-hidden"><p>Overview of the model predictive control strategy.</p></div>
+      
+
+
+
+
+      <div class="su-margin-bottom-2 paragraph stanford-gallery su-gallery-images entity-reference label-hidden">
+              <div><div class="media-entity-wrapper stanford_gallery_images">
+  
+  
+
+
+
+
+            <div class="media stanford-gallery-images su-gallery-image image label-hidden">
+<a href="https://we.stanford.edu/sites/g/files/sbiybj18756/files/styles/breakpoint_2xl_2x/public/media/image/gallery/mpc_0.png?itok=wykibOjC" aria-controls="colorbox" role="button"  title="" data-colorbox-gallery="gallery-all" class="colorbox" aria-controls="colorbox-SlAIr4X8-Nk" data-cbox-img-attrs="{&quot;alt&quot;:&quot;Model predictive control flowchart&quot;}"><img id="colorbox-SlAIr4X8-Nk" src="/sites/g/files/sbiybj18756/files/styles/cta_1x_596x397/public/media/image/gallery/mpc_0.png?h=94c9c300&amp;itok=7QJaaHoT" width="596" height="397" alt="Model predictive control flowchart" loading="lazy" />
+
+</a>
+</div>
+      
+</div>
+</div>
+          </div>
+  
+      </div>
+
+        </div>
+      
+    </div>
+  </div>
+
+
+      </div>
+</div>
+              <div class="paragraph-item ptype-stanford-layout">  <div class="ptype-stanford-layout paragraph paragraph--type--stanford-layout paragraph--view-mode--default">
+          
+
+
+
+
+
+  <div class="layout-background">
+    <div class="layout layout--layout-paragraphs-one-column">
+
+              <div  class="layout__region layout__region--main">
+            <div class="ptype-stanford-wysiwyg paragraph paragraph--type--stanford-wysiwyg paragraph--view-mode--default">
+          
+
+
+
+
+            <div class="su-wysiwyg-text paragraph stanford-wysiwyg text-long label-hidden"><p>We optimize using a genetic algorithm and wind up with a Pareto front of optimal solutions. This front represents different tradeoffs between minimized cooling energy and maximized thermal comfort. A key result is that the current building control (baseline) is suboptimal in this simulation period. For a penalty of only 0.2% in thermal comfort, the cooling requirement could be completely eliminated with one of these optimal control strategies. On the other hand, for only 1% more active cooling energy, a different control input could improve thermal comfort by 10%. These findings illustrate the potential for an optimal and robust control system to improve the performance of natural ventilation systems over simple rule-based controllers.</p></div>
+      
+      </div>
+
+        </div>
+      
+    </div>
+  </div>
+
+
+      </div>
+</div>
+              <div class="paragraph-item ptype-stanford-layout">  <div class="ptype-stanford-layout paragraph paragraph--type--stanford-layout paragraph--view-mode--default">
+          
+
+
+
+
+
+  <div class="layout-background">
+    <div class="layout layout--layout-paragraphs-one-column">
+
+              <div  class="layout__region layout__region--main">
+            <div class="ptype-stanford-gallery paragraph paragraph--type--stanford-gallery paragraph--view-mode--default">
+          
+
+
+
+
+            <div class="su-margin-bottom-2 su-wysiwyg-text paragraph stanford-gallery su-gallery-description text-long label-hidden"><p>Pareto front of optimal solutions for two objectives: minimizing thermal discomfort and active cooling energy.</p></div>
+      
+
+
+
+
+      <div class="su-margin-bottom-2 paragraph stanford-gallery su-gallery-images entity-reference label-hidden">
+              <div><div class="media-entity-wrapper stanford_gallery_images">
+  
+  
+
+
+
+
+            <div class="media stanford-gallery-images su-gallery-image image label-hidden">
+<a href="https://we.stanford.edu/sites/g/files/sbiybj18756/files/styles/breakpoint_2xl_2x/public/media/image/gallery/pareto_0.png?itok=YykkzoYy" aria-controls="colorbox" role="button"  title="" data-colorbox-gallery="gallery-all" class="colorbox" aria-controls="colorbox-2HFhT-cbFCY" data-cbox-img-attrs="{&quot;alt&quot;:&quot;Optimal solutions from the MPC optimization&quot;}"><img id="colorbox-2HFhT-cbFCY" src="/sites/g/files/sbiybj18756/files/styles/cta_1x_596x397/public/media/image/gallery/pareto_0.png?h=6eb229a4&amp;itok=T4xUn2QM" width="596" height="397" alt="Optimal solutions from the MPC optimization" loading="lazy" />
+
+</a>
+</div>
+      
+</div>
+</div>
+          </div>
+  
+      </div>
+
+        </div>
+      
+    </div>
+  </div>
+
+
+      </div>
+</div>
+              <div class="paragraph-item ptype-stanford-layout">  <div class="ptype-stanford-layout paragraph paragraph--type--stanford-layout paragraph--view-mode--default">
+          
+
+
+
+
+
+  <div class="layout-background">
+    <div class="layout layout--layout-paragraphs-one-column">
+
+              <div  class="layout__region layout__region--main">
+            <div class="ptype-stanford-wysiwyg paragraph paragraph--type--stanford-wysiwyg paragraph--view-mode--default">
+          
+
+
+
+
+            <div class="su-wysiwyg-text paragraph stanford-wysiwyg text-long label-hidden"><h3><strong>Publications</strong></h3>
+
+<p>LoCascio, M., Sousa, J., Lall, S., &amp; Gorle, C. A framework for model predictive control of a large naturally-ventilated building. (<em>in prep</em>)</p></div>
+      
+      </div>
+
+        </div>
+      
+    </div>
+  </div>
+
+
+      </div>
+</div>
+              <div class="paragraph-item ptype-stanford-layout">  <div class="ptype-stanford-layout paragraph paragraph--type--stanford-layout paragraph--view-mode--default">
+          
+
+
+
+
+
+  <div class="layout-background">
+    <div class="layout layout--layout-paragraphs-one-column">
+
+              <div  class="layout__region layout__region--main">
+            <div class="ptype-stanford-wysiwyg paragraph paragraph--type--stanford-wysiwyg paragraph--view-mode--default">
+          
+      </div>
+
+        </div>
+      
+    </div>
+  </div>
+
+
+      </div>
+</div>
+          </div>
+  
+  </div>
+
+    </div>
+  
+</div>
+
+  </div><!-- /.content --></section><!-- /.node as page -->
+
+  </div>
+
+<button id="back-to-top">
+    <span class="fas fa-chevron-up"></span>
+    Back to Top
+  </button>
+</main>
+
+<footer id="footer" data-nosnippet>
+    <div id="block-soe-basic-config-pages-local-footer" class="config-pages-block block-config-pages block-soe-basic-config-pages-local-footer">
+  
+    
+      
+<div class="ds-entity--config-pages ds-entity--stanford-local-footer">
+  <div data-contextual-id="config_pages:config_pages=1:changed=1655922278&amp;ds_bundle=stanford_local_footer&amp;ds_view_mode=default&amp;langcode=en" data-contextual-token="k-04epwR6jQydHkHlZyGaRmuzjrC9CADNuKEb__W904" data-drupal-ajax-container=""></div><div  class="su-local-footer ">
+      <div class="su-local-footer__header">
+              <div  class="su-lockup su-lockup--option-a">
+    <a href="https://we.stanford.edu/" >
+  <div class="su-lockup__cell1">
+          <div class="su-lockup__wordmark-wrapper">
+        <span class="su-lockup__wordmark">Stanford</span>
+              </div>
+      </div>    <div class="su-lockup__cell2">
+        <span class="su-lockup__line1" >ENGINEERING</span>
+    
+    
+      </div>
+          </a>
+  </div>
+                <a href="/saml/login?destination=/model-predictive-control-naturally-ventilated-buildings" class="su-link su-link--internal" rel="nofollow">
+        Web Login
+      </a>
+            
+  </div>
+      <div class="su-local-footer__columns">
+        <div class="su-local-footer__cell1">
+                              <h2 class="su-sr-only-element">Address</h2>
+      <address class="su-local-footer__address">
+        
+
+
+
+
+            <div class="config-pages stanford-local-footer su-local-foot-address address label-hidden"><p class="address" translate="no"><span class="organization">Wind Engineering Lab</span><br>
+<span class="address-line1">Y2E2 Building, Room 395</span><br>
+<span class="address-line2">473 Via Ortega</span><br>
+<span class="locality">Stanford</span>, <span class="administrative-area">CA</span> <span class="postal-code">94305</span><br>
+<span class="country">United States</span></p></div>
+      
+      </address>
+                        <ul class="su-local-footer__action-links">
+                    
+                                                                                                                                                                                                                                                                            <li >
+          <a href="http://stanford.edu/">Visit</a>
+        </li>
+                              <li >
+          <a href="https://campus-map.stanford.edu/">Campus Map</a>
+        </li>
+                              <li >
+          <a href="https://stanford.edu/">Contact Us</a>
+        </li>
+                                            
+  
+              </ul>
+                        <ul class="su-local-footer__social-links">
+                    
+        
+                            <li >
+      <a href="https://www.facebook.com/stanford/" class="su-local-footer__social-facebook" >
+        <i aria-hidden='true'></i>
+        <span>Stanford Facebook</span>
+      </a>
+    </li>
+                            <li >
+      <a href="https://www.instagram.com/stanford/" class="su-local-footer__social-instagram" >
+        <i aria-hidden='true'></i>
+        <span>Stanford Instagram</span>
+      </a>
+    </li>
+                            <li >
+      <a href="http://twitter.com/" class="su-local-footer__social-twitter" >
+        <i aria-hidden='true'></i>
+        <span>Twitter</span>
+      </a>
+    </li>
+                            <li >
+      <a href="http://linkedin.com" class="su-local-footer__social-linkedin" >
+        <i aria-hidden='true'></i>
+        <span>LinkedIn</span>
+      </a>
+    </li>
+                            <li >
+      <a href="http://youtube.com" class="su-local-footer__social-youtube" >
+        <i aria-hidden='true'></i>
+        <span>Youtube</span>
+      </a>
+    </li>
+  
+  
+              </ul>
+                        
+    </div>
+        <div class="su-local-footer__cell2">
+                                          <nav aria-label="footer secondary nav">
+                <h2 class="su-local-footer__list-heading">Resources for</h2>
+                <ul class="su-local-footer__secondary-links">
+                                  
+                                                                                                                                                                                                                                                                            <li >
+          <a href="https://cee.stanford.edu/">Civil &amp; Environmental Engineering</a>
+        </li>
+                              <li >
+          <a href="https://cee.stanford.edu/academics-admission/graduate-programs/atmosphereenergy">Atmosphere/Energy</a>
+        </li>
+                              <li >
+          <a href="https://cee.stanford.edu/academics-admission/graduate/phd-and-masters-degree-programs/environmental-engineering">Environmental Engineering</a>
+        </li>
+                                            
+  
+                  </ul>
+      </nav>
+                        
+    </div>
+        <div class="su-local-footer__cell3">
+                                          
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+  </div>
+
+
+<div class="su-global-footer ">
+  <div class="su-global-footer__container">
+    <div class="su-global-footer__brand">
+<a  id="su-logo" class="su-logo " aria-hidden="true" tabindex="-1" href="https://www.stanford.edu">Stanford<br>University<span class="su-global-footer__link-a11y"> (link is external)</span>
+  </a>
+</div>
+    <div class="su-global-footer__content">
+      <nav aria-label="global footer menu">
+        <ul class="su-global-footer__menu su-global-footer__menu--global">
+          <li><a href="https://www.stanford.edu" rel="nofollow">Stanford Home<span class="su-global-footer__link-a11y"> (link is external)</span>
+  </a></li>
+          <li><a href="https://visit.stanford.edu/basics/" rel="nofollow">Maps &amp; Directions<span class="su-global-footer__link-a11y"> (link is external)</span>
+  </a></li>
+          <li><a href="https://www.stanford.edu/search/" rel="nofollow">Search Stanford<span class="su-global-footer__link-a11y"> (link is external)</span>
+  </a></li>
+          <li><a href="https://emergency.stanford.edu" rel="nofollow">Emergency Info<span class="su-global-footer__link-a11y"> (link is external)</span>
+  </a></li>
+        </ul>
+        <ul class="su-global-footer__menu su-global-footer__menu--policy">
+          <li><a href="https://www.stanford.edu/site/terms/" rel="nofollow"
+                 title="Terms of use for sites">Terms of Use<span class="su-global-footer__link-a11y"> (link is external)</span>
+  </a></li>
+          <li><a href="https://www.stanford.edu/site/privacy/" rel="nofollow"
+                 title="Privacy and cookie policy">Privacy<span class="su-global-footer__link-a11y"> (link is external)</span>
+  </a></li>
+          <li><a href="https://uit.stanford.edu/security/copyright-infringement" rel="nofollow"
+                 title="Report alleged copyright infringement">Copyright<span class="su-global-footer__link-a11y"> (link is external)</span>
+  </a></li>
+          <li><a href="https://adminguide.stanford.edu/chapter-1/subchapter-5/policy-1-5-4" rel="nofollow"
+                 title="Ownership and use of Stanford trademarks and images">Trademarks<span class="su-global-footer__link-a11y"> (link is external)</span>
+  </a></li>
+          <li><a href="https://non-discrimination.stanford.edu/" rel="nofollow"
+                 title="Non-discrimination policy">Non-Discrimination<span class="su-global-footer__link-a11y"> (link is external)</span>
+  </a></li>
+          <li><a href="https://www.stanford.edu/site/accessibility" rel="nofollow"
+                 title="Report web accessibility issues">Accessibility<span class="su-global-footer__link-a11y"> (link is external)</span>
+  </a></li>
+        </ul>
+      </nav>
+      <div class="su-global-footer__copyright">
+        <span>&copy; Stanford University.</span>
+        <span>&nbsp; Stanford, California 94305.</span>
+      </div>
+    </div>
+  </div>
+</div> <!-- su-global-footer end -->
+</footer>
+  </div>
+
+    
+    <script type="application/json" data-drupal-selector="drupal-settings-json">{"path":{"baseUrl":"\/","pathPrefix":"","currentPath":"node\/131","currentPathIsAdmin":false,"isFront":false,"currentLanguage":"en"},"pluralDelimiter":"\u0003","suppressDeprecationErrors":true,"google_analytics":{"account":"G-57LP9EG3BD","trackOutbound":true,"trackMailto":true,"trackTel":true,"trackDownload":true,"trackDownloadExtensions":"7z|aac|arc|arj|asf|asx|avi|bin|csv|doc(x|m)?|dot(x|m)?|exe|flv|gif|gz|gzip|hqx|jar|jpe?g|js|mp(2|3|4|e?g)|mov(ie)?|msi|msp|pdf|phps|png|ppt(x|m)?|pot(x|m)?|pps(x|m)?|ppam|sld(x|m)?|thmx|qtm?|ra(m|r)?|sea|sit|tar|tgz|torrent|txt|wav|wma|wmv|wpd|xls(x|m|b)?|xlt(x|m)|xlam|xml|z|zip","trackColorbox":true},"data":{"extlink":{"extTarget":false,"extTargetAppendNewWindowDisplay":false,"extTargetAppendNewWindowLabel":"(opens in a new window)","extTargetNoOverride":false,"extNofollow":false,"extTitleNoOverride":false,"extNoreferrer":false,"extFollowNoOverride":false,"extClass":"0","extLabel":" (link is external)","extImgClass":false,"extSubdomains":false,"extExclude":"","extInclude":"","extCssExclude":".localist-widget, #lclst_widget_footer, .oembed-lazyload__button, .su-news-vertical-teaser","extCssInclude":"","extCssExplicit":"#page-content, .su-local-footer, .config_pages--stanford-basic-site-settings--site-settings-header","extAlert":false,"extAlertText":"This link will take you to an external web site. We are not responsible for their content.","extHideIcons":false,"mailtoClass":"mailto","telClass":"0","mailtoLabel":" (link sends email)","telLabel":"(link is a phone number)","extUseFontAwesome":false,"extIconPlacement":"append","extPreventOrphan":false,"extFaLinkClasses":"fa fa-external-link","extFaMailtoClasses":"fa fa-envelope-o","extAdditionalLinkClasses":"su-link--external","extAdditionalMailtoClasses":"","extAdditionalTelClasses":"","extFaTelClasses":"fa fa-phone","allowedDomains":[],"extExcludeNoreferrer":""}},"stanford_basic":{"nav_dropdown_enabled":false},"contextual":{"theme":"soe_basic"},"colorbox":{"transition":"elastic","speed":350,"opacity":0.84999999999999998,"slideshow":false,"slideshowAuto":true,"slideshowSpeed":2500,"slideshowStart":"start slideshow","slideshowStop":"stop slideshow","current":"Image {current} of {total}","previous":"Previous","next":"Next","close":"Close","overlayClose":true,"returnFocus":true,"maxWidth":"98%","maxHeight":"98%","initialWidth":"300","initialHeight":"250","fixed":true,"scrolling":true,"mobiledetect":true,"mobiledevicewidth":"480px"},"user":{"uid":0,"permissionsHash":"7bb9d0464d56a94a764870ccda4652aa52805c897040655e65dae7d6f3652109"}}</script>
+<script src="/core/assets/vendor/jquery/jquery.min.js?v=4.0.0"></script>
+<script src="/sites/g/files/sbiybj18756/files/js/js_22qfX-LNA-93my3MarWIROGBTVKgbfa1gjMxE0XN9sc.js?scope=footer&amp;delta=1&amp;language=en&amp;theme=soe_basic&amp;include=eJxlj1EOg0AIRC-0kSMZXFlLi7IBttHb1zS2mvaHzDwmTMgqaoOukA-RPgJGKtgkLkDn2ozLlmgN4eUBo7WK0h02TaqTUI8LyhacHX5Bure5eqBF3xiuJrlSP6BzBhSpOJGnfbcUtfHg73nCalp4P34jqWTgHMTzDp_UnX1_aY9NyL_fvgDk_GYf"></script>
+
+      </body>
+</html>
