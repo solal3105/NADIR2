@@ -526,6 +526,51 @@ function init(THREE) {
   }
   scene.add(buildGrid());
 
+  // --- Ciel : cycle jour/nuit, teinté par la température extérieure --------
+  // Dôme en dégradé vertical : zénith presque noir, lueur à l'horizon.
+  // La teinte de jour suit le thermomètre (bleu froid → braise), l'aube et
+  // le crépuscule la réchauffent, la nuit l'éteint presque entièrement.
+  var skyCanvas = document.createElement('canvas');
+  skyCanvas.width = 2; skyCanvas.height = 256;
+  var skyCtx = skyCanvas.getContext('2d');
+  var skyTexture = new THREE.CanvasTexture(skyCanvas);
+  var sky = new THREE.Mesh(
+    new THREE.SphereGeometry(90, 24, 18),
+    new THREE.MeshBasicMaterial({ map: skyTexture, side: THREE.BackSide, depthWrite: false })
+  );
+  sky.renderOrder = -1;
+  scene.add(sky);
+
+  var skyHorizon = new THREE.Color(), skyZenith = new THREE.Color();
+  var skyTmp = new THREE.Color();
+  function clamp01(x) { return Math.min(1, Math.max(0, x)); }
+  function updateSky(sinE, extT) {
+    var day = clamp01(sinE / 0.25);                          // 0 nuit → 1 jour
+    var dusk = Math.max(0, 1 - Math.abs(sinE - 0.07) / 0.16); // bande aube/crépuscule
+    var heat = clamp01((extT - 16) / 18);                     // 16 °C → 34 °C
+
+    // Horizon de jour : bleu froid → braise selon la température.
+    skyHorizon.setHex(0x16344f).lerp(skyTmp.setHex(0x54220f), heat);
+    // Nuit : lueur résiduelle, à peine teintée par la chaleur.
+    skyZenith.setHex(0x0a1424).lerp(skyTmp.setHex(0x1e1410), heat * 0.5);
+    skyHorizon.copy(skyZenith.lerp(skyHorizon, day));
+    // Aube / crépuscule : l'horizon se réchauffe quel que soit le thermomètre.
+    skyHorizon.lerp(skyTmp.setHex(0x6a2c10), dusk * 0.55);
+    // Zénith : du noir absolu la nuit à un gris-bleu très sombre le jour.
+    skyZenith.setHex(0x020409).lerp(skyTmp.setHex(0x0a1119), day);
+
+    var g = skyCtx.createLinearGradient(0, 0, 0, 256);
+    var zn = '#' + skyZenith.getHexString();
+    g.addColorStop(0, zn);
+    g.addColorStop(0.38, zn);
+    g.addColorStop(0.5, '#' + skyHorizon.getHexString());
+    g.addColorStop(0.56, '#020304');
+    g.addColorStop(1, '#000000');
+    skyCtx.fillStyle = g;
+    skyCtx.fillRect(0, 0, 2, 256);
+    skyTexture.needsUpdate = true;
+  }
+
   // Rose des vents : quatre lettres autour de la pièce.
   function letterSprite(letter, color) {
     var c = document.createElement('canvas');
@@ -1205,7 +1250,9 @@ function init(THREE) {
     sunLight.color.setHex(sinE < 0.28 ? 0xffd9be : 0xffffff);
     sunDisc.position.copy(dir).multiplyScalar(SKY_R);
     sunDisc.material.opacity = sinE > 0 ? 1 : 0;
+    sunDisc.material.color.setHex(sinE < 0.28 ? 0xffcda8 : 0xffffff);
     ambient.intensity = 0.14 + Math.max(0, sinE) * 0.2;
+    updateSky(sinE, extT);
 
     // Lune.
     var moon = moonAt(hour % 24);
