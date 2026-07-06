@@ -28,7 +28,8 @@
   var CLOSE_THRESHOLD = 0.25; // °C
   var WINDOW_HEIGHT = 1.2;    // m, hauteur de vitrage
   var WINDOW_WIDTHS = [0, 1.2, 2.4]; // m : aucune / petite / grande
-  var REF_GLAZING = 2.0;      // m² : vitrage de référence du modèle app
+  var REF_GLAZING = 2.0;      // m² : référence du modèle app (point virtuel
+                              // entre « petite » 1,44 m² et « grande » 2,88 m²)
 
   // Soleil schématique d'été : lever 5 h 30, coucher 21 h 30, 62° au zénith.
   // Sur une façade VERTICALE, l'éclairement direct vaut
@@ -175,7 +176,7 @@
       Math.ceil((2 * 3600 * hAir / d.airCapacity) / 10) * 10);
     var record = substeps / SUBSTEPS;
     var dt = 3600.0 / substeps;
-    var canOpen = d.totalGlazing > 0;
+    var canOpen = d.totalGlazing > 0 && d.ventilationConductance > 0;
 
     var initialGains = INTERNAL_GAINS
       + SHADE_FACTOR * solarGains(series.hours[0], d);

@@ -6,6 +6,7 @@
 <title>Le labo 3D — NADIR</title>
 <meta name="description" content="Le labo NADIR : une pièce en 3D, le vrai modèle thermique à deux nœuds en direct. Changez la surface, l'épaisseur des murs, l'orientation, les fenêtres — et regardez la simulation.">
 <link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="modulepreload" href="assets/three.module.min.js">
 <style>
   :root{
     --bg:#000; --ink:#fff; --dim:#8c8c8c; --faint:#5a5a5a;
@@ -18,7 +19,9 @@
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
     line-height:1.55;font-size:clamp(15px,1.05vw,17px);-webkit-font-smoothing:antialiased}
-  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,4vw,48px)}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,5vw,56px)}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);
+    white-space:nowrap}
   ::selection{background:var(--ink);color:var(--bg)}
   a{color:inherit}
   button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
@@ -54,8 +57,13 @@
   .hud-clock{top:18px;right:clamp(18px,4vw,48px);text-align:right;font-size:12px;
     color:var(--dim);line-height:1.9}
   .hud-clock .place{color:var(--ink);text-transform:uppercase;letter-spacing:.03em}
-  .hud-hint{bottom:66px;right:clamp(18px,4vw,48px);font-size:10px;color:var(--faint);
+  .hud-hint{bottom:174px;right:clamp(18px,4vw,48px);font-size:10px;color:var(--dim);
     letter-spacing:.05em;text-align:right}
+  /* Sur desktop, le panneau occupe le coin droit : le HUD s'en écarte. */
+  @media (min-width:821px){
+    .hud-clock{right:calc(clamp(18px,4vw,48px) + 286px)}
+    .hud-hint{right:calc(clamp(18px,4vw,48px) + 286px)}
+  }
   @media (max-width:820px){.hud-hint{display:none}}
 
   /* Graphe de températures */
@@ -75,10 +83,11 @@
     background:rgba(0,0,0,.75);color:var(--ink);font-size:12px}
   .timeline .tbtn:hover{border-color:var(--ink)}
   .timeline .track{position:relative;flex:1;border:1px solid var(--line2);
-    background:rgba(0,0,0,.75);cursor:pointer;overflow:hidden}
+    background:rgba(0,0,0,.75);cursor:pointer;overflow:hidden;touch-action:none}
+  .timeline .track:focus-visible{border-color:var(--ink);outline:none}
   .timeline .band{position:absolute;top:0;bottom:0;background:rgba(90,209,122,.16)}
   .timeline .tick{position:absolute;bottom:0;width:1px;height:7px;background:var(--line2)}
-  .timeline .ticklbl{position:absolute;bottom:9px;font-size:9px;color:var(--faint);
+  .timeline .ticklbl{position:absolute;bottom:9px;font-size:9px;color:var(--dim);
     transform:translateX(-50%)}
   .timeline .playhead{position:absolute;top:0;bottom:0;width:1px;background:var(--ink)}
   .timeline .playhead::after{content:"";position:absolute;top:0;left:-3px;
@@ -161,9 +170,12 @@
     <a href="labo.html" aria-current="page">Le labo</a>
     <a href="assistance.html">Assistance</a>
     <a href="methodologie.html">Méthodologie</a>
+    <a href="confidentialite.html">Confidentialité</a>
     <a href="copyright.html">Copyright</a>
   </nav>
 </div>
+
+<h1 class="sr">Le labo 3D — NADIR</h1>
 
 <noscript>Le labo a besoin de JavaScript et de WebGL. La théorie, elle, se lit
   sans rien : <a href="methodologie.html">méthodologie</a>.</noscript>
@@ -189,9 +201,10 @@
   <div class="graph" id="graph" aria-hidden="true"></div>
 
   <div class="timeline">
-    <button class="tbtn" id="playBtn" aria-label="Lecture / pause">❚❚</button>
-    <button class="tbtn" id="speedBtn" aria-label="Vitesse">1×</button>
-    <div class="track" id="track"></div>
+    <button class="tbtn" id="playBtn" aria-label="Pause">❚❚</button>
+    <button class="tbtn" id="speedBtn">1×</button>
+    <div class="track" id="track" tabindex="0" role="slider"
+         aria-label="Position dans les 30 heures"></div>
   </div>
   </div>
 
@@ -203,7 +216,7 @@
                spellcheck="false" enterkeyhint="search" aria-label="Votre ville">
         <button id="goBtn" type="button" aria-label="Valider">→</button>
       </div>
-      <div class="pstatus" id="pstatus"></div>
+      <div class="pstatus" id="pstatus" aria-live="polite"></div>
     </div>
 
     <div class="sect">
@@ -276,6 +289,7 @@
     <a href="methodologie.html">Méthodologie</a> ·
     <a href="confidentialite.html">Politique de confidentialité</a> ·
     <a href="copyright.html">Copyright</a><br>
+    Météo par <a href="https://open-meteo.com" rel="noopener">Open-Meteo</a> (CC BY 4.0) ·
     © 2026 Solal Gendrin
   </footer>
 </div>
@@ -283,26 +297,31 @@
 <script src="assets/engine.js"></script>
 <script src="assets/lab-engine.js"></script>
 <script type="module">
-import * as THREE from './assets/three.module.min.js';
+function showFallback() {
+  document.getElementById('lab').style.display = 'none';
+  document.getElementById('fallback').style.display = 'block';
+}
+// Import dynamique : si les ~670 Ko de Three.js n'arrivent pas (réseau
+// coupé, module bloqué), on montre le repli au lieu d'une scène morte.
+import('./assets/three.module.min.js').then(init, showFallback);
 
-(function () {
+function init(THREE) {
   'use strict';
   var E = window.NadirEngine;
   var L = window.NadirLab;
 
-  // --- WebGL disponible ? --------------------------------------------------
   var canvas = document.getElementById('gl');
   var labEl = document.getElementById('lab');
   var stageEl = document.getElementById('stage');
-  var gl2 = null;
+
+  // WebGL disponible ? Sondé sur un canvas jetable : le canvas de rendu
+  // reste vierge pour que Three crée son contexte avec ses attributs.
+  var probeGl = null;
   try {
-    gl2 = canvas.getContext('webgl2') || canvas.getContext('webgl');
-  } catch (e) { gl2 = null; }
-  if (!gl2) {
-    labEl.style.display = 'none';
-    document.getElementById('fallback').style.display = 'block';
-    return;
-  }
+    var probeCanvas = document.createElement('canvas');
+    probeGl = probeCanvas.getContext('webgl2') || probeCanvas.getContext('webgl');
+  } catch (e) { probeGl = null; }
+  if (!probeGl) { showFallback(); return; }
 
   var reducedMotion = window.matchMedia
     && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -342,7 +361,7 @@ import * as THREE from './assets/three.module.min.js';
       var raw = localStorage.getItem(SERIES_KEY);
       if (!raw) return null;
       var s = JSON.parse(raw);
-      if (!s || !Array.isArray(s.times) || !s.times.length) return null;
+      if (!s || !Array.isArray(s.times) || s.times.length < 2) return null;
       if (!Array.isArray(s.outdoor) || s.outdoor.length !== s.times.length) return null;
       if (!Array.isArray(s.dewPoint) || s.dewPoint.length !== s.times.length) return null;
       if (typeof s.timeZone !== 'string') return null;
@@ -366,6 +385,8 @@ import * as THREE from './assets/three.module.min.js';
     var hours = [];
     for (var i = 0; i < win.times.length; i++) hours.push(E.hourAt(win, i));
     labSeries = { outdoor: win.outdoor, dewPoint: win.dewPoint, hours: hours };
+    // La fenêtre a pu changer de taille : la tête de lecture reste dedans.
+    playT = Math.min(playT || 0, Math.max(0, win.outdoor.length - 1));
   }
   function resim() {
     sim = L.simulate(labSeries, params);
@@ -731,7 +752,9 @@ import * as THREE from './assets/three.module.min.js';
         });
 
         windowSpawns.push({
-          wall: wall, x: 0, y: sill + WH / 2, z: z, w: w, h: WH,
+          wall: wall, x: 0, y: sill + WH / 2,
+          z: S / 2 + t + 0.1, // au-delà de la face extérieure : côté rue
+          w: w, h: WH,
         });
       }
       room.add(wall);
@@ -771,7 +794,7 @@ import * as THREE from './assets/three.module.min.js';
       tmpV.set(
         spawn.x + (Math.random() - 0.5) * spawn.w * 0.8,
         spawn.y + (Math.random() - 0.5) * spawn.h * 0.8,
-        spawn.z + 0.1
+        spawn.z
       );
       spawn.wall.localToWorld(tmpV);
       tmpN.set(0, 0, -1);
@@ -876,10 +899,14 @@ import * as THREE from './assets/three.module.min.js';
   var playBtn = document.getElementById('playBtn');
   var speedBtn = document.getElementById('speedBtn');
   var track = document.getElementById('track');
-  playBtn.textContent = playing ? '❚❚' : '▶';
+  function syncPlayBtn() {
+    playBtn.textContent = playing ? '❚❚' : '▶';
+    playBtn.setAttribute('aria-label', playing ? 'Pause' : 'Lecture');
+  }
+  syncPlayBtn();
   playBtn.addEventListener('click', function () {
     playing = !playing;
-    playBtn.textContent = playing ? '❚❚' : '▶';
+    syncPlayBtn();
   });
   speedBtn.addEventListener('click', function () {
     speedIndex = (speedIndex + 1) % speeds.length;
@@ -890,22 +917,24 @@ import * as THREE from './assets/three.module.min.js';
   function rebuildTrack() {
     track.innerHTML = '';
     var n = labSeries.outdoor.length;
+    var span = Math.max(1, n - 1);
     sim.runs.forEach(function (run) {
       var band = document.createElement('div');
       band.className = 'band';
-      band.style.left = (Math.max(0, run[0] - 0.5) / (n - 1) * 100) + '%';
-      band.style.width = ((Math.min(n - 1, run[1] + 0.5) - Math.max(0, run[0] - 0.5)) / (n - 1) * 100) + '%';
+      band.style.left = (Math.max(0, run[0] - 0.5) / span * 100) + '%';
+      band.style.width = ((Math.min(n - 1, run[1] + 0.5) - Math.max(0, run[0] - 0.5)) / span * 100) + '%';
       track.appendChild(band);
     });
     for (var i = 0; i < n; i += 3) {
       var tick = document.createElement('div');
       tick.className = 'tick';
-      tick.style.left = (i / (n - 1) * 100) + '%';
+      tick.style.left = (i / span * 100) + '%';
       track.appendChild(tick);
       if (i % 6 === 0) {
         var lbl = document.createElement('div');
         lbl.className = 'ticklbl';
-        lbl.style.left = (i / (n - 1) * 100) + '%';
+        lbl.style.left = (i / span * 100) + '%';
+        if (i === 0) lbl.style.transform = 'none';
         lbl.textContent = String(labSeries.hours[i]).padStart(2, '0') + 'h';
         track.appendChild(lbl);
       }
@@ -913,18 +942,30 @@ import * as THREE from './assets/three.module.min.js';
     playhead = document.createElement('div');
     playhead.className = 'playhead';
     track.appendChild(playhead);
+    updateTrackAria();
+  }
+  function updateTrackAria() {
+    var n = labSeries.outdoor.length;
+    var i = Math.min(n - 1, Math.floor(playT));
+    var hour = labSeries.hours[i] + (playT - i);
+    track.setAttribute('aria-valuemin', '0');
+    track.setAttribute('aria-valuemax', String(Math.max(0, n - 1)));
+    track.setAttribute('aria-valuenow', playT.toFixed(1));
+    track.setAttribute('aria-valuetext',
+      pad2(Math.floor(hour) % 24) + 'h' + pad2(Math.floor((hour % 1) * 60)));
   }
   (function bindScrub() {
     var scrubbing = false;
     function scrubTo(clientX) {
       var rect = track.getBoundingClientRect();
       var f = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
-      playT = f * (labSeries.outdoor.length - 1);
+      playT = f * Math.max(1, labSeries.outdoor.length - 1);
+      updateTrackAria();
     }
+    function pause() { playing = false; syncPlayBtn(); }
     track.addEventListener('pointerdown', function (e) {
       scrubbing = true;
-      playing = false;
-      playBtn.textContent = '▶';
+      pause();
       track.setPointerCapture(e.pointerId);
       scrubTo(e.clientX);
     });
@@ -932,6 +973,25 @@ import * as THREE from './assets/three.module.min.js';
       if (scrubbing) scrubTo(e.clientX);
     });
     track.addEventListener('pointerup', function () { scrubbing = false; });
+    track.addEventListener('pointercancel', function () { scrubbing = false; });
+    track.addEventListener('lostpointercapture', function () { scrubbing = false; });
+    track.addEventListener('keydown', function (e) {
+      var n = labSeries.outdoor.length;
+      var max = Math.max(0, n - 1);
+      var next = null;
+      if (e.key === 'ArrowLeft') next = playT - 1;
+      else if (e.key === 'ArrowRight') next = playT + 1;
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = max;
+      else if (e.key === ' ' || e.key === 'Enter') {
+        playing = !playing; syncPlayBtn(); e.preventDefault(); return;
+      }
+      if (next === null) return;
+      pause();
+      playT = Math.min(max, Math.max(0, next));
+      updateTrackAria();
+      e.preventDefault();
+    });
   })();
 
   // --- Panneau ---------------------------------------------------------------
@@ -974,26 +1034,34 @@ import * as THREE from './assets/three.module.min.js';
     function (v) { return (v % 1 === 0 ? String(v) : E.oneDecimal(v)) + ' °C'; }, false);
 
   var winsRow = document.getElementById('winsRow');
+  var winButtons = [];
   var WIN_GLYPHS = ['—', '▢', '▢▢'];
+  // Les boutons sont créés une seule fois (le focus clavier survit aux
+  // mises à jour) ; seuls leur contenu et leurs attributs changent.
   function rebuildWinButtons() {
-    winsRow.innerHTML = '';
+    if (!winButtons.length) {
+      for (var k = 0; k < 4; k++) {
+        (function (i) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.addEventListener('click', function () {
+            params.windows[i] = (params.windows[i] + 1) % 3;
+            persistParams();
+            refreshAll(true);
+          });
+          winsRow.appendChild(btn);
+          winButtons.push(btn);
+        })(k);
+      }
+    }
     for (var i = 0; i < 4; i++) {
-      (function (i) {
-        var btn = document.createElement('button');
-        btn.type = 'button';
-        btn.dataset.level = params.windows[i];
-        btn.innerHTML = cardinal(params.orientation + i * 90)
-          + '<b>' + WIN_GLYPHS[params.windows[i]] + '</b>';
-        btn.setAttribute('aria-label', 'Fenêtre du mur '
-          + cardinal(params.orientation + i * 90) + ' : '
-          + ['aucune', 'petite', 'grande'][params.windows[i]]);
-        btn.addEventListener('click', function () {
-          params.windows[i] = (params.windows[i] + 1) % 3;
-          persistParams();
-          refreshAll(true);
-        });
-        winsRow.appendChild(btn);
-      })(i);
+      var btn = winButtons[i];
+      btn.dataset.level = params.windows[i];
+      btn.innerHTML = cardinal(params.orientation + i * 90)
+        + '<b>' + WIN_GLYPHS[params.windows[i]] + '</b>';
+      btn.setAttribute('aria-label', 'Fenêtre du mur '
+        + cardinal(params.orientation + i * 90) + ' : '
+        + ['aucune', 'petite', 'grande'][params.windows[i]]);
     }
     var total = sim ? sim.derived.totalGlazing : 0;
     document.getElementById('glazVal').textContent =
@@ -1110,12 +1178,13 @@ import * as THREE from './assets/three.module.min.js';
     lastFrame = now;
 
     var n = labSeries.outdoor.length;
+    var span = Math.max(1, n - 1);
     if (playing) {
       playT += dt * BASE_RATE * speeds[speedIndex];
-      if (playT >= n - 1) playT -= n - 1;
+      if (playT >= span) playT = playT % span;
     }
     var i = Math.min(n - 1, Math.floor(playT));
-    var frac = playT - i;
+    var frac = Math.min(1, playT - i);
     var hour = labSeries.hours[i] + frac;
     var open = sim.isOpen[Math.min(i, sim.isOpen.length - 1)];
 
@@ -1183,9 +1252,9 @@ import * as THREE from './assets/three.module.min.js';
     document.getElementById('hudClock').textContent =
       pad2(Math.floor(hour) % 24) + ':' + pad2(Math.floor((hour % 1) * 60))
       + ' · +' + Math.floor(playT) + ' h';
-    if (playhead) playhead.style.left = (playT / (n - 1) * 100) + '%';
+    if (playhead) playhead.style.left = (playT / span * 100) + '%';
     if (graphPlayhead && graphMap) {
-      var gx = graphMap.padL + playT / (graphMap.n - 1)
+      var gx = graphMap.padL + playT / Math.max(1, graphMap.n - 1)
         * (graphMap.W - graphMap.padL - graphMap.padR);
       graphPlayhead.setAttribute('x1', gx);
       graphPlayhead.setAttribute('x2', gx);
@@ -1197,6 +1266,7 @@ import * as THREE from './assets/three.module.min.js';
 
   // --- Assemblage ---------------------------------------------------------------
   function refreshAll(rebuildGeometry) {
+    rewindow();
     resim();
     if (rebuildGeometry) rebuildRoom();
     rebuildWinButtons();
@@ -1227,10 +1297,9 @@ import * as THREE from './assets/three.module.min.js';
 
   // La fenêtre de 30 h suit l'heure réelle.
   setInterval(function () {
-    rewindow();
     refreshAll(false);
   }, 10 * 60000);
-})();
+}
 </script>
 </body>
 </html>
