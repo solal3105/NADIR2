@@ -83,7 +83,7 @@
 		07A74040D3F5C91195B3DC7B /* ControlsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlsSection.swift; sourceTree = "<group>"; };
 		085BDFBB470C45343B3F9508 /* NadirIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NadirIntents.swift; sourceTree = "<group>"; };
 		19589ACFDB2E0B5945F8C046 /* NadirToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NadirToggleStyle.swift; sourceTree = "<group>"; };
-		1EF7D95C0CD2ACCB98B3AEEE /* NADIR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NADIR.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1EF7D95C0CD2ACCB98B3AEEE /* NADIR.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = NADIR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		27322EB77291A3D7A31B1CFC /* Exposure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exposure.swift; sourceTree = "<group>"; };
 		2BF92DEC2A68A5DEF35E2E7C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		2ED145670E07D0371F2F6B97 /* NadirApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NadirApp.swift; sourceTree = "<group>"; };
@@ -94,7 +94,7 @@
 		4DE01C0B70183430843951E0 /* DisclosureRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureRow.swift; sourceTree = "<group>"; };
 		66D5AD2C700C82F3944C0855 /* ThermalModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThermalModel.swift; sourceTree = "<group>"; };
 		6A8DB27ABA635F14E3D68C6C /* SeriesProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesProvider.swift; sourceTree = "<group>"; };
-		6CE072F0738B7ABC943539E7 /* NadirWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NadirWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		6CE072F0738B7ABC943539E7 /* NadirWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = NadirWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F6022E91E3EA76805F433A0 /* RiseIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiseIn.swift; sourceTree = "<group>"; };
 		87435B7D8821B562CBA7A0CB /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		876A6E8661C088D01B22EA5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -352,6 +352,14 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					117EF2F6D15BD69D4513605F = {
+						DevelopmentTeam = ZUTQ26CJ6T;
+					};
+					339AE889A131133E015799AE = {
+						DevelopmentTeam = ZUTQ26CJ6T;
+					};
+				};
 			};
 			buildConfigurationList = E6D357B5B2476A73862139F1 /* Build configuration list for PBXProject "NADIR" */;
 			developmentRegion = en;
@@ -490,6 +498,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_LANGUAGE = fr;
+				DEVELOPMENT_TEAM = ZUTQ26CJ6T;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -549,6 +558,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_LANGUAGE = fr;
+				DEVELOPMENT_TEAM = ZUTQ26CJ6T;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -582,7 +592,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = NadirWidgets/NadirWidgets.entitlements;
-				DEVELOPMENT_TEAM = ZUTQ26CJ6T;
 				INFOPLIST_FILE = NadirWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NADIR;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -590,7 +599,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.solalgendrin.nadir.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = com.solalgendrin.nadir2.widgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -601,7 +610,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = NadirWidgets/NadirWidgets.entitlements;
-				DEVELOPMENT_TEAM = ZUTQ26CJ6T;
 				INFOPLIST_FILE = NadirWidgets/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NADIR;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -609,7 +617,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.solalgendrin.nadir.widgets;
+				PRODUCT_BUNDLE_IDENTIFIER = com.solalgendrin.nadir2.widgets;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -622,14 +630,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = NADIR/NADIR.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = ZUTQ26CJ6T;
 				INFOPLIST_FILE = NADIR/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NADIR;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.solalgendrin.nadir;
+				PRODUCT_BUNDLE_IDENTIFIER = com.solalgendrin.nadir2;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -642,14 +649,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = NADIR/NADIR.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = ZUTQ26CJ6T;
 				INFOPLIST_FILE = NADIR/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NADIR;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.solalgendrin.nadir;
+				PRODUCT_BUNDLE_IDENTIFIER = com.solalgendrin.nadir2;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
 				TARGETED_DEVICE_FAMILY = 1;

@@ -3,7 +3,7 @@ import Foundation
 /// Pont app ↔ widgets (App Group) : profil et météo partagés, pour que les
 /// widgets recalculent exactement la même courbe que l'app.
 enum SharedStore {
-    static let appGroup = "group.com.solalgendrin.nadir"
+    static let appGroup = "group.com.solalgendrin.nadir2"
     private static let seriesKey = "nadir.shared.series.v1"
 
     /// Retombe sur le stockage local si l'App Group est indisponible.

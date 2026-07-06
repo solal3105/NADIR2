@@ -10,6 +10,7 @@ settings:
     MARKETING_VERSION: "1.0"
     CURRENT_PROJECT_VERSION: "1"
     DEVELOPMENT_LANGUAGE: fr
+    DEVELOPMENT_TEAM: ZUTQ26CJ6T
 targets:
   NADIR:
     type: application
@@ -23,10 +24,10 @@ targets:
       path: NADIR/NADIR.entitlements
       properties:
         com.apple.security.application-groups:
-          - group.com.solalgendrin.nadir
+          - group.com.solalgendrin.nadir2
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.solalgendrin.nadir
+        PRODUCT_BUNDLE_IDENTIFIER: com.solalgendrin.nadir2
         INFOPLIST_KEY_CFBundleDisplayName: NADIR
         TARGETED_DEVICE_FAMILY: "1"
         SUPPORTS_MACCATALYST: false
@@ -58,10 +59,10 @@ targets:
       path: NadirWidgets/NadirWidgets.entitlements
       properties:
         com.apple.security.application-groups:
-          - group.com.solalgendrin.nadir
+          - group.com.solalgendrin.nadir2
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.solalgendrin.nadir.widgets
+        PRODUCT_BUNDLE_IDENTIFIER: com.solalgendrin.nadir2.widgets
         INFOPLIST_KEY_CFBundleDisplayName: NADIR
         SKIP_INSTALL: true
     info:
