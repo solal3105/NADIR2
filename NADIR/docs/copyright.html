@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copyright &amp; vie privée — NADIR</title>
+<meta name="description" content="Copyright, licences tierces et politique de confidentialité de NADIR.">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<style>
+  :root{
+    --bg:#000; --ink:#fff; --dim:#8c8c8c; --faint:#5a5a5a;
+    --line:#242424; --line2:#3a3a3a;
+    --hot:#ff3b1d; --cold:#3ea6ff; --go:#5ad17a;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+    --maxw:820px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;font-size:clamp(15px,1.05vw,17px);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,5vw,56px)}
+  ::selection{background:var(--ink);color:var(--bg)}
+  a{color:inherit}
+
+  nav{display:flex;gap:1.6rem;align-items:baseline;padding:1.2rem 0;
+    border-bottom:1px solid var(--line);font-family:var(--mono);font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.06em}
+  nav .brand{font-family:var(--sans);font-weight:800;font-size:1.05rem;
+    letter-spacing:.02em;text-decoration:none;margin-right:auto}
+  nav a{color:var(--dim);text-decoration:none}
+  nav a:hover,nav a[aria-current]{color:var(--ink)}
+
+  .eyebrow{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;
+    letter-spacing:.12em;color:var(--faint)}
+  h1{margin:.4rem 0 0;font-weight:800;text-transform:uppercase;
+    letter-spacing:-.04em;line-height:.9;font-size:clamp(2.4rem,8vw,4.2rem)}
+  h2{margin:0 0 1rem;font-weight:800;text-transform:uppercase;
+    letter-spacing:-.03em;font-size:clamp(1.4rem,3.4vw,1.9rem)}
+  p{margin:0 0 1em;max-width:62ch;color:var(--dim)}
+  p b{color:var(--ink);font-weight:600}
+  header{padding:clamp(40px,7vh,72px) 0 clamp(24px,4vh,40px)}
+  section{padding:clamp(32px,5vh,56px) 0;border-top:1px solid var(--line)}
+  .mono{font-family:var(--mono);font-size:.82rem;line-height:1.9;color:var(--dim)}
+  ul{margin:0 0 1em;padding-left:1.2em;color:var(--dim);max-width:62ch}
+  li{margin-bottom:.4em}
+  li b{color:var(--ink);font-weight:600}
+  .stamp{border:1px solid var(--line2);padding:1.4rem 1.6rem;
+    font-family:var(--mono);font-size:.85rem;color:var(--dim);margin-top:1.2rem}
+  .stamp b{color:var(--ink)}
+  footer{padding:3rem 0 4rem;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:.72rem;color:var(--faint);line-height:2}
+  footer a{color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav>
+    <a class="brand" href="index.html">NADIR</a>
+    <a href="index.html">L'app</a>
+    <a href="assistance.html">Assistance</a>
+    <a href="copyright.html" aria-current="page">Copyright</a>
+  </nav>
+
+  <header>
+    <div class="eyebrow">Mentions · licences · confidentialité</div>
+    <h1>Copyright<br>&amp; vie privée</h1>
+  </header>
+
+  <section style="border-top:0;padding-top:0">
+    <h2>Copyright</h2>
+    <div class="stamp">© 2026 <b>Solal Gendrin</b>. Tous droits réservés.</div>
+    <p style="margin-top:1.2rem">L'application NADIR, son nom, son logo, son design et ses
+      textes sont la propriété de Solal Gendrin. Les captures d'écran de ce site peuvent
+      être reproduites pour présenter l'application, avec mention de la source.</p>
+    <p>NADIR est distribuée gratuitement, sans publicité et sans compte.</p>
+  </section>
+
+  <section>
+    <h2>Données &amp; licences tierces</h2>
+    <ul>
+      <li><b>Météo : Open-Meteo.</b> Les prévisions (température, point de rosée) et le
+        géocodage des villes proviennent d'<a href="https://open-meteo.com" rel="noopener">open-meteo.com</a>,
+        données sous licence <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener">CC&nbsp;BY&nbsp;4.0</a>.
+        Merci à eux.</li>
+      <li><b>Nom des villes (géolocalisation) :</b> géocodage inverse Apple (CoreLocation).</li>
+      <li><b>Modèle thermique :</b> modèle deux nœuds (air + masse) construit d'après la
+        littérature publique, notamment les capacités thermiques de la norme EN&nbsp;ISO&nbsp;13790.</li>
+      <li><b>Sources scientifiques :</b> MIT CoolVent · OMS / NCBI NBK143285 ·
+        Building &amp; Environment 2021 · Yam et al. 2007 · Kolokotroni et al. 1998 ·
+        PMC3708435 · AIVC · arXiv 1806.08999 · PMC10576096 · AIRAH 2015.</li>
+    </ul>
+    <p class="mono">Apple, iPhone, Siri, HomeKit et App Store sont des marques d'Apple Inc.
+      Matter est une marque de la Connectivity Standards Alliance. Ces marques sont citées
+      à titre d'interopérabilité, sans affiliation.</p>
+  </section>
+
+  <section>
+    <h2>Vie privée</h2>
+    <p><b>NADIR ne collecte aucune donnée personnelle.</b> Pas de compte, pas de
+      publicité, pas de traqueurs, pas de statistiques d'usage, pas de serveur NADIR.</p>
+    <ul>
+      <li><b>Vos réglages</b> (ville, murs, ventilation, exposition, température,
+        alarmes) restent sur votre appareil, dans le stockage de l'app — partagés
+        uniquement avec ses propres widgets.</li>
+      <li><b>Votre position</b> n'est demandée que si vous touchez « Ma position »,
+        n'est jamais stockée ailleurs que sur votre appareil, et sert uniquement à
+        interroger la météo.</li>
+      <li><b>Seule communication réseau :</b> les coordonnées du lieu choisi sont
+        envoyées à Open-Meteo pour obtenir la prévision. Aucune autre information
+        ne quitte votre appareil.</li>
+      <li><b>Les alarmes</b> sont des notifications locales, planifiées sur l'appareil.</li>
+    </ul>
+    <p>Comme rien n'est collecté, il n'y a rien à consulter, exporter ou supprimer :
+      désinstaller l'app efface tout.</p>
+  </section>
+
+  <section>
+    <h2>Avertissement</h2>
+    <p>Les simulations de NADIR sont fournies à titre indicatif : elles donnent des
+      <b>estimations et des ordres de grandeur</b>, pas des mesures. Chaque logement est
+      différent (isolation, vitrage, étage, environnement, micro-climat). En période de
+      canicule, suivez en priorité les consignes des autorités sanitaires.</p>
+  </section>
+
+  <section>
+    <h2>Contact</h2>
+    <p class="mono">Solal Gendrin ·
+      <a href="mailto:solal.gendrin@gmail.com">solal.gendrin@gmail.com</a> ·
+      <a href="assistance.html">page d'assistance</a></p>
+  </section>
+
+  <footer>
+    NADIR · <a href="index.html">L'app</a> · <a href="assistance.html">Assistance</a><br>
+    © 2026 Solal Gendrin
+  </footer>
+
+</div>
+</body>
+</html>

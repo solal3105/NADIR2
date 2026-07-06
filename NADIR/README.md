@@ -44,6 +44,15 @@ open NADIR.xcodeproj    # ⌘R sur un simulateur iPhone
   ses mises à jour via l'App Group, et le widget re-télécharge lui-même la
   météo quand la série ne couvre plus les 30 h à venir — jamais désynchronisé.
 
+## Site (GitHub Pages)
+
+Le dossier [docs/](docs/) contient le mini-site statique, dans le design de
+l'app : [page marketing](docs/index.html), [assistance](docs/assistance.html)
+(FAQ + contact) et [copyright & vie privée](docs/copyright.html) — les URL
+d'assistance et de politique de confidentialité attendues par l'App Store.
+Pour le publier : Settings → Pages → Source « Deploy from a branch » →
+branche `main`, dossier `/docs`.
+
 ## Architecture
 
 ```

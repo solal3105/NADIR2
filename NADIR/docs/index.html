@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NADIR — Savoir quand ouvrir, quand fermer</title>
+<meta name="description" content="NADIR compare, heure par heure, la température chez vous à celle du dehors, et vous dit quand ouvrir et quand fermer vos fenêtres. Gratuit, sans pub, sans compte.">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<style>
+  :root{
+    --bg:#000; --ink:#fff; --dim:#8c8c8c; --faint:#5a5a5a;
+    --line:#242424; --line2:#3a3a3a; --hairline:#1a1a1a;
+    --hot:#ff3b1d; --cold:#3ea6ff; --go:#5ad17a;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+    --maxw:1040px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;font-size:clamp(15px,1.05vw,17px);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,5vw,56px)}
+  ::selection{background:var(--ink);color:var(--bg)}
+  a{color:inherit}
+
+  nav{display:flex;gap:1.6rem;align-items:baseline;padding:1.2rem 0;
+    border-bottom:1px solid var(--line);font-family:var(--mono);font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.06em}
+  nav .brand{font-family:var(--sans);font-weight:800;font-size:1.05rem;
+    letter-spacing:.02em;text-decoration:none;margin-right:auto}
+  nav a{color:var(--dim);text-decoration:none}
+  nav a:hover,nav a[aria-current]{color:var(--ink)}
+
+  .eyebrow{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;
+    letter-spacing:.12em;color:var(--faint)}
+  h1{margin:.4rem 0 0;font-weight:800;text-transform:uppercase;
+    letter-spacing:-.04em;line-height:.9;font-size:clamp(3.4rem,12vw,8rem)}
+  h2{margin:0;font-weight:800;text-transform:uppercase;letter-spacing:-.035em;
+    line-height:.92;font-size:clamp(1.9rem,5vw,3rem)}
+  p{margin:0 0 1.05em;max-width:60ch;color:var(--dim)}
+  p b{color:var(--ink);font-weight:600}
+  section{padding:clamp(48px,8vh,96px) 0;border-top:1px solid var(--line)}
+  section:first-of-type{border-top:0}
+
+  .hero{display:grid;gap:2.6rem 4rem;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);
+    align-items:center;padding:clamp(56px,10vh,120px) 0}
+  .hero .sub{margin-top:1.6rem;font-size:clamp(1.05rem,1.8vw,1.35rem);line-height:1.45}
+  .cta{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:2rem}
+  .btn{display:inline-block;font-family:var(--mono);font-size:.82rem;
+    text-transform:uppercase;letter-spacing:.04em;text-decoration:none;
+    padding:.95em 1.4em;border:1px solid var(--line2);color:var(--ink)}
+  .btn:hover{background:var(--ink);color:var(--bg)}
+  .btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .btn.primary:hover{background:transparent;color:var(--ink)}
+  .soon{font-family:var(--mono);font-size:.72rem;color:var(--faint);margin-top:.9rem}
+
+  .phone{width:min(320px,80vw);margin:0 auto;display:block;border:1px solid var(--line2);
+    border-radius:38px;overflow:hidden}
+  .phone img{display:block;width:100%;height:auto}
+
+  .grid{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:2.4rem}
+  .cell{background:var(--bg);padding:1.6rem 1.4rem}
+  .cell .k{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;
+    letter-spacing:.08em;margin-bottom:.7rem}
+  .cell h3{margin:0 0 .5rem;font-size:1.15rem;font-weight:700;letter-spacing:-.01em}
+  .cell p{font-size:.95rem;margin:0}
+  .k.cold{color:var(--cold)} .k.hot{color:var(--hot)} .k.go{color:var(--go)}
+
+  .shots{display:flex;gap:1.4rem;flex-wrap:wrap;justify-content:center;margin-top:2.6rem}
+  .shots figure{margin:0;flex:0 1 240px}
+  .shots img{display:block;width:100%;height:auto;border:1px solid var(--line2);border-radius:26px}
+  .shots figcaption{font-family:var(--mono);font-size:.72rem;color:var(--faint);
+    text-transform:uppercase;letter-spacing:.06em;margin-top:.7rem;text-align:center}
+  .widgets{display:flex;gap:1.4rem;flex-wrap:wrap;align-items:flex-start;margin-top:2.4rem}
+  .widgets img{display:block;height:170px;width:auto;max-width:100%}
+
+  .ledger .row{display:grid;grid-template-columns:auto 1fr;gap:1rem 1.4rem;
+    padding:1.2rem 0;border-bottom:1px solid var(--line);align-items:start}
+  .ledger .n{font-family:var(--mono);font-size:.85rem;color:var(--go)}
+  .ledger .t{font-weight:600}
+  .ledger small{display:block;font-weight:400;color:var(--dim);margin-top:.3rem}
+
+  footer{padding:3rem 0 4rem;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:.72rem;color:var(--faint);line-height:2}
+  footer a{color:var(--dim)}
+  @media(max-width:820px){.hero{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav>
+    <a class="brand" href="index.html">NADIR</a>
+    <a href="index.html" aria-current="page">L'app</a>
+    <a href="assistance.html">Assistance</a>
+    <a href="copyright.html">Copyright</a>
+  </nav>
+
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Garder son logement frais · sans climatisation</div>
+      <h1>Nadir</h1>
+      <p class="sub">Savoir <b>quand ouvrir</b> et <b>quand fermer</b> ses fenêtres.
+        NADIR compare, heure par heure, la température chez vous à celle du dehors,
+        et vous donne un verdict clair : <b style="color:var(--go)">« Ouvrez de 02h à 09h »</b>.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/solalgendrin" rel="noopener">Voir le code sur GitHub</a>
+        <a class="btn" href="assistance.html">Assistance</a>
+      </div>
+      <div class="soon">Bientôt sur l'App Store · iOS 17+ · gratuit, sans pub, sans compte</div>
+    </div>
+    <div class="phone"><img src="assets/screen-today.png" alt="L'écran Aujourd'hui de NADIR : le verdict « Ouvrez de 02h à 09h », la courbe des températures et les alarmes."></div>
+  </div>
+
+  <section>
+    <div class="eyebrow">Ce que fait l'app</div>
+    <h2 style="margin-top:.6rem">Un verdict,<br>pas un bulletin météo</h2>
+    <div class="grid">
+      <div class="cell"><div class="k go">Le verdict</div>
+        <h3>Ouvrez, ou gardez fermé</h3>
+        <p>Un modèle thermique simule votre logement (murs, ventilation, exposition)
+        sur les 30 prochaines heures et en tire une consigne simple.</p></div>
+      <div class="cell"><div class="k cold">Le graphe</div>
+        <h3>Dehors vs chez vous</h3>
+        <p>La courbe extérieure, la courbe intérieure simulée, et le créneau
+        d'ouverture conseillé surligné en vert.</p></div>
+      <div class="cell"><div class="k hot">Les alarmes</div>
+        <h3>Au moment d'ouvrir, de fermer</h3>
+        <p>Des alarmes système qui sonnent même app fermée, puis se répètent
+        à +3 et +6 minutes.</p></div>
+      <div class="cell"><div class="k cold">Les widgets</div>
+        <h3>La courbe en continu</h3>
+        <p>Petit et moyen : la courbe actualisée toutes les heures sur l'écran
+        d'accueil, avec l'état de l'alarme.</p></div>
+      <div class="cell"><div class="k go">Siri &amp; Raccourcis</div>
+        <h3>« Le verdict NADIR »</h3>
+        <p>Trois actions pour vos automatisations — y compris nourrir NADIR
+        depuis un capteur connecté (HomeKit, Matter).</p></div>
+      <div class="cell"><div class="k">Respect</div>
+        <h3>Gratuit, sans pub, sans compte</h3>
+        <p>Aucune donnée collectée. Tout reste sur votre appareil.
+        Météo : Open-Meteo.</p></div>
+    </div>
+
+    <div class="widgets">
+      <img src="assets/widget-small.png" alt="Le widget petit format de NADIR : courbe et verdict « Ouvrez 23h–09h »">
+      <img src="assets/widget-medium.png" alt="Le widget moyen format de NADIR avec les heures et l'alarme armée à 23:00">
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">Comment ça marche</div>
+    <h2 style="margin-top:.6rem">La nuit recharge<br>vos murs en fraîcheur</h2>
+    <p style="margin-top:1.4rem">Le jour, vos murs absorbent la chaleur comme une éponge.
+      La nuit, l'air frais les décharge — <b>si vous ouvrez au bon moment</b>.
+      NADIR trouve ce moment pour vous, en croisant la météo de votre ville avec
+      l'inertie de vos murs, la ventilation possible et l'exposition de vos façades.</p>
+    <div class="ledger">
+      <div class="row"><div class="n">1</div><div class="t">Dès que dehors est 2 °C plus frais
+        <small>ouvrez en grand — l'air de la nuit refroidit vos murs</small></div></div>
+      <div class="row"><div class="n">2</div><div class="t">Dès qu'il refait plus chaud dehors
+        <small>fermez tout, fenêtres et volets : la fraîcheur reste enfermée</small></div></div>
+      <div class="row"><div class="n">3</div><div class="t">Le lendemain au plus chaud
+        <small>vos murs absorbent la chaleur : jusqu'à plusieurs degrés de gagnés</small></div></div>
+    </div>
+    <div class="shots">
+      <figure><img src="assets/screen-onboarding.png" alt="L'onboarding de NADIR : où habitez-vous ?"><figcaption>Quatre réglages</figcaption></figure>
+      <figure><img src="assets/screen-guide.png" alt="L'onglet Le geste : ouvrez en grand, fermez tout"><figcaption>Le geste</figcaption></figure>
+      <figure><img src="assets/screen-about.png" alt="L'onglet À propos de NADIR"><figcaption>À propos</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">La démarche</div>
+    <h2 style="margin-top:.6rem">Pas contre la clim.<br>Pour ceux qui n'en ont pas.</h2>
+    <p style="margin-top:1.4rem"><b>NADIR ne milite pas contre la climatisation.</b>
+      L'app s'adresse à celles et ceux qui n'ont pas d'autre choix que de rafraîchir
+      leur logement la nuit, et les aide à décider au bon moment pendant les périodes chaudes.</p>
+    <p>Les chiffres donnent <b>une estimation, un ordre de grandeur</b>, pas une mesure :
+      impossible de connaître toutes les données d'un logement réel — isolation, vitrage,
+      étage, environnement, micro-climat.</p>
+  </section>
+
+  <section>
+    <div class="eyebrow">Qui est derrière ?</div>
+    <h2 style="margin-top:.6rem">Solal Gendrin</h2>
+    <p style="margin-top:1.4rem">Conseiller métropolitain écologiste à la Métropole de Lyon.
+      Élu et développeur, je conçois des outils numériques <b>gratuits et ouverts</b>
+      au service des habitants&nbsp;:
+      <a href="https://openprojets.com/home" rel="noopener">Open Projets</a> ·
+      <a href="https://lyon-pocket.netlify.app" rel="noopener">Lyon Pocket</a>.</p>
+  </section>
+
+  <footer>
+    NADIR · <a href="assistance.html">Assistance</a> · <a href="copyright.html">Copyright &amp; vie privée</a><br>
+    Météo par <a href="https://open-meteo.com" rel="noopener">Open-Meteo</a> (CC BY 4.0) ·
+    Modèle thermique d'après EN ISO 13790 — estimations, à titre indicatif.<br>
+    © 2026 Solal Gendrin
+  </footer>
+
+</div>
+</body>
+</html>
