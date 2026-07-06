@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Politique de confidentialité — NADIR</title>
+<meta name="description" content="Politique de confidentialité de NADIR : aucune donnée personnelle collectée. Pas de compte, pas de pub, pas de traqueurs, pas de serveur.">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<style>
+  :root{
+    --bg:#000; --ink:#fff; --dim:#8c8c8c; --faint:#5a5a5a;
+    --line:#242424; --line2:#3a3a3a;
+    --hot:#ff3b1d; --cold:#3ea6ff; --go:#5ad17a;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+    --maxw:820px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;font-size:clamp(15px,1.05vw,17px);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,5vw,56px)}
+  ::selection{background:var(--ink);color:var(--bg)}
+  a{color:inherit}
+
+  nav{display:flex;gap:1.6rem;align-items:baseline;padding:1.2rem 0;
+    border-bottom:1px solid var(--line);font-family:var(--mono);font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.06em}
+  nav .brand{font-family:var(--sans);font-weight:800;font-size:1.05rem;
+    letter-spacing:.02em;text-decoration:none;margin-right:auto}
+  nav a{color:var(--dim);text-decoration:none}
+  nav a:hover,nav a[aria-current]{color:var(--ink)}
+
+  .eyebrow{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;
+    letter-spacing:.12em;color:var(--faint)}
+  h1{margin:.4rem 0 0;font-weight:800;text-transform:uppercase;
+    letter-spacing:-.04em;line-height:.9;font-size:clamp(2.4rem,8vw,4.2rem)}
+  h2{margin:0 0 1rem;font-weight:800;text-transform:uppercase;
+    letter-spacing:-.03em;font-size:clamp(1.4rem,3.4vw,1.9rem)}
+  p{margin:0 0 1em;max-width:62ch;color:var(--dim)}
+  p b{color:var(--ink);font-weight:600}
+  header{padding:clamp(40px,7vh,72px) 0 clamp(24px,4vh,40px)}
+  section{padding:clamp(32px,5vh,56px) 0;border-top:1px solid var(--line)}
+  .mono{font-family:var(--mono);font-size:.82rem;line-height:1.9;color:var(--dim)}
+  ul{margin:0 0 1em;padding-left:1.2em;color:var(--dim);max-width:62ch}
+  li{margin-bottom:.4em}
+  li b{color:var(--ink);font-weight:600}
+  .stamp{border:1px solid var(--line2);padding:1.4rem 1.6rem;
+    font-family:var(--mono);font-size:.85rem;color:var(--dim);margin-top:1.2rem}
+  .stamp b{color:var(--ink)}
+  footer{padding:3rem 0 4rem;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:.72rem;color:var(--faint);line-height:2}
+  footer a{color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav>
+    <a class="brand" href="index.html">NADIR</a>
+    <a href="index.html">L'app</a>
+    <a href="assistance.html">Assistance</a>
+    <a href="confidentialite.html" aria-current="page">Confidentialité</a>
+    <a href="copyright.html">Copyright</a>
+  </nav>
+
+  <header>
+    <div class="eyebrow">Politique de confidentialité</div>
+    <h1>Confiden&shy;tialité</h1>
+    <p style="margin-top:1.4rem">Dernière mise à jour : 6 juillet 2026.
+      Cette politique s'applique à l'application iOS NADIR et à ses widgets.</p>
+  </header>
+
+  <section style="border-top:0;padding-top:0">
+    <h2>En une phrase</h2>
+    <div class="stamp"><b>NADIR ne collecte aucune donnée personnelle.</b>
+      Pas de compte, pas de publicité, pas de traqueurs, pas de statistiques
+      d'usage, pas de serveur NADIR.</div>
+  </section>
+
+  <section>
+    <h2>Données traitées sur votre appareil</h2>
+    <ul>
+      <li><b>Vos réglages</b> — ville ou position choisie, inertie des murs,
+        ventilation, exposition des façades, température intérieure, alarmes —
+        sont enregistrés uniquement sur votre appareil, dans le stockage de
+        l'app. Ils sont partagés avec les widgets NADIR de votre appareil via
+        un App Group Apple, et avec personne d'autre.</li>
+      <li><b>Votre position</b> n'est utilisée que si vous touchez
+        « Ma position », après autorisation explicite d'iOS. Elle sert à
+        retrouver le nom de votre ville (géocodage inverse Apple) et à
+        interroger la météo. Elle n'est jamais transmise à un serveur NADIR —
+        il n'en existe pas — ni stockée ailleurs que sur votre appareil.</li>
+      <li><b>Les alarmes</b> sont des notifications locales, planifiées et
+        déclenchées par iOS sur votre appareil.</li>
+      <li><b>Siri et Raccourcis</b> s'exécutent localement sur vos données
+        locales ; aucune donnée supplémentaire n'est collectée.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Seule communication réseau</h2>
+    <p>Pour obtenir la prévision météo, NADIR envoie les <b>coordonnées
+      géographiques du lieu choisi</b> (et uniquement elles) au service
+      <a href="https://open-meteo.com" rel="noopener">Open-Meteo</a>, via une
+      connexion chiffrée (HTTPS). Cette requête ne contient ni identifiant,
+      ni compte, ni information sur vous ou votre appareil au-delà de ce que
+      toute requête internet comporte techniquement. La politique de
+      confidentialité d'Open-Meteo est consultable sur
+      <a href="https://open-meteo.com/en/terms" rel="noopener">open-meteo.com</a>.</p>
+    <p>Si vous tapez le nom d'une ville, ce nom est envoyé au service de
+      géocodage d'Open-Meteo pour retrouver ses coordonnées. Aucune autre
+      information ne quitte votre appareil.</p>
+  </section>
+
+  <section>
+    <h2>Ce que NADIR ne fait pas</h2>
+    <ul>
+      <li>Pas de <b>compte utilisateur</b> — rien à créer, rien à retenir.</li>
+      <li>Pas de <b>publicité</b> ni de régie publicitaire.</li>
+      <li>Pas de <b>traqueurs</b> ni de SDK d'analyse tiers.</li>
+      <li>Pas de <b>statistiques d'usage</b> ni de télémétrie.</li>
+      <li>Pas de <b>partage ou vente</b> de données — il n'y a rien à partager.</li>
+      <li>Pas de <b>profilage</b> ni de décision automatisée vous concernant.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Vos droits</h2>
+    <p>Comme aucune donnée personnelle n'est collectée ni conservée hors de
+      votre appareil, il n'existe aucune base de données à consulter, exporter,
+      rectifier ou effacer. <b>Désinstaller l'app efface tout.</b> Vous pouvez
+      aussi retirer à tout moment l'accès à la position ou aux notifications
+      dans Réglages&nbsp;→&nbsp;NADIR.</p>
+    <p>Pour toute question relative à cette politique, ou pour exercer un
+      droit prévu par le RGPD, contactez-moi à l'adresse ci-dessous.</p>
+  </section>
+
+  <section>
+    <h2>Enfants</h2>
+    <p>NADIR ne collecte de données auprès de personne, y compris des enfants,
+      et ne propose aucun contenu inapproprié.</p>
+  </section>
+
+  <section>
+    <h2>Modifications</h2>
+    <p>Si cette politique évolue — par exemple si une future version de l'app
+      change la façon dont la météo est récupérée — la présente page sera mise
+      à jour et la date en haut de page modifiée.</p>
+  </section>
+
+  <section>
+    <h2>Contact</h2>
+    <p class="mono">Solal Gendrin ·
+      <a href="mailto:solal.gendrin@gmail.com?subject=NADIR%20%E2%80%94%20confidentialit%C3%A9">solal.gendrin@gmail.com</a> ·
+      <a href="assistance.html">page d'assistance</a></p>
+  </section>
+
+  <footer>
+    NADIR · <a href="index.html">L'app</a> · <a href="assistance.html">Assistance</a> · <a href="copyright.html">Copyright</a><br>
+    © 2026 Solal Gendrin
+  </footer>
+
+</div>
+</body>
+</html>
