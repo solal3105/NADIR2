@@ -54,9 +54,18 @@
   .hud-clock{top:18px;right:clamp(18px,4vw,48px);text-align:right;font-size:12px;
     color:var(--dim);line-height:1.9}
   .hud-clock .place{color:var(--ink);text-transform:uppercase;letter-spacing:.03em}
-  .hud-hint{bottom:74px;right:clamp(18px,4vw,48px);font-size:10px;color:var(--faint);
+  .hud-hint{bottom:66px;right:clamp(18px,4vw,48px);font-size:10px;color:var(--faint);
     letter-spacing:.05em;text-align:right}
   @media (max-width:820px){.hud-hint{display:none}}
+
+  /* Graphe de températures */
+  .graph{position:absolute;left:clamp(18px,4vw,48px);bottom:66px;height:96px;
+    right:clamp(18px,4vw,48px);border:1px solid var(--line2);
+    background:rgba(0,0,0,.78);pointer-events:none}
+  .graph svg{display:block;width:100%;height:100%}
+  .graph text{font-family:var(--mono)}
+  @media (min-width:821px){.graph{right:calc(clamp(18px,4vw,48px) + 286px)}}
+  @media (max-width:820px){.graph{height:72px;bottom:62px}}
 
   /* Timeline */
   .timeline{position:absolute;left:clamp(18px,4vw,48px);right:clamp(18px,4vw,48px);
@@ -176,6 +185,8 @@
   </div>
 
   <div class="hud hud-hint">glisser : tourner · molette : zoom</div>
+
+  <div class="graph" id="graph" aria-hidden="true"></div>
 
   <div class="timeline">
     <button class="tbtn" id="playBtn" aria-label="Lecture / pause">❚❚</button>
@@ -469,10 +480,11 @@ import * as THREE from './assets/three.module.min.js';
   scene.add(sunLight);
   scene.add(sunLight.target);
 
-  // Sol : ne montre que les ombres — le noir reste noir.
+  // Sol sombre mais éclairé : le jour, il s'illumine sous le soleil et les
+  // ombres portées s'y découpent en noir. La nuit, il retombe dans le noir.
   var ground = new THREE.Mesh(
     new THREE.PlaneGeometry(120, 120),
-    new THREE.ShadowMaterial({ opacity: 0.42 })
+    new THREE.MeshLambertMaterial({ color: 0x181818 })
   );
   ground.rotation.x = -Math.PI / 2;
   ground.receiveShadow = true;
@@ -524,16 +536,17 @@ import * as THREE from './assets/three.module.min.js';
     });
   }
 
-  // Arc du soleil + disque.
+  // Arc du soleil + disque, proches de la pièce pour rester dans le cadre.
+  var SKY_R = 14;
   function buildSunPath() {
     var pts = [];
     for (var h = L.DAY_START; h <= L.DAY_END + 1e-6; h += 0.25) {
       var sun = L.sunAt(h);
       var ce = Math.cos(sun.elevation);
       pts.push(new THREE.Vector3(
-        Math.sin(sun.azimuth) * ce * 26,
-        Math.sin(sun.elevation) * 26,
-        -Math.cos(sun.azimuth) * ce * 26
+        Math.sin(sun.azimuth) * ce * SKY_R,
+        Math.sin(sun.elevation) * SKY_R,
+        -Math.cos(sun.azimuth) * ce * SKY_R
       ));
     }
     var g = new THREE.BufferGeometry().setFromPoints(pts);
@@ -546,25 +559,46 @@ import * as THREE from './assets/three.module.min.js';
   }
   scene.add(buildSunPath());
 
-  function discSprite() {
+  function discSprite(core, scale) {
     var c = document.createElement('canvas');
     c.width = 128; c.height = 128;
     var ctx = c.getContext('2d');
     var grad = ctx.createRadialGradient(64, 64, 6, 64, 64, 60);
-    grad.addColorStop(0, 'rgba(255,255,255,1)');
-    grad.addColorStop(0.24, 'rgba(255,255,255,.95)');
-    grad.addColorStop(0.45, 'rgba(255,255,255,.12)');
-    grad.addColorStop(1, 'rgba(255,255,255,0)');
+    grad.addColorStop(0, 'rgba(' + core + ',1)');
+    grad.addColorStop(0.24, 'rgba(' + core + ',.95)');
+    grad.addColorStop(0.45, 'rgba(' + core + ',.12)');
+    grad.addColorStop(1, 'rgba(' + core + ',0)');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 128, 128);
     var sprite = new THREE.Sprite(new THREE.SpriteMaterial({
       map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false,
     }));
-    sprite.scale.set(3.4, 3.4, 1);
+    sprite.scale.set(scale, scale, 1);
     return sprite;
   }
-  var sunDisc = discSprite();
+  var sunDisc = discSprite('255,255,255', 4.6);
   scene.add(sunDisc);
+
+  // La lune : arc opposé au soleil, lumière bleutée qui porte ses ombres.
+  var moonDisc = discSprite('188,208,247', 2.4);
+  scene.add(moonDisc);
+  var moonLight = new THREE.DirectionalLight(0xa9c4f5, 0);
+  moonLight.castShadow = true;
+  moonLight.shadow.mapSize.set(1024, 1024);
+  moonLight.shadow.camera.left = -14;
+  moonLight.shadow.camera.right = 14;
+  moonLight.shadow.camera.top = 14;
+  moonLight.shadow.camera.bottom = -14;
+  moonLight.shadow.camera.near = 4;
+  moonLight.shadow.camera.far = 70;
+  moonLight.shadow.bias = -0.0015;
+  scene.add(moonLight);
+  scene.add(moonLight.target);
+  function moonAt(hour) {
+    // Même arc que le soleil, décalé de 12 h et plus bas.
+    var m = L.sunAt((hour + 12) % 24);
+    return { azimuth: m.azimuth, elevation: m.elevation * 0.72 };
+  }
 
   // --- La pièce (reconstruite à chaque changement de géométrie) ------------
   var room = new THREE.Group();
@@ -966,6 +1000,81 @@ import * as THREE from './assets/three.module.min.js';
       total > 0 ? E.oneDecimal(total) + ' m²' : 'aucune';
   }
 
+  // --- Graphe de températures : dehors, air, murs ------------------------------
+  var graphEl = document.getElementById('graph');
+  var graphPlayhead = null;
+  var graphMap = null; // x(t) pour le playhead
+
+  function rebuildGraph() {
+    var W = Math.max(180, graphEl.clientWidth || 400);
+    var H = Math.max(56, graphEl.clientHeight || 96);
+    var n = labSeries.outdoor.length;
+    var fine = sim.airFine, fineM = sim.massFine;
+    if (n < 2 || fine.length < 2) { graphEl.innerHTML = ''; return; }
+
+    var padL = 34, padR = 8, padT = 9, padB = 9;
+    var all = labSeries.outdoor.concat(fine, fineM);
+    var lo = Math.min.apply(null, all) - 0.8;
+    var hi = Math.max.apply(null, all) + 0.8;
+
+    function x(t) { return padL + t / (n - 1) * (W - padL - padR); }
+    function y(v) { return padT + (1 - (v - lo) / (hi - lo)) * (H - padT - padB); }
+    function finePath(arr) {
+      var step = (n - 1) / (arr.length - 1);
+      var d = 'M' + x(0).toFixed(1) + ' ' + y(arr[0]).toFixed(1);
+      for (var k = 1; k < arr.length; k++) {
+        d += 'L' + x(k * step).toFixed(1) + ' ' + y(arr[k]).toFixed(1);
+      }
+      return d;
+    }
+    var svg = [];
+    sim.runs.forEach(function (run) {
+      var xa = x(Math.max(0, run[0] - 0.5)), xb = x(Math.min(n - 1, run[1] + 0.5));
+      svg.push('<rect x="' + xa.toFixed(1) + '" y="' + padT + '" width="'
+        + (xb - xa).toFixed(1) + '" height="' + (H - padT - padB)
+        + '" fill="rgba(90,209,122,0.12)"/>');
+    });
+    // Deux repères de température.
+    [lo + 0.8, hi - 0.8].forEach(function (v) {
+      svg.push('<line x1="' + padL + '" y1="' + y(v).toFixed(1) + '" x2="' + (W - padR)
+        + '" y2="' + y(v).toFixed(1) + '" stroke="rgba(255,255,255,0.07)"/>');
+      svg.push('<text x="' + (padL - 4) + '" y="' + y(v).toFixed(1)
+        + '" font-size="8.5" fill="#8c8c8c" text-anchor="end" dominant-baseline="middle">'
+        + Math.round(v) + '°</text>');
+    });
+    var outdoorD = 'M' + x(0).toFixed(1) + ' ' + y(labSeries.outdoor[0]).toFixed(1);
+    for (var i = 1; i < n; i++) {
+      outdoorD += 'L' + x(i).toFixed(1) + ' ' + y(labSeries.outdoor[i]).toFixed(1);
+    }
+    svg.push('<path d="' + finePath(fineM)
+      + '" fill="none" stroke="rgba(140,160,180,0.55)" stroke-width="1" stroke-dasharray="3 3"/>');
+    svg.push('<path d="' + outdoorD
+      + '" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>');
+    svg.push('<path d="' + finePath(fine)
+      + '" fill="none" stroke="#3ea6ff" stroke-width="2"/>');
+    // Étiquettes des courbes, empilées à droite.
+    var labels = [
+      ['dehors', labSeries.outdoor[n - 1], 'rgba(255,255,255,0.6)'],
+      ['air', fine[fine.length - 1], '#3ea6ff'],
+      ['murs', fineM[fineM.length - 1], 'rgba(140,160,180,0.8)'],
+    ].map(function (l) { return { name: l[0], y: y(l[1]), color: l[2] }; })
+      .sort(function (a, b) { return a.y - b.y; });
+    for (i = 1; i < labels.length; i++) {
+      if (labels[i].y - labels[i - 1].y < 10) labels[i].y = labels[i - 1].y + 10;
+    }
+    labels.forEach(function (l) {
+      svg.push('<text x="' + (W - padR - 2) + '" y="' + l.y.toFixed(1)
+        + '" font-size="8.5" fill="' + l.color
+        + '" text-anchor="end" dominant-baseline="middle">' + l.name + '</text>');
+    });
+    svg.push('<line id="graphPlayhead" x1="' + padL + '" y1="' + padT + '" x2="' + padL
+      + '" y2="' + (H - padB) + '" stroke="#fff" stroke-width="1"/>');
+    graphEl.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" width="' + W
+      + '" height="' + H + '" preserveAspectRatio="none">' + svg.join('') + '</svg>';
+    graphPlayhead = document.getElementById('graphPlayhead');
+    graphMap = { padL: padL, padR: padR, W: W, n: n };
+  }
+
   // --- HUD & verdict -----------------------------------------------------------
   function pad2(x) { return (x < 10 ? '0' : '') + x; }
   function verdictOf() {
@@ -1023,11 +1132,22 @@ import * as THREE from './assets/three.module.min.js';
     var dir = new THREE.Vector3(
       Math.sin(sun.azimuth) * ce, Math.max(0.02, sinE), -Math.cos(sun.azimuth) * ce);
     sunLight.position.copy(dir).multiplyScalar(32);
-    sunLight.intensity = Math.max(0, sinE) * 2.3;
+    sunLight.intensity = Math.max(0, sinE) * 2.6;
     sunLight.color.setHex(sinE < 0.28 ? 0xffd9be : 0xffffff);
-    sunDisc.position.copy(dir).multiplyScalar(26);
+    sunDisc.position.copy(dir).multiplyScalar(SKY_R);
     sunDisc.material.opacity = sinE > 0 ? 1 : 0;
-    ambient.intensity = 0.12 + Math.max(0, sinE) * 0.2;
+    ambient.intensity = 0.14 + Math.max(0, sinE) * 0.2;
+
+    // Lune.
+    var moon = moonAt(hour % 24);
+    var sinM = Math.sin(moon.elevation);
+    var cm = Math.cos(moon.elevation);
+    var mdir = new THREE.Vector3(
+      Math.sin(moon.azimuth) * cm, Math.max(0.02, sinM), -Math.cos(moon.azimuth) * cm);
+    moonLight.position.copy(mdir).multiplyScalar(32);
+    moonLight.intensity = Math.max(0, sinM) * 0.5;
+    moonDisc.position.copy(mdir).multiplyScalar(SKY_R);
+    moonDisc.material.opacity = sinM > 0 ? 0.9 : 0;
 
     // Les deux nœuds, en couleur.
     airMaterial.color.copy(tempColor(airT));
@@ -1064,6 +1184,12 @@ import * as THREE from './assets/three.module.min.js';
       pad2(Math.floor(hour) % 24) + ':' + pad2(Math.floor((hour % 1) * 60))
       + ' · +' + Math.floor(playT) + ' h';
     if (playhead) playhead.style.left = (playT / (n - 1) * 100) + '%';
+    if (graphPlayhead && graphMap) {
+      var gx = graphMap.padL + playT / (graphMap.n - 1)
+        * (graphMap.W - graphMap.padL - graphMap.padR);
+      graphPlayhead.setAttribute('x1', gx);
+      graphPlayhead.setAttribute('x2', gx);
+    }
 
     orbit.apply(dt, now);
     renderer.render(scene, camera);
@@ -1075,6 +1201,7 @@ import * as THREE from './assets/three.module.min.js';
     if (rebuildGeometry) rebuildRoom();
     rebuildWinButtons();
     rebuildTrack();
+    rebuildGraph();
     refreshVerdict();
   }
 
@@ -1084,6 +1211,7 @@ import * as THREE from './assets/three.module.min.js';
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    rebuildGraph();
   }
   window.addEventListener('resize', resize);
 
@@ -1092,6 +1220,7 @@ import * as THREE from './assets/three.module.min.js';
   rebuildRoom();
   rebuildWinButtons();
   rebuildTrack();
+  rebuildGraph();
   refreshVerdict();
   resize();
   requestAnimationFrame(frame);

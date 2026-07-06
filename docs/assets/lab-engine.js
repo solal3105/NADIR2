@@ -166,7 +166,15 @@
       };
     }
     var d = derive(params);
-    var dt = 3600.0 / SUBSTEPS;
+    // Sous-pas adaptatifs : avec plusieurs grandes fenêtres, H_vent devient
+    // énorme et la constante de temps de l'air passe sous les 6 min du pas
+    // standard — Euler explicite divergerait. On resserre le pas pour rester
+    // à dt ≤ C/(2H), en multiple de 10 pour garder 10 échantillons fins/h.
+    var hAir = d.envelope + d.ventilationConductance + d.airMassCoupling;
+    var substeps = Math.max(SUBSTEPS,
+      Math.ceil((2 * 3600 * hAir / d.airCapacity) / 10) * 10);
+    var record = substeps / SUBSTEPS;
+    var dt = 3600.0 / substeps;
     var canOpen = d.totalGlazing > 0;
 
     var initialGains = INTERNAL_GAINS
@@ -200,7 +208,7 @@
 
       var gains = INTERNAL_GAINS + (isOpen ? 1 : SHADE_FACTOR) * sol;
       var conductance = d.envelope + (isOpen ? d.ventilationConductance : 0);
-      for (var s = 0; s < SUBSTEPS; s++) {
+      for (var s = 0; s < substeps; s++) {
         var dAir = (dt / d.airCapacity)
           * (conductance * (series.outdoor[i] - airTemp)
             + d.airMassCoupling * (massTemp - airTemp)
@@ -208,8 +216,10 @@
         var dMass = (dt / d.massCapacity) * (d.airMassCoupling * (airTemp - massTemp));
         airTemp += dAir;
         massTemp += dMass;
-        airFine.push(airTemp);
-        massFine.push(massTemp);
+        if ((s + 1) % record === 0) {
+          airFine.push(airTemp);
+          massFine.push(massTemp);
+        }
       }
       indoor.push(airTemp);
       mass.push(massTemp);
