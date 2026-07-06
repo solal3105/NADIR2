@@ -46,11 +46,15 @@ open NADIR.xcodeproj    # ⌘R sur un simulateur iPhone
 
 ## Site (GitHub Pages)
 
-Le dossier [docs/](docs/) contient le mini-site statique, dans le design de
-l'app : [page marketing](docs/index.html), [assistance](docs/assistance.html)
-(FAQ + contact) et [copyright & vie privée](docs/copyright.html) — les URL
-d'assistance et de politique de confidentialité attendues par l'App Store.
-Pour le publier : Settings → Pages → Source « Deploy from a branch » →
+Le dossier [docs/](../docs/) à la racine du dépôt contient le mini-site
+statique, dans le design de l'app :
+
+- Marketing : https://solal3105.github.io/nadir2/
+- Assistance : https://solal3105.github.io/nadir2/assistance.html
+- Copyright & vie privée : https://solal3105.github.io/nadir2/copyright.html
+
+Ce sont les URL d'assistance et de politique de confidentialité attendues par
+l'App Store. Publication : Settings → Pages → « Deploy from a branch » →
 branche `main`, dossier `/docs`.
 
 ## Architecture
