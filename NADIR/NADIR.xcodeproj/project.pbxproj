@@ -1,0 +1,692 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0A0C04C20BB74C094FFD03CA /* LearnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BEAE1CD7097A991C23F7CF /* LearnView.swift */; };
+		14ABEA62FD3C2F4B2EE59859 /* ThermalModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D5AD2C700C82F3944C0855 /* ThermalModel.swift */; };
+		1D3252DF5567E1CF839DA372 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D28CFE6358C3AA014CE248 /* LocationService.swift */; };
+		1E9ECFB477BF96FBC0C27140 /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A3D0B35D6CB46D54FE3D8EB /* WeatherService.swift */; };
+		1F3C07ABF2FA8D6C6B0BDF39 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA855845669C4603F02243BD /* UserProfile.swift */; };
+		266580FE6859EABB4A884377 /* ThermalAnalysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = E555150F466C3E1DBBA7BD8E /* ThermalAnalysis.swift */; };
+		3B89B6118F3E73D07E1FE96A /* Exposure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27322EB77291A3D7A31B1CFC /* Exposure.swift */; };
+		3B9F02E035826C5A1EB8688F /* Exposure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27322EB77291A3D7A31B1CFC /* Exposure.swift */; };
+		3D5427D618F6D2F469B15EBD /* HomeSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8C6C632CEA9CC1E006B04A /* HomeSettings.swift */; };
+		54FD56827DFF04A3099374D2 /* SeriesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8DB27ABA635F14E3D68C6C /* SeriesProvider.swift */; };
+		58DAA677B46B2E753ED6DA3A /* NadirIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 085BDFBB470C45343B3F9508 /* NadirIntents.swift */; };
+		58FF43A085D5DA15683A398A /* SeriesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8DB27ABA635F14E3D68C6C /* SeriesProvider.swift */; };
+		5A913EF300BF589DF41370FA /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBA1ACC4129769FD4B7D0CE /* AboutView.swift */; };
+		5FA3E652D10107BC82379230 /* FiguresSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F207B2F1471E902962407C6 /* FiguresSection.swift */; };
+		630F3A60D69B58FA4DA521D9 /* ThermalModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D5AD2C700C82F3944C0855 /* ThermalModel.swift */; };
+		685492F9570CDD224E0BE510 /* ChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98FBEB5A785197C72F48E354 /* ChartView.swift */; };
+		6BF245431DFB927F7ED56653 /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4810EEB10D9B1E56FECD6ADC /* SharedStore.swift */; };
+		77B90F86F7B07D12F2AB0046 /* WeatherSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988657E913FB966E3E50A74E /* WeatherSeries.swift */; };
+		819C5898E14F66CC875844D5 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB1DCCE6F98DEA5E64EB095 /* Theme.swift */; };
+		83818D0A07BF1D5B034CA816 /* SharedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4810EEB10D9B1E56FECD6ADC /* SharedStore.swift */; };
+		84D86ECCA394C41B0705088A /* RiseIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F6022E91E3EA76805F433A0 /* RiseIn.swift */; };
+		858368BD55CA41C1B5331C02 /* DisclosureRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE01C0B70183430843951E0 /* DisclosureRow.swift */; };
+		907E14313AE1F35BD8E350C1 /* ControlsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07A74040D3F5C91195B3DC7B /* ControlsSection.swift */; };
+		9A477DABECA03D16ECB6E001 /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A3D0B35D6CB46D54FE3D8EB /* WeatherService.swift */; };
+		9CB55E328B0DE6BE7E1B2706 /* NadirToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19589ACFDB2E0B5945F8C046 /* NadirToggleStyle.swift */; };
+		A0CC7756158C31CF91A30C70 /* NadirWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6CE072F0738B7ABC943539E7 /* NadirWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A1BE4E5683F203C4A866031A /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87435B7D8821B562CBA7A0CB /* OnboardingView.swift */; };
+		A242D24823B07C7F4FA561A2 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C782CCB94A1E42BE3BF832D6 /* TodayView.swift */; };
+		A27C166D9F42A1566F621232 /* NadirWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = E55C2A98F8CBF186C8B3A56A /* NadirWidgets.swift */; };
+		A3B4528DAC85D90F0A0AE7AD /* AlarmsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5416ED8F9D3E4C2C1D3EDC6 /* AlarmsSection.swift */; };
+		A63620037078FC9428F5EA92 /* ChoiceCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E7CB55A25F86DD71009AE2 /* ChoiceCard.swift */; };
+		AC065784CAFD195D8BCFD57B /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03BA61945040D19505BD758F /* AppModel.swift */; };
+		B172B99F7535256BBE63C4EC /* NadirWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F67ED6A38730B2728085E7EE /* NadirWidgetView.swift */; };
+		B89B00E97391D5CAD5D530D8 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB1DCCE6F98DEA5E64EB095 /* Theme.swift */; };
+		C4ADFEECAFFDB5E64A873C5F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D971FD90CC93A814B150DC12 /* RootView.swift */; };
+		CA364E5085C908D18C28497D /* HomeSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED8C6C632CEA9CC1E006B04A /* HomeSettings.swift */; };
+		D0CBD4522326F4B1DB200915 /* GuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A2EE7A900DFCAB5688046A /* GuideView.swift */; };
+		D27F6D40CD3C118AC364CDC4 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA855845669C4603F02243BD /* UserProfile.swift */; };
+		D6DDB4CE00C0BC2762366260 /* SegmentedRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F4B6F1CC7B8321A98E43F0 /* SegmentedRow.swift */; };
+		D725EE6E08C75EA7D59B152C /* NadirApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED145670E07D0371F2F6B97 /* NadirApp.swift */; };
+		E44D03088DB22A949441722A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ADE4CEC178AB91B3FF1A39F7 /* Assets.xcassets */; };
+		E9A6DA43FB19342126565A6A /* AlarmScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBD76848ADD01277E4ED1CB5 /* AlarmScheduler.swift */; };
+		EAEC783B4409BBD988483422 /* WeatherSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988657E913FB966E3E50A74E /* WeatherSeries.swift */; };
+		F5052C09A799C88F00EB886F /* ThermalAnalysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = E555150F466C3E1DBBA7BD8E /* ThermalAnalysis.swift */; };
+		FBCBEFC1FD36A8574F209301 /* Icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20111807C7217495A4E0B00 /* Icons.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		0416629962F67F129892D750 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E1DF17F9FADC3BAC06B9791C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 339AE889A131133E015799AE;
+			remoteInfo = NadirWidgets;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BE0EBF79E8770BCA73EED187 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A0CC7756158C31CF91A30C70 /* NadirWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		03BA61945040D19505BD758F /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		07A74040D3F5C91195B3DC7B /* ControlsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlsSection.swift; sourceTree = "<group>"; };
+		085BDFBB470C45343B3F9508 /* NadirIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NadirIntents.swift; sourceTree = "<group>"; };
+		19589ACFDB2E0B5945F8C046 /* NadirToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NadirToggleStyle.swift; sourceTree = "<group>"; };
+		1EF7D95C0CD2ACCB98B3AEEE /* NADIR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NADIR.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		27322EB77291A3D7A31B1CFC /* Exposure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exposure.swift; sourceTree = "<group>"; };
+		2BF92DEC2A68A5DEF35E2E7C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		2ED145670E07D0371F2F6B97 /* NadirApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NadirApp.swift; sourceTree = "<group>"; };
+		2F207B2F1471E902962407C6 /* FiguresSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiguresSection.swift; sourceTree = "<group>"; };
+		38A2EE7A900DFCAB5688046A /* GuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideView.swift; sourceTree = "<group>"; };
+		3AB1DCCE6F98DEA5E64EB095 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		4810EEB10D9B1E56FECD6ADC /* SharedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedStore.swift; sourceTree = "<group>"; };
+		4DE01C0B70183430843951E0 /* DisclosureRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureRow.swift; sourceTree = "<group>"; };
+		66D5AD2C700C82F3944C0855 /* ThermalModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThermalModel.swift; sourceTree = "<group>"; };
+		6A8DB27ABA635F14E3D68C6C /* SeriesProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesProvider.swift; sourceTree = "<group>"; };
+		6CE072F0738B7ABC943539E7 /* NadirWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NadirWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		7F6022E91E3EA76805F433A0 /* RiseIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiseIn.swift; sourceTree = "<group>"; };
+		87435B7D8821B562CBA7A0CB /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		876A6E8661C088D01B22EA5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		90E7CB55A25F86DD71009AE2 /* ChoiceCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceCard.swift; sourceTree = "<group>"; };
+		988657E913FB966E3E50A74E /* WeatherSeries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSeries.swift; sourceTree = "<group>"; };
+		98FBEB5A785197C72F48E354 /* ChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartView.swift; sourceTree = "<group>"; };
+		9A3D0B35D6CB46D54FE3D8EB /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
+		9FC1F44687998471BED9CA16 /* NADIR.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NADIR.entitlements; sourceTree = "<group>"; };
+		A29309BB4D2DFECA447E2F86 /* NadirWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NadirWidgets.entitlements; sourceTree = "<group>"; };
+		A3BEAE1CD7097A991C23F7CF /* LearnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearnView.swift; sourceTree = "<group>"; };
+		ADE4CEC178AB91B3FF1A39F7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B1F4B6F1CC7B8321A98E43F0 /* SegmentedRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedRow.swift; sourceTree = "<group>"; };
+		BA855845669C4603F02243BD /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		C782CCB94A1E42BE3BF832D6 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
+		C8D28CFE6358C3AA014CE248 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		CBD76848ADD01277E4ED1CB5 /* AlarmScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmScheduler.swift; sourceTree = "<group>"; };
+		CFBA1ACC4129769FD4B7D0CE /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		D971FD90CC93A814B150DC12 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		E5416ED8F9D3E4C2C1D3EDC6 /* AlarmsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmsSection.swift; sourceTree = "<group>"; };
+		E555150F466C3E1DBBA7BD8E /* ThermalAnalysis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThermalAnalysis.swift; sourceTree = "<group>"; };
+		E55C2A98F8CBF186C8B3A56A /* NadirWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NadirWidgets.swift; sourceTree = "<group>"; };
+		ED8C6C632CEA9CC1E006B04A /* HomeSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSettings.swift; sourceTree = "<group>"; };
+		F20111807C7217495A4E0B00 /* Icons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Icons.swift; sourceTree = "<group>"; };
+		F67ED6A38730B2728085E7EE /* NadirWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NadirWidgetView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		0E58C2F0135E252F5F9175F9 /* NADIR */ = {
+			isa = PBXGroup;
+			children = (
+				ADE4CEC178AB91B3FF1A39F7 /* Assets.xcassets */,
+				876A6E8661C088D01B22EA5C /* Info.plist */,
+				9FC1F44687998471BED9CA16 /* NADIR.entitlements */,
+				9961A1E23A57929FA9F095FF /* App */,
+				EE4B44F7065CA7AB516DC6C1 /* Engine */,
+				D4BF1D39BBCB5C7F0DC5936D /* Intents */,
+				24D81C692AF75D55D06758B8 /* Models */,
+				3F87AB791DFE051A9EBB13C0 /* Services */,
+				D27207E603E6B62E56845EE5 /* Shared */,
+				643B6BE9461125AB9F588BAD /* ViewModels */,
+				63DADEB17F33288F4A40C1C5 /* Views */,
+			);
+			path = NADIR;
+			sourceTree = "<group>";
+		};
+		10955B541579798E19AE7DA9 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				87435B7D8821B562CBA7A0CB /* OnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		10DBD969A1AF9A0DB0B07D36 /* About */ = {
+			isa = PBXGroup;
+			children = (
+				CFBA1ACC4129769FD4B7D0CE /* AboutView.swift */,
+			);
+			path = About;
+			sourceTree = "<group>";
+		};
+		24D81C692AF75D55D06758B8 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				27322EB77291A3D7A31B1CFC /* Exposure.swift */,
+				ED8C6C632CEA9CC1E006B04A /* HomeSettings.swift */,
+				BA855845669C4603F02243BD /* UserProfile.swift */,
+				988657E913FB966E3E50A74E /* WeatherSeries.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		273156C3D06B46434CBA4EA5 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				90E7CB55A25F86DD71009AE2 /* ChoiceCard.swift */,
+				4DE01C0B70183430843951E0 /* DisclosureRow.swift */,
+				F20111807C7217495A4E0B00 /* Icons.swift */,
+				19589ACFDB2E0B5945F8C046 /* NadirToggleStyle.swift */,
+				7F6022E91E3EA76805F433A0 /* RiseIn.swift */,
+				B1F4B6F1CC7B8321A98E43F0 /* SegmentedRow.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		3F87AB791DFE051A9EBB13C0 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				CBD76848ADD01277E4ED1CB5 /* AlarmScheduler.swift */,
+				C8D28CFE6358C3AA014CE248 /* LocationService.swift */,
+				9A3D0B35D6CB46D54FE3D8EB /* WeatherService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		63DADEB17F33288F4A40C1C5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D971FD90CC93A814B150DC12 /* RootView.swift */,
+				3AB1DCCE6F98DEA5E64EB095 /* Theme.swift */,
+				10DBD969A1AF9A0DB0B07D36 /* About */,
+				273156C3D06B46434CBA4EA5 /* Components */,
+				DD6EC680C8C9FFBD794F2ED3 /* Guide */,
+				FA32710A257620177F164B4B /* Learn */,
+				10955B541579798E19AE7DA9 /* Onboarding */,
+				ED121D5B40BD93A9FCD01ABC /* Today */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		643B6BE9461125AB9F588BAD /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				03BA61945040D19505BD758F /* AppModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		6559CD2B6F7E5F533B16F970 = {
+			isa = PBXGroup;
+			children = (
+				0E58C2F0135E252F5F9175F9 /* NADIR */,
+				9734A022DCB181DCB3B62547 /* NadirWidgets */,
+				824FE86F7256E24888B2F406 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		824FE86F7256E24888B2F406 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1EF7D95C0CD2ACCB98B3AEEE /* NADIR.app */,
+				6CE072F0738B7ABC943539E7 /* NadirWidgets.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9734A022DCB181DCB3B62547 /* NadirWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				2BF92DEC2A68A5DEF35E2E7C /* Info.plist */,
+				A29309BB4D2DFECA447E2F86 /* NadirWidgets.entitlements */,
+				E55C2A98F8CBF186C8B3A56A /* NadirWidgets.swift */,
+				F67ED6A38730B2728085E7EE /* NadirWidgetView.swift */,
+			);
+			path = NadirWidgets;
+			sourceTree = "<group>";
+		};
+		9961A1E23A57929FA9F095FF /* App */ = {
+			isa = PBXGroup;
+			children = (
+				2ED145670E07D0371F2F6B97 /* NadirApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		D27207E603E6B62E56845EE5 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				6A8DB27ABA635F14E3D68C6C /* SeriesProvider.swift */,
+				4810EEB10D9B1E56FECD6ADC /* SharedStore.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		D4BF1D39BBCB5C7F0DC5936D /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				085BDFBB470C45343B3F9508 /* NadirIntents.swift */,
+			);
+			path = Intents;
+			sourceTree = "<group>";
+		};
+		DD6EC680C8C9FFBD794F2ED3 /* Guide */ = {
+			isa = PBXGroup;
+			children = (
+				38A2EE7A900DFCAB5688046A /* GuideView.swift */,
+			);
+			path = Guide;
+			sourceTree = "<group>";
+		};
+		ED121D5B40BD93A9FCD01ABC /* Today */ = {
+			isa = PBXGroup;
+			children = (
+				E5416ED8F9D3E4C2C1D3EDC6 /* AlarmsSection.swift */,
+				98FBEB5A785197C72F48E354 /* ChartView.swift */,
+				07A74040D3F5C91195B3DC7B /* ControlsSection.swift */,
+				2F207B2F1471E902962407C6 /* FiguresSection.swift */,
+				C782CCB94A1E42BE3BF832D6 /* TodayView.swift */,
+			);
+			path = Today;
+			sourceTree = "<group>";
+		};
+		EE4B44F7065CA7AB516DC6C1 /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				E555150F466C3E1DBBA7BD8E /* ThermalAnalysis.swift */,
+				66D5AD2C700C82F3944C0855 /* ThermalModel.swift */,
+			);
+			path = Engine;
+			sourceTree = "<group>";
+		};
+		FA32710A257620177F164B4B /* Learn */ = {
+			isa = PBXGroup;
+			children = (
+				A3BEAE1CD7097A991C23F7CF /* LearnView.swift */,
+			);
+			path = Learn;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		117EF2F6D15BD69D4513605F /* NADIR */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A7FC66E9FC85F27F89105304 /* Build configuration list for PBXNativeTarget "NADIR" */;
+			buildPhases = (
+				E3E6B4E5EE03859926907442 /* Sources */,
+				884466E6CC440BA0B6B8B471 /* Resources */,
+				BE0EBF79E8770BCA73EED187 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B7894CF8D5204A8F72FAC804 /* PBXTargetDependency */,
+			);
+			name = NADIR;
+			packageProductDependencies = (
+			);
+			productName = NADIR;
+			productReference = 1EF7D95C0CD2ACCB98B3AEEE /* NADIR.app */;
+			productType = "com.apple.product-type.application";
+		};
+		339AE889A131133E015799AE /* NadirWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF8ED5E24ECA58410902712C /* Build configuration list for PBXNativeTarget "NadirWidgets" */;
+			buildPhases = (
+				E6715AA6D300429D1826045A /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NadirWidgets;
+			packageProductDependencies = (
+			);
+			productName = NadirWidgets;
+			productReference = 6CE072F0738B7ABC943539E7 /* NadirWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E1DF17F9FADC3BAC06B9791C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+			};
+			buildConfigurationList = E6D357B5B2476A73862139F1 /* Build configuration list for PBXProject "NADIR" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 6559CD2B6F7E5F533B16F970;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 824FE86F7256E24888B2F406 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				117EF2F6D15BD69D4513605F /* NADIR */,
+				339AE889A131133E015799AE /* NadirWidgets */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		884466E6CC440BA0B6B8B471 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E44D03088DB22A949441722A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E3E6B4E5EE03859926907442 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5A913EF300BF589DF41370FA /* AboutView.swift in Sources */,
+				E9A6DA43FB19342126565A6A /* AlarmScheduler.swift in Sources */,
+				A3B4528DAC85D90F0A0AE7AD /* AlarmsSection.swift in Sources */,
+				AC065784CAFD195D8BCFD57B /* AppModel.swift in Sources */,
+				685492F9570CDD224E0BE510 /* ChartView.swift in Sources */,
+				A63620037078FC9428F5EA92 /* ChoiceCard.swift in Sources */,
+				907E14313AE1F35BD8E350C1 /* ControlsSection.swift in Sources */,
+				858368BD55CA41C1B5331C02 /* DisclosureRow.swift in Sources */,
+				3B9F02E035826C5A1EB8688F /* Exposure.swift in Sources */,
+				5FA3E652D10107BC82379230 /* FiguresSection.swift in Sources */,
+				D0CBD4522326F4B1DB200915 /* GuideView.swift in Sources */,
+				3D5427D618F6D2F469B15EBD /* HomeSettings.swift in Sources */,
+				FBCBEFC1FD36A8574F209301 /* Icons.swift in Sources */,
+				0A0C04C20BB74C094FFD03CA /* LearnView.swift in Sources */,
+				1D3252DF5567E1CF839DA372 /* LocationService.swift in Sources */,
+				D725EE6E08C75EA7D59B152C /* NadirApp.swift in Sources */,
+				58DAA677B46B2E753ED6DA3A /* NadirIntents.swift in Sources */,
+				9CB55E328B0DE6BE7E1B2706 /* NadirToggleStyle.swift in Sources */,
+				A1BE4E5683F203C4A866031A /* OnboardingView.swift in Sources */,
+				84D86ECCA394C41B0705088A /* RiseIn.swift in Sources */,
+				C4ADFEECAFFDB5E64A873C5F /* RootView.swift in Sources */,
+				D6DDB4CE00C0BC2762366260 /* SegmentedRow.swift in Sources */,
+				58FF43A085D5DA15683A398A /* SeriesProvider.swift in Sources */,
+				83818D0A07BF1D5B034CA816 /* SharedStore.swift in Sources */,
+				819C5898E14F66CC875844D5 /* Theme.swift in Sources */,
+				266580FE6859EABB4A884377 /* ThermalAnalysis.swift in Sources */,
+				14ABEA62FD3C2F4B2EE59859 /* ThermalModel.swift in Sources */,
+				A242D24823B07C7F4FA561A2 /* TodayView.swift in Sources */,
+				1F3C07ABF2FA8D6C6B0BDF39 /* UserProfile.swift in Sources */,
+				77B90F86F7B07D12F2AB0046 /* WeatherSeries.swift in Sources */,
+				1E9ECFB477BF96FBC0C27140 /* WeatherService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E6715AA6D300429D1826045A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3B89B6118F3E73D07E1FE96A /* Exposure.swift in Sources */,
+				CA364E5085C908D18C28497D /* HomeSettings.swift in Sources */,
+				B172B99F7535256BBE63C4EC /* NadirWidgetView.swift in Sources */,
+				A27C166D9F42A1566F621232 /* NadirWidgets.swift in Sources */,
+				54FD56827DFF04A3099374D2 /* SeriesProvider.swift in Sources */,
+				6BF245431DFB927F7ED56653 /* SharedStore.swift in Sources */,
+				B89B00E97391D5CAD5D530D8 /* Theme.swift in Sources */,
+				F5052C09A799C88F00EB886F /* ThermalAnalysis.swift in Sources */,
+				630F3A60D69B58FA4DA521D9 /* ThermalModel.swift in Sources */,
+				D27F6D40CD3C118AC364CDC4 /* UserProfile.swift in Sources */,
+				EAEC783B4409BBD988483422 /* WeatherSeries.swift in Sources */,
+				9A477DABECA03D16ECB6E001 /* WeatherService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B7894CF8D5204A8F72FAC804 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 339AE889A131133E015799AE /* NadirWidgets */;
+			targetProxy = 0416629962F67F129892D750 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		3A2296F6C35DE4BFB5C4C78F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_LANGUAGE = fr;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.10;
+			};
+			name = Release;
+		};
+		723FFD5B1B4DE6B7F114C359 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_LANGUAGE = fr;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.10;
+			};
+			name = Debug;
+		};
+		7440BB0AC9E0BD24D7DD2F5D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = NadirWidgets/NadirWidgets.entitlements;
+				DEVELOPMENT_TEAM = ZUTQ26CJ6T;
+				INFOPLIST_FILE = NadirWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NADIR;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.solalgendrin.nadir.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		7FE815CF2BA94BA2225DE771 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = NadirWidgets/NadirWidgets.entitlements;
+				DEVELOPMENT_TEAM = ZUTQ26CJ6T;
+				INFOPLIST_FILE = NadirWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NADIR;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.solalgendrin.nadir.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8F87A0CE697EF4957265B291 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = NADIR/NADIR.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = ZUTQ26CJ6T;
+				INFOPLIST_FILE = NADIR/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NADIR;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.solalgendrin.nadir;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		CDBB02C2C32FD092CD7057DC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = NADIR/NADIR.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = ZUTQ26CJ6T;
+				INFOPLIST_FILE = NADIR/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NADIR;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.solalgendrin.nadir;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A7FC66E9FC85F27F89105304 /* Build configuration list for PBXNativeTarget "NADIR" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8F87A0CE697EF4957265B291 /* Debug */,
+				CDBB02C2C32FD092CD7057DC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		BF8ED5E24ECA58410902712C /* Build configuration list for PBXNativeTarget "NadirWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7FE815CF2BA94BA2225DE771 /* Debug */,
+				7440BB0AC9E0BD24D7DD2F5D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E6D357B5B2476A73862139F1 /* Build configuration list for PBXProject "NADIR" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				723FFD5B1B4DE6B7F114C359 /* Debug */,
+				3A2296F6C35DE4BFB5C4C78F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E1DF17F9FADC3BAC06B9791C /* Project object */;
+}
