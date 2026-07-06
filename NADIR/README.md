@@ -49,9 +49,12 @@ open NADIR.xcodeproj    # ⌘R sur un simulateur iPhone
 Le dossier [docs/](../docs/) à la racine du dépôt contient le mini-site
 statique, dans le design de l'app :
 
-- Marketing : https://solal3105.github.io/nadir2/
-- Assistance : https://solal3105.github.io/nadir2/assistance.html
-- Copyright & vie privée : https://solal3105.github.io/nadir2/copyright.html
+- Marketing : https://solal3105.github.io/NADIR2/
+- Assistance : https://solal3105.github.io/NADIR2/assistance.html
+- Confidentialité : https://solal3105.github.io/NADIR2/confidentialite.html
+- Copyright : https://solal3105.github.io/NADIR2/copyright.html
+
+(URL sensibles à la casse : le dépôt s'appelle `NADIR2`.)
 
 Ce sont les URL d'assistance et de politique de confidentialité attendues par
 l'App Store. Publication : Settings → Pages → « Deploy from a branch » →
