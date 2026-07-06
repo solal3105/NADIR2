@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NADIR — App web</title>
+<meta name="description" content="La version web de NADIR : le verdict, la courbe et vos réglages, avec le même moteur thermique que l'app iOS. Sans compte, sans pub — les alarmes restent sur iOS.">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<style>
+  :root{
+    --bg:#000; --ink:#fff; --dim:#8c8c8c; --faint:#5a5a5a;
+    --line:#242424; --line2:#3a3a3a; --hairline:#1a1a1a; --chartbg:#050505;
+    --hot:#ff3b1d; --cold:#3ea6ff; --go:#5ad17a;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+    --maxw:760px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;font-size:clamp(15px,1.05vw,17px);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,5vw,56px)}
+  h2{margin:0;font-size:inherit;font-weight:inherit}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);
+    white-space:nowrap}
+  ::selection{background:var(--ink);color:var(--bg)}
+  a{color:inherit}
+  button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+
+  nav{display:flex;flex-wrap:wrap;gap:1.1rem 1.6rem;align-items:baseline;padding:1.2rem 0;
+    border-bottom:1px solid var(--line);font-family:var(--mono);font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.06em}
+  nav .brand{font-family:var(--sans);font-weight:800;font-size:1.05rem;
+    letter-spacing:.02em;text-decoration:none;margin-right:auto}
+  nav a{color:var(--dim);text-decoration:none}
+  nav a:hover,nav a[aria-current]{color:var(--ink)}
+
+  .eyebrow{font-family:var(--mono);font-size:11px;text-transform:uppercase;
+    letter-spacing:.12em;color:var(--faint)}
+
+  /* Barre d'état : lieu courant */
+  .place-row{display:flex;justify-content:flex-end;align-items:center;gap:7px;
+    padding-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.03em;
+    text-transform:uppercase;color:var(--dim)}
+  .place-row .dot{width:7px;height:7px;border-radius:50%;background:var(--dim);flex:none}
+  .place-row .dot.live{background:var(--go)}
+
+  /* Verdict */
+  .verdict{padding:22px 0 20px}
+  .verdict h1{margin:14px 0 0;font-weight:800;text-transform:uppercase;
+    letter-spacing:-.04em;line-height:.95;font-size:clamp(2rem,7.5vw,2.9rem)}
+  .verdict h1.closed{color:var(--hot)}
+  .verdict .closed-note{margin:16px 0 0;font-family:var(--mono);font-size:12.5px;
+    line-height:1.7;color:var(--dim)}
+
+  /* Lieu : MA POSITION | ville | → */
+  .locate{padding-bottom:20px}
+  .locate .row{display:flex;height:48px;border:1px solid var(--line)}
+  .locate .row:focus-within{border-color:var(--ink)}
+  .locate .row>*{min-width:0}
+  .locate .sep{width:1px;background:var(--line);flex:none}
+  .locate button.geo{display:flex;align-items:center;gap:7px;padding:0 14px;flex:none;
+    font-family:var(--mono);font-size:11px;letter-spacing:.03em;color:var(--ink)}
+  .locate button.geo svg{display:block}
+  .locate button.geo.busy svg{animation:spin 1.1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .locate input{flex:1;background:none;border:0;outline:0;color:var(--ink);
+    font-family:var(--sans);font-size:15px;padding:0 12px}
+  .locate input::placeholder{color:var(--faint)}
+  .locate button.go{padding:0 18px;font-size:18px;flex:none;color:var(--ink)}
+  .locate button.geo:hover,.locate button.go:hover{background:var(--hairline)}
+  .status{font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--dim);
+    padding-top:9px;min-height:1em}
+
+  /* Graphe */
+  .chart{background:var(--chartbg);border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line)}
+  .chart svg{display:block;width:100%;height:auto}
+  .chart text{font-family:var(--mono)}
+  @media (prefers-reduced-motion: no-preference){
+    .chart path.draw{stroke-dasharray:1;stroke-dashoffset:1;
+      animation:draw 1.3s ease-out forwards}
+    .chart path.draw.late{animation-delay:.75s}
+    .chart .fade{opacity:0;animation:appear .8s ease-out .9s forwards}
+    @keyframes draw{to{stroke-dashoffset:0}}
+    @keyframes appear{to{opacity:1}}
+  }
+
+  /* Créneau (repères horaires, sans alarmes) */
+  .window-info{margin-top:20px;border:1px solid var(--line);padding:16px 18px}
+  .window-info .rows{display:flex;flex-wrap:wrap;gap:6px 32px;margin-top:12px;
+    font-family:var(--mono);font-size:12.5px;color:var(--ink)}
+  .window-info .rows .lbl{color:var(--dim)}
+  .window-info .ios-note{margin-top:12px;font-family:var(--mono);font-size:10px;
+    line-height:1.7;color:var(--faint)}
+  .window-info .ios-note a{color:var(--dim)}
+
+  /* Réglages */
+  .controls{padding:26px 0 8px}
+  .controls .question{display:flex;align-items:baseline;gap:10px;
+    font-size:14px;color:var(--ink);margin:0 0 10px}
+  .controls .question .val{margin-left:auto;font-family:var(--mono);font-size:15px}
+  .block{margin-bottom:20px}
+  .hint{font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--dim);
+    margin-top:8px;min-height:1em}
+  .subhint{font-family:var(--mono);font-size:9.5px;color:var(--dim);margin-top:5px}
+
+  .segmented{display:flex;gap:1px;background:var(--line);border:1px solid var(--line)}
+  .segmented button{flex:1;padding:11px 2px;background:var(--bg);color:var(--dim);
+    font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    transition:background .12s ease-out,color .12s ease-out}
+  .segmented button:hover{color:var(--ink)}
+  .segmented button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;
+    background:none;margin:0}
+  input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--line2)}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;
+    border-radius:50%;background:var(--ink);margin-top:-8px;border:0}
+  input[type=range]::-moz-range-track{height:2px;background:var(--line2)}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;
+    background:var(--ink);border:0}
+
+  /* Vos chiffres */
+  .figures{border-top:1px solid var(--line);margin-top:16px;padding:24px 0 0}
+  .figures .head{display:flex;gap:12px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.12em;color:var(--dim);text-transform:uppercase;margin-bottom:16px}
+  .figures .head .arrow{color:var(--ink)}
+  .figures .sub{font-size:15px;color:var(--dim);margin:0 0 20px;max-width:56ch}
+  .effect{margin-bottom:11px}
+  .effect .labels{display:flex;align-items:baseline;gap:10px;margin-bottom:3px}
+  .effect .labels .l{font-family:var(--mono);font-size:11.5px;color:var(--dim)}
+  .effect .labels .v{margin-left:auto;font-family:var(--mono);font-size:12.5px;
+    color:var(--cold);white-space:nowrap}
+  .effect .bar{height:3px;background:var(--hairline);position:relative;overflow:hidden}
+  .effect .bar i{position:absolute;inset:0;right:auto;background:var(--cold);
+    transition:width .35s ease-out}
+  .total{display:flex;align-items:baseline;gap:10px;margin-top:11px;
+    border-top:1px solid var(--line2);padding-top:11px}
+  .total .l{font-family:var(--mono);font-size:12px;color:var(--ink)}
+  .total .v{margin-left:auto;font-family:var(--mono);font-size:17px;color:var(--go);
+    white-space:nowrap}
+  .disclaimer{font-family:var(--mono);font-size:10px;line-height:1.8;
+    color:var(--dim);margin-top:12px;max-width:66ch}
+  .notes{border-top:1px solid var(--line);margin-top:24px;padding-top:18px;
+    font-size:15px;line-height:1.6}
+  .notes p{margin:0 0 10px;color:var(--dim)}
+  .notes p.faint{color:var(--faint)}
+
+  .method-note{margin-top:34px;font-family:var(--mono);font-size:11px;
+    line-height:1.8;color:var(--faint)}
+  .method-note a{color:var(--dim)}
+
+  footer{margin-top:34px;padding:3rem 0 4rem;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:.72rem;color:var(--faint);line-height:2}
+  footer a{color:var(--dim)}
+
+  noscript{display:block;padding:2rem 0;font-family:var(--mono);color:var(--hot)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav>
+    <a class="brand" href="index.html">NADIR</a>
+    <a href="index.html">L'app</a>
+    <a href="app.html" aria-current="page">App web</a>
+    <a href="assistance.html">Assistance</a>
+    <a href="methodologie.html">Méthodologie</a>
+    <a href="confidentialite.html">Confidentialité</a>
+    <a href="copyright.html">Copyright</a>
+  </nav>
+
+  <noscript>La version web de NADIR a besoin de JavaScript pour simuler votre
+    logement. Activez-le, ou consultez la <a href="methodologie.html">méthodologie</a>.</noscript>
+
+  <div class="place-row" id="placeRow">
+    <span class="dot" id="placeDot"></span>
+    <span id="placeName">Exemple</span>
+  </div>
+
+  <div class="verdict">
+    <div class="eyebrow">Le verdict</div>
+    <h1 id="verdictTitle">…</h1>
+    <p class="closed-note" id="closedNote" hidden>Restez fermé. Attendez une nuit
+      plus fraîche.</p>
+  </div>
+
+  <div class="locate">
+    <div class="row">
+      <button class="geo" id="geoBtn" type="button">
+        <svg width="13" height="13" viewBox="0 0 14 14" aria-hidden="true">
+          <circle cx="7" cy="7" r="4" fill="none" stroke="currentColor" stroke-width="1.2"/>
+          <path d="M7 0v2.4M7 11.6V14M0 7h2.4M11.6 7H14" stroke="currentColor" stroke-width="1.2"/>
+        </svg>
+        MA POSITION
+      </button>
+      <span class="sep"></span>
+      <input id="cityInput" type="text" placeholder="votre ville" autocomplete="off"
+             autocapitalize="words" spellcheck="false" enterkeyhint="search"
+             aria-label="Votre ville">
+      <span class="sep"></span>
+      <button class="go" id="goBtn" type="button" aria-label="Valider">→</button>
+    </div>
+    <div class="status" id="status" aria-live="polite"></div>
+  </div>
+
+  <div class="chart" id="chart" role="img"
+       aria-label="Température extérieure et intérieure modélisée"></div>
+
+  <div class="window-info" id="windowInfo" hidden>
+    <h2 class="eyebrow">Le créneau</h2>
+    <div class="rows" id="windowRows"></div>
+    <p class="ios-note">Les alarmes qui sonnent au bon moment, les widgets et
+      Siri sont réservés à <a href="index.html">l'app iOS</a> — un site web ne
+      peut pas vous réveiller. Ici, revenez vérifier le créneau.</p>
+  </div>
+
+  <div class="controls">
+    <h2 class="sr">Vos réglages</h2>
+    <div class="block">
+      <div class="question">Quelle température fait-il chez vous ?
+        <span class="val" id="indoorVal">26 °C</span></div>
+      <input type="range" id="indoorRange" min="20" max="34" step="0.5" value="26"
+             aria-label="Température chez vous">
+    </div>
+
+    <div class="block">
+      <div class="question">Vos murs sont plutôt légers, moyens ou lourds ?</div>
+      <div class="segmented" id="wallsSeg" role="group" aria-label="Inertie des murs"></div>
+      <div class="hint" id="wallsHint"></div>
+    </div>
+
+    <div class="block">
+      <div class="question">Quelle ventilation pouvez-vous faire ?</div>
+      <div class="segmented" id="ventSeg" role="group" aria-label="Ventilation possible"></div>
+      <div class="hint" id="ventHint"></div>
+    </div>
+
+    <div class="block">
+      <div class="question">Quelle exposition a votre logement ?</div>
+      <div class="segmented" id="expoSeg" role="group" aria-label="Exposition du logement"></div>
+      <div class="hint" id="expoHint"></div>
+      <div class="subhint">Logement traversant ? Sélectionnez deux façades.</div>
+    </div>
+  </div>
+
+  <div class="figures">
+    <h2 class="head"><span class="arrow">→</span><span>Vos chiffres</span></h2>
+    <p class="sub">Au plus chaud de la journée, vous serez plus frais que dehors.</p>
+    <div id="effectRows"></div>
+    <div class="total">
+      <span class="l">au total</span>
+      <span class="v" id="totalVal"></span>
+    </div>
+    <p class="disclaimer">Estimation : NADIR ne peut pas connaître toutes les
+      données de votre logement (isolation, vitrage, étage, environnement…).
+      Retenez l'ordre de grandeur, pas la décimale.</p>
+    <div class="notes" id="notes" hidden></div>
+  </div>
+
+  <p class="method-note">La version web exécute le même moteur thermique que
+    l'app iOS — mêmes équations, mêmes seuils, mêmes chiffres. Tout est calculé
+    dans votre navigateur ; seule la météo est demandée à Open-Meteo.
+    Détails : <a href="methodologie.html">méthodologie</a>.</p>
+
+  <footer>
+    NADIR · <a href="index.html">L'app</a> · <a href="assistance.html">Assistance</a> ·
+    <a href="methodologie.html">Méthodologie</a> ·
+    <a href="confidentialite.html">Politique de confidentialité</a> ·
+    <a href="copyright.html">Copyright</a><br>
+    Météo par <a href="https://open-meteo.com" rel="noopener">Open-Meteo</a> (CC BY 4.0) ·
+    © 2026 Solal Gendrin
+  </footer>
+
+</div>
+
+<script src="assets/engine.js"></script>
+<script>
+(function () {
+  'use strict';
+  var E = window.NadirEngine;
+
+  // --- État ------------------------------------------------------------
+  var PROFILE_KEY = 'nadir.web.profile.v1';
+  var SERIES_KEY = 'nadir.web.series.v1';
+
+  var profile = loadProfile();
+  var series = loadSeries() || E.demoSeries();
+  var nowMs = Date.now();
+  var lastFetch = 0;
+  var sourceKey = 0;        // change à chaque nouvelle source météo
+  var animatedKey = -1;     // dernière source dont l'animation a été jouée
+
+  function defaultProfile() {
+    return {
+      inertia: 'medium', ventilation: 'medium',
+      exposure: { primary: 'south', secondary: null },
+      indoorNow: 26, latitude: null, longitude: null, place: '',
+    };
+  }
+  function loadProfile() {
+    try {
+      var raw = localStorage.getItem(PROFILE_KEY);
+      if (!raw) return defaultProfile();
+      var p = JSON.parse(raw), d = defaultProfile();
+      if (!E.WALL_KAPPA[p.inertia]) p.inertia = d.inertia;
+      if (!E.VENT_ACH[p.ventilation]) p.ventilation = d.ventilation;
+      if (!p.exposure || !E.FACADES[p.exposure.primary]) p.exposure = d.exposure;
+      if (p.exposure.secondary && !E.FACADES[p.exposure.secondary]) p.exposure.secondary = null;
+      if (typeof p.indoorNow !== 'number' || !(p.indoorNow >= 20 && p.indoorNow <= 34)) p.indoorNow = 26;
+      if (typeof p.latitude !== 'number' || typeof p.longitude !== 'number') {
+        p.latitude = null; p.longitude = null;
+      }
+      if (typeof p.place !== 'string') p.place = '';
+      return p;
+    } catch (e) { return defaultProfile(); }
+  }
+  function persistProfile() {
+    try { localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); } catch (e) {}
+  }
+  function loadSeries() {
+    try {
+      var raw = localStorage.getItem(SERIES_KEY);
+      if (!raw) return null;
+      var s = JSON.parse(raw);
+      if (!s || !Array.isArray(s.times) || !s.times.length) return null;
+      if (!Array.isArray(s.outdoor) || s.outdoor.length !== s.times.length) return null;
+      if (!Array.isArray(s.dewPoint) || s.dewPoint.length !== s.times.length) return null;
+      if (typeof s.timeZone !== 'string') return null;
+      var allNumbers = function (a) {
+        for (var i = 0; i < a.length; i++) {
+          if (typeof a[i] !== 'number' || !isFinite(a[i])) return false;
+        }
+        return true;
+      };
+      if (!allNumbers(s.times) || !allNumbers(s.outdoor) || !allNumbers(s.dewPoint)) return null;
+      if (typeof s.place !== 'string') s.place = '';
+      s.isDemo = !!s.isDemo;
+      // Série périmée (plus rien à venir) : repartir de l'exemple.
+      if (s.times[s.times.length - 1] < Date.now()) return null;
+      return s;
+    } catch (e) { return null; }
+  }
+  function persistSeries(s) {
+    try { localStorage.setItem(SERIES_KEY, JSON.stringify(s)); } catch (e) {}
+  }
+
+  // --- Réseau (WeatherService.swift) ------------------------------------
+  function getJSON(url) {
+    var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var timer = controller ? setTimeout(function () { controller.abort(); }, 8000) : null;
+    return fetch(url, controller ? { signal: controller.signal } : {})
+      .then(function (r) {
+        if (timer) clearTimeout(timer);
+        if (!r.ok) throw new Error('badResponse');
+        return r.json();
+      }, function (err) {
+        if (timer) clearTimeout(timer);
+        throw err;
+      });
+  }
+
+  function geocode(city) {
+    var url = 'https://geocoding-api.open-meteo.com/v1/search'
+      + '?name=' + encodeURIComponent(city) + '&count=1&language=fr&format=json';
+    return getJSON(url).then(function (data) {
+      var r = data && data.results && data.results[0];
+      if (!r) { var e = new Error('cityNotFound'); e.cityNotFound = true; throw e; }
+      var name = r.name + (r.country_code ? ' (' + r.country_code + ')' : '');
+      return { name: name, latitude: r.latitude, longitude: r.longitude };
+    });
+  }
+
+  function forecast(latitude, longitude, placeName) {
+    var url = 'https://api.open-meteo.com/v1/forecast'
+      + '?latitude=' + latitude + '&longitude=' + longitude
+      + '&hourly=temperature_2m,dew_point_2m&forecast_days=3'
+      + '&timezone=auto&timeformat=unixtime';
+    return getJSON(url).then(function (data) {
+      var h = data && data.hourly;
+      if (!h || !Array.isArray(h.time) || !Array.isArray(h.temperature_2m)
+          || !Array.isArray(h.dew_point_2m)) throw new Error('badResponse');
+      var times = [], outdoor = [], dewPoint = [];
+      for (var i = 0; i < h.time.length; i++) {
+        var temp = h.temperature_2m[i], dew = h.dew_point_2m[i];
+        // Au premier trou, on tronque : l'aval suppose un pas horaire strict.
+        if (typeof h.time[i] !== 'number' || typeof temp !== 'number'
+            || typeof dew !== 'number') break;
+        times.push(h.time[i] * 1000);
+        outdoor.push(temp);
+        dewPoint.push(dew);
+      }
+      if (!times.length) throw new Error('badResponse');
+      return {
+        times: times, outdoor: outdoor, dewPoint: dewPoint,
+        place: placeName, timeZone: data.timezone || 'UTC', isDemo: false,
+      };
+    });
+  }
+
+  function currentPosition() {
+    return new Promise(function (resolve, reject) {
+      if (!navigator.geolocation) { reject(new Error('unsupported')); return; }
+      navigator.geolocation.getCurrentPosition(
+        function (pos) { resolve(pos.coords); },
+        function (err) { reject(err); },
+        { timeout: 10000, maximumAge: 300000 }
+      );
+    });
+  }
+
+  // --- Actions (AppModel.swift) ------------------------------------------
+  // Jeton de génération : seule la requête la plus récente a le droit
+  // d'adopter sa réponse (une réponse lente ne doit pas écraser une ville
+  // demandée après elle).
+  var requestId = 0;
+
+  function adopt(newSeries) {
+    sourceKey++;
+    series = newSeries;
+    nowMs = Date.now();
+    lastFetch = Date.now();
+    if (!newSeries.isDemo) persistSeries(newSeries);
+    render();
+  }
+  function persistPlace(latitude, longitude) {
+    profile.latitude = latitude;
+    profile.longitude = longitude;
+    profile.place = series.place;
+    persistProfile();
+  }
+  function setStatus(message) {
+    document.getElementById('status').textContent = message;
+  }
+
+  function start() {
+    if (profile.latitude === null || profile.longitude === null) return;
+    var id = ++requestId;
+    var place = profile.place || 'Votre logement';
+    setStatus('Récupération de la météo…');
+    forecast(profile.latitude, profile.longitude, place)
+      .then(function (s) {
+        if (id !== requestId) return;
+        adopt(s); setStatus('');
+      })
+      .catch(function () {
+        if (id !== requestId) return;
+        setStatus('Météo indisponible.');
+      });
+  }
+
+  function searchCity() {
+    var input = document.getElementById('cityInput');
+    var city = input.value.trim();
+    if (!city) return;
+    var id = ++requestId;
+    setStatus('Recherche de « ' + city + ' »…');
+    geocode(city)
+      .then(function (place) {
+        if (id !== requestId) return;
+        setStatus('Récupération de la météo…');
+        return forecast(place.latitude, place.longitude, place.name)
+          .then(function (s) {
+            if (id !== requestId) return;
+            adopt(s);
+            persistPlace(place.latitude, place.longitude);
+            setStatus('');
+            input.blur();
+          });
+      })
+      .catch(function (err) {
+        if (id !== requestId) return;
+        setStatus(err && err.cityNotFound
+          ? 'Ville introuvable. Vérifiez l’orthographe.'
+          : 'Connexion impossible. Réessayez dans un instant.');
+      });
+  }
+
+  function useMyLocation() {
+    var btn = document.getElementById('geoBtn');
+    var id = ++requestId;
+    btn.classList.add('busy');
+    setStatus('Localisation en cours…');
+    currentPosition()
+      .then(function (coords) {
+        if (id !== requestId) return;
+        setStatus('Récupération de la météo…');
+        return forecast(coords.latitude, coords.longitude, 'Votre position')
+          .then(function (s) {
+            if (id !== requestId) return;
+            adopt(s);
+            persistPlace(coords.latitude, coords.longitude);
+            setStatus('');
+          });
+      })
+      .catch(function (err) {
+        if (id !== requestId) return;
+        setStatus(err && err.code === 1
+          ? 'Localisation refusée. Autorisez-la dans votre navigateur, ou tapez votre ville.'
+          : 'Position indisponible. Tapez votre ville.');
+      })
+      .then(function () { btn.classList.remove('busy'); },
+            function () { btn.classList.remove('busy'); });
+  }
+
+  // --- Formats (AppModel.swift) --------------------------------------------
+  function indoorLabel(value) {
+    return (value % 1 === 0 ? E.noDecimal(value) : E.oneDecimal(value)) + ' °C';
+  }
+  var clockFormatters = {};
+  function clockLabel(ms) {
+    var tz = series.timeZone;
+    if (!clockFormatters[tz]) {
+      try {
+        clockFormatters[tz] = new Intl.DateTimeFormat('fr-FR',
+          { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: tz });
+      } catch (e) {
+        clockFormatters[tz] = new Intl.DateTimeFormat('fr-FR',
+          { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+      }
+    }
+    var parts = clockFormatters[tz].formatToParts(new Date(ms));
+    var h = '00', m = '00';
+    parts.forEach(function (p) {
+      if (p.type === 'hour') h = p.value;
+      if (p.type === 'minute') m = p.value;
+    });
+    return h + ':' + m;
+  }
+  function delayLabel(targetMs) {
+    var minutes = Math.max(0, Math.round((targetMs - nowMs) / 60000));
+    if (minutes < 60) return 'Dans ' + minutes + ' min';
+    var hours = Math.floor(minutes / 60), rest = minutes % 60;
+    return rest > 0
+      ? 'Dans ' + hours + ' h ' + (rest < 10 ? '0' : '') + rest
+      : 'Dans ' + hours + ' h';
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // --- Textes des réglages (ControlsSection.swift) --------------------------
+  var WALL_HINTS = {
+    light: 'Exemple : cloison, bois, préfabriqué',
+    medium: 'Exemple : brique creuse, parpaing',
+    heavy: 'Exemple : pierre, béton, brique pleine',
+  };
+  var VENT_HINTS = {
+    low: 'Exemple : une fenêtre entrouverte',
+    medium: 'Exemple : une fenêtre grande ouverte',
+    high: 'Exemple : plusieurs fenêtres grand ouvertes, ou un ventilateur',
+  };
+  var FACADE_HINTS = {
+    north: 'Peu de soleil direct.',
+    east: 'Soleil direct le matin.',
+    south: 'Soleil direct en milieu de journée.',
+    west: 'Soleil direct l’après-midi et en soirée.',
+  };
+  function exposureHint(exposure) {
+    if (E.isDual(exposure)) {
+      return E.isCrossOpposite(exposure)
+        ? 'Traversant ' + E.exposureLabel(exposure) + ' — façades opposées, fort courant d’air possible.'
+        : 'Traversant ' + E.exposureLabel(exposure) + ' — logement d’angle, courant d’air possible.';
+    }
+    return FACADE_HINTS[exposure.primary];
+  }
+
+  // --- Graphe (ChartView.swift) ----------------------------------------------
+  function renderChart(analysis, animate) {
+    var container = document.getElementById('chart');
+    var s = analysis.series;
+    var outdoor = s.outdoor, indoor = analysis.result.indoor;
+    var n = outdoor.length;
+    if (n < 2 || indoor.length !== n) { container.innerHTML = ''; return; }
+
+    var width = Math.max(280, container.clientWidth || 640);
+    var height = 300;
+    var padLeft = 44, padRight = 18, padTop = 22, padBottom = 36;
+    var plotBottom = height - padBottom;
+
+    var lo = Math.min.apply(null, outdoor.concat(indoor)) - 1.5;
+    var hi = Math.max.apply(null, outdoor.concat(indoor)) + 1.5;
+
+    function x(i) { return padLeft + (i / (n - 1)) * (width - padLeft - padRight); }
+    function y(t) { return padTop + (1 - (t - lo) / (hi - lo)) * (plotBottom - padTop); }
+    function pts(samples) {
+      var d = 'M' + x(0).toFixed(2) + ' ' + y(samples[0]).toFixed(2);
+      for (var i = 1; i < n; i++) d += 'L' + x(i).toFixed(2) + ' ' + y(samples[i]).toFixed(2);
+      return d;
+    }
+    function txt(str, xx, yy, size, fill, anchor, extra) {
+      return '<text x="' + xx.toFixed(2) + '" y="' + yy.toFixed(2) + '" font-size="' + size
+        + '" fill="' + fill + '" text-anchor="' + (anchor || 'start') + '"'
+        + (extra || '') + ' dominant-baseline="middle">' + escapeHtml(str) + '</text>';
+    }
+
+    var svg = [];
+    var fadeCls = animate ? ' class="fade"' : '';
+
+    // Créneaux d'ouverture conseillés.
+    analysis.runs.forEach(function (run) {
+      var xa = x(Math.max(0, run[0] - 0.5));
+      var xb = x(Math.min(n - 1, run[1] + 0.5));
+      svg.push('<rect' + fadeCls + ' x="' + xa.toFixed(2) + '" y="' + padTop
+        + '" width="' + (xb - xa).toFixed(2) + '" height="' + (plotBottom - padTop)
+        + '" fill="rgba(90,209,122,0.10)"/>');
+    });
+
+    // Graduations de température.
+    var span = hi - lo;
+    var step = span > 18 ? 5 : span > 9 ? 4 : 2;
+    var mark = Math.ceil(lo / step) * step;
+    while (mark <= hi) {
+      var my = y(mark);
+      svg.push('<line x1="' + padLeft + '" y1="' + my.toFixed(2) + '" x2="'
+        + (width - padRight) + '" y2="' + my.toFixed(2)
+        + '" stroke="rgba(255,255,255,0.06)"/>');
+      svg.push(txt(Math.round(mark) + '°', padLeft - 6, my, 10, '#8c8c8c', 'end'));
+      mark += step;
+    }
+
+    // « Plus frais que dehors » : aire entre l'extérieur et l'intérieur.
+    var cooler = 'M' + x(0).toFixed(2) + ' ' + y(Math.max(outdoor[0], indoor[0])).toFixed(2);
+    for (var i = 1; i < n; i++) {
+      cooler += 'L' + x(i).toFixed(2) + ' ' + y(Math.max(outdoor[i], indoor[i])).toFixed(2);
+    }
+    for (i = n - 1; i >= 0; i--) {
+      cooler += 'L' + x(i).toFixed(2) + ' ' + y(indoor[i]).toFixed(2);
+    }
+    svg.push('<path' + fadeCls + ' d="' + cooler + 'Z" fill="rgba(62,166,255,0.14)"/>');
+
+    // Graduations horaires.
+    for (i = 0; i < n; i += 3) {
+      var hx = x(i);
+      svg.push('<line x1="' + hx.toFixed(2) + '" y1="' + plotBottom + '" x2="'
+        + hx.toFixed(2) + '" y2="' + (plotBottom + 4) + '" stroke="#2a2a2a"/>');
+      svg.push(txt(E.hourLabel(s, i), hx, plotBottom + 12, 10, '#8c8c8c', 'middle'));
+    }
+
+    // Passage(s) à minuit.
+    var tomorrowLabelled = false;
+    for (i = 1; i < n; i++) {
+      if (E.hourAt(s, i) !== 0) continue;
+      var mx = x(i);
+      svg.push('<line x1="' + mx.toFixed(2) + '" y1="' + padTop + '" x2="' + mx.toFixed(2)
+        + '" y2="' + plotBottom + '" stroke="rgba(255,255,255,0.14)" stroke-dasharray="3 5"/>');
+      if (!tomorrowLabelled) {
+        svg.push(txt('demain', mx + 5, plotBottom - 12, 9, '#8c8c8c'));
+        tomorrowLabelled = true;
+      }
+    }
+
+    // Dégradé sous la courbe intérieure + halo : « chez vous » est la star.
+    var indoorD = pts(indoor);
+    var indoorTop = Math.min.apply(null, indoor.map(y));
+    svg.push('<defs><linearGradient id="indoorFill" x1="0" y1="' + indoorTop.toFixed(2)
+      + '" x2="0" y2="' + plotBottom + '" gradientUnits="userSpaceOnUse">'
+      + '<stop offset="0" stop-color="rgba(62,166,255,0.20)"/>'
+      + '<stop offset="1" stop-color="rgba(62,166,255,0)"/></linearGradient></defs>');
+    svg.push('<path' + fadeCls + ' d="' + indoorD + 'L' + x(n - 1).toFixed(2) + ' ' + plotBottom
+      + 'L' + x(0).toFixed(2) + ' ' + plotBottom + 'Z" fill="url(#indoorFill)"/>');
+    svg.push('<path' + fadeCls + ' d="' + indoorD
+      + '" fill="none" stroke="rgba(62,166,255,0.10)" stroke-width="10"/>');
+    svg.push('<path' + fadeCls + ' d="' + indoorD
+      + '" fill="none" stroke="rgba(62,166,255,0.18)" stroke-width="5"/>');
+
+    // Dehors (léger) puis chez vous (net).
+    svg.push('<path' + (animate ? ' class="draw"' : '') + ' pathLength="1" d="' + pts(outdoor)
+      + '" fill="none" stroke="rgba(255,255,255,0.34)" stroke-width="1.5" stroke-linejoin="round"/>');
+    svg.push('<path' + (animate ? ' class="draw late"' : '') + ' pathLength="1" d="' + indoorD
+      + '" fill="none" stroke="#3ea6ff" stroke-width="2.6" stroke-linejoin="round"/>');
+
+    // Noms des courbes à leur extrémité, avec anti-collision.
+    var outdoorLabelY = y(outdoor[n - 1]) - 10;
+    var indoorLabelY = y(indoor[n - 1]) + 12;
+    if (Math.abs(outdoorLabelY - indoorLabelY) < 16) {
+      var center = (outdoorLabelY + indoorLabelY) / 2;
+      var sign = outdoorLabelY <= indoorLabelY ? 1 : -1;
+      outdoorLabelY = center - 8 * sign;
+      indoorLabelY = center + 8 * sign;
+    }
+    svg.push(txt('dehors', width - padRight - 2, outdoorLabelY, 11,
+      'rgba(255,255,255,0.6)', 'end', fadeCls));
+    svg.push(txt('chez vous', width - padRight - 2, indoorLabelY, 11,
+      '#3ea6ff', 'end', fadeCls));
+
+    // Cote d'efficacité au moment le plus chaud.
+    var peak = analysis.peakIndex;
+    var gap = outdoor[peak] - indoor[peak];
+    if (gap > 0.6) {
+      var gx = x(peak), y1 = y(outdoor[peak]), y2 = y(indoor[peak]);
+      svg.push('<path' + fadeCls + ' d="M' + gx.toFixed(2) + ' ' + y1.toFixed(2)
+        + 'L' + gx.toFixed(2) + ' ' + y2.toFixed(2)
+        + 'M' + (gx - 4).toFixed(2) + ' ' + y1.toFixed(2) + 'L' + (gx + 4).toFixed(2) + ' ' + y1.toFixed(2)
+        + 'M' + (gx - 4).toFixed(2) + ' ' + y2.toFixed(2) + 'L' + (gx + 4).toFixed(2) + ' ' + y2.toFixed(2)
+        + '" stroke="#fff" stroke-width="1.5" fill="none"/>');
+      var onRight = gx > width - 140;
+      svg.push(txt(E.oneDecimal(gap) + ' °C plus frais',
+        onRight ? gx - 8 : gx + 8, (y1 + y2) / 2, 11, '#fff',
+        onRight ? 'end' : 'start', fadeCls));
+    }
+
+    // Repère du minimum dehors.
+    var coolest = analysis.coolestIndex;
+    var cx = x(coolest), cy = y(outdoor[coolest]);
+    svg.push('<circle cx="' + cx.toFixed(2) + '" cy="' + cy.toFixed(2)
+      + '" r="3.5" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1.5"/>');
+    svg.push(txt('min ' + E.noDecimal(outdoor[coolest]) + '°', cx, cy + 11, 10, '#8c8c8c', 'middle'));
+
+    // Maintenant.
+    svg.push('<line x1="' + x(0).toFixed(2) + '" y1="' + padTop + '" x2="' + x(0).toFixed(2)
+      + '" y2="' + plotBottom + '" stroke="rgba(255,255,255,0.35)"/>');
+    svg.push(txt('maintenant', x(0) + 4, padTop + 6, 10, '#8c8c8c'));
+
+    // Lieu.
+    svg.push(txt(s.place, width - padRight, padTop + 6, 11, '#fff', 'end'));
+
+    container.innerHTML = '<svg viewBox="0 0 ' + width + ' ' + height
+      + '" width="' + width + '" height="' + height + '">' + svg.join('') + '</svg>';
+  }
+
+  // --- Rendu ------------------------------------------------------------------
+  function analysisNow() {
+    return E.analyze(E.windowSeries(series, nowMs), profile.indoorNow,
+      profile.inertia, profile.ventilation, profile.exposure);
+  }
+
+  function render() {
+    var analysis = analysisNow();
+    var animate = sourceKey !== animatedKey;
+    animatedKey = sourceKey;
+
+    // Lieu.
+    document.getElementById('placeName').textContent = series.place.toUpperCase();
+    document.getElementById('placeDot').classList.toggle('live', !series.isDemo);
+
+    // Verdict.
+    var title = document.getElementById('verdictTitle');
+    title.textContent = analysis.verdictTitle.toUpperCase();
+    title.classList.toggle('closed', analysis.runs.length === 0);
+    document.getElementById('closedNote').hidden = analysis.runs.length !== 0;
+
+    // Graphe.
+    renderChart(analysis, animate);
+
+    // Créneau.
+    var info = document.getElementById('windowInfo');
+    var w = analysis.firstWindow;
+    if (w && w.end > nowMs) {
+      info.hidden = false;
+      var rows = '';
+      if (w.start > nowMs) {
+        rows += '<span><span class="lbl">ouvrir&nbsp;</span>' + clockLabel(w.start)
+          + '<span class="lbl">&nbsp;· ' + delayLabel(w.start).toLowerCase() + '</span></span>';
+      } else {
+        rows += '<span><span class="lbl">créneau en cours</span></span>';
+      }
+      rows += '<span><span class="lbl">fermer&nbsp;</span>' + clockLabel(w.end)
+        + '<span class="lbl">&nbsp;· ' + delayLabel(w.end).toLowerCase() + '</span></span>';
+      document.getElementById('windowRows').innerHTML = rows;
+    } else {
+      info.hidden = true;
+    }
+
+    // Réglages.
+    document.getElementById('indoorVal').textContent = indoorLabel(profile.indoorNow);
+    document.getElementById('indoorRange').value = profile.indoorNow;
+    renderSegments();
+
+    // Vos chiffres.
+    var b = analysis.breakdown;
+    var rows2 = [
+      ['ouvrir au bon moment', b.base],
+      ['murs ' + E.WALL_LABEL[profile.inertia], b.walls],
+      ['ventilation ' + E.VENT_LABEL[profile.ventilation], b.ventilation],
+    ];
+    if (b.showsSynergy) rows2.push(['les deux combinés', b.synergy]);
+    document.getElementById('effectRows').innerHTML = rows2.map(function (row) {
+      var pct = Math.min(1, row[1] / 8) * 100;
+      return '<div class="effect"><div class="labels"><span class="l">'
+        + escapeHtml(row[0]) + '</span><span class="v">' + E.oneDecimal(row[1])
+        + '°C de moins</span></div><div class="bar"><i style="width:'
+        + pct.toFixed(1) + '%"></i></div></div>';
+    }).join('');
+    document.getElementById('totalVal').textContent =
+      E.oneDecimal(b.total) + '°C de moins que dehors';
+
+    // Notes.
+    var notes = [];
+    if (analysis.secondWindowLabel) {
+      notes.push('<p>Un deuxième créneau s’ouvre ' + analysis.secondWindowLabel + '.</p>');
+    }
+    if (analysis.humidDuringOpenings) {
+      notes.push('<p class="faint">L’air sera humide : n’ouvrez pas trop longtemps.</p>');
+    }
+    if (series.isDemo) {
+      notes.push('<p class="faint">Exemple. Tapez votre ville pour votre créneau réel.</p>');
+    }
+    var notesEl = document.getElementById('notes');
+    notesEl.hidden = notes.length === 0;
+    notesEl.innerHTML = notes.join('');
+  }
+
+  function renderSegments() {
+    buildSegment('wallsSeg', ['light', 'medium', 'heavy'], E.WALL_LABEL,
+      function (k) { return k === profile.inertia; },
+      function (k) { profile.inertia = k; persistProfile(); render(); });
+    document.getElementById('wallsHint').textContent = WALL_HINTS[profile.inertia];
+
+    buildSegment('ventSeg', ['low', 'medium', 'high'], E.VENT_LABEL,
+      function (k) { return k === profile.ventilation; },
+      function (k) { profile.ventilation = k; persistProfile(); render(); });
+    document.getElementById('ventHint').textContent = VENT_HINTS[profile.ventilation];
+
+    var facadeLabels = {};
+    E.FACADE_ORDER.forEach(function (k) { facadeLabels[k] = E.FACADES[k].label; });
+    buildSegment('expoSeg', E.FACADE_ORDER, facadeLabels,
+      function (k) { return E.exposureContains(profile.exposure, k); },
+      function (k) {
+        profile.exposure = E.toggleExposure(profile.exposure, k);
+        persistProfile(); render();
+      });
+    document.getElementById('expoHint').textContent = exposureHint(profile.exposure);
+  }
+
+  function buildSegment(id, keys, labels, isSelected, onSelect) {
+    var el = document.getElementById(id);
+    if (!el.childElementCount) {
+      keys.forEach(function (k) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = labels[k].toUpperCase();
+        btn.addEventListener('click', function () { onSelect(k); });
+        el.appendChild(btn);
+      });
+    }
+    keys.forEach(function (k, i) {
+      el.children[i].setAttribute('aria-pressed', isSelected(k) ? 'true' : 'false');
+    });
+  }
+
+  // --- Écouteurs -----------------------------------------------------------
+  document.getElementById('goBtn').addEventListener('click', searchCity);
+  document.getElementById('cityInput').addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') searchCity();
+  });
+  document.getElementById('geoBtn').addEventListener('click', useMyLocation);
+  document.getElementById('indoorRange').addEventListener('input', function (e) {
+    profile.indoorNow = parseFloat(e.target.value);
+    persistProfile();
+    render();
+  });
+
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () { renderChart(analysisNow(), false); }, 150);
+  });
+
+  // Série entièrement passée et pas de refetch possible : revenir à l'exemple
+  // plutôt que de présenter des données d'hier comme « maintenant ».
+  function ensureFresh() {
+    if (series.times[series.times.length - 1] < nowMs) {
+      sourceKey++;
+      series = E.demoSeries(nowMs);
+    }
+  }
+
+  // D'autres onglets ont pu modifier le profil : le stockage fait foi
+  // (équivalent de refreshNow() côté iOS).
+  function reloadProfileIfChanged() {
+    var stored = loadProfile();
+    if (JSON.stringify(stored) !== JSON.stringify(profile)) {
+      profile = stored;
+      return true;
+    }
+    return false;
+  }
+
+  // L'heure avance ; la météo se rafraîchit si elle date de plus de 30 min.
+  setInterval(function () {
+    nowMs = Date.now();
+    if (document.visibilityState === 'visible'
+        && profile.latitude !== null && Date.now() - lastFetch > 30 * 60000) {
+      start();
+    }
+    ensureFresh();
+    render();
+  }, 60000);
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState !== 'visible') return;
+    nowMs = Date.now();
+    reloadProfileIfChanged();
+    ensureFresh();
+    if (profile.latitude !== null && Date.now() - lastFetch > 30 * 60000) start();
+    render();
+  });
+
+  window.addEventListener('storage', function (e) {
+    if (e.key === PROFILE_KEY) {
+      if (reloadProfileIfChanged()) render();
+    } else if (e.key === SERIES_KEY) {
+      var s = loadSeries();
+      if (s) { series = s; render(); }
+    }
+  });
+
+  // --- Départ ---------------------------------------------------------------
+  try {
+    render();
+  } catch (err) {
+    // Donnée locale inattendue : repartir de l'exemple plutôt que de rester
+    // sur une page vide.
+    series = E.demoSeries();
+    render();
+  }
+  start();
+})();
+</script>
+</body>
+</html>
