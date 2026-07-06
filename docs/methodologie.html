@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Méthodologie — NADIR</title>
+<meta name="description" content="Comment NADIR calcule : le modèle thermique à deux nœuds, les équations, les seuils, les données Open-Meteo — et une revue honnête des biais et des limites.">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<style>
+  :root{
+    --bg:#000; --ink:#fff; --dim:#8c8c8c; --faint:#5a5a5a;
+    --line:#242424; --line2:#3a3a3a;
+    --hot:#ff3b1d; --cold:#3ea6ff; --go:#5ad17a;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,"Helvetica Neue",Helvetica,Arial,system-ui,sans-serif;
+    --maxw:820px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;font-size:clamp(15px,1.05vw,17px);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,5vw,56px)}
+  ::selection{background:var(--ink);color:var(--bg)}
+  a{color:inherit}
+
+  nav{display:flex;flex-wrap:wrap;gap:1.1rem 1.6rem;align-items:baseline;padding:1.2rem 0;
+    border-bottom:1px solid var(--line);font-family:var(--mono);font-size:.78rem;
+    text-transform:uppercase;letter-spacing:.06em}
+  nav .brand{font-family:var(--sans);font-weight:800;font-size:1.05rem;
+    letter-spacing:.02em;text-decoration:none;margin-right:auto}
+  nav a{color:var(--dim);text-decoration:none}
+  nav a:hover,nav a[aria-current]{color:var(--ink)}
+
+  .eyebrow{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;
+    letter-spacing:.12em;color:var(--faint)}
+  h1{margin:.4rem 0 0;font-weight:800;text-transform:uppercase;
+    letter-spacing:-.04em;line-height:.9;font-size:clamp(2.4rem,8vw,4.2rem)}
+  h2{margin:0 0 1rem;font-weight:800;text-transform:uppercase;
+    letter-spacing:-.03em;font-size:clamp(1.4rem,3.4vw,1.9rem)}
+  h3{margin:1.6rem 0 .5rem;font-weight:700;font-size:1.02rem;letter-spacing:-.01em}
+  p{margin:0 0 1em;max-width:62ch;color:var(--dim)}
+  p b,li b{color:var(--ink);font-weight:600}
+  header{padding:clamp(40px,7vh,72px) 0 clamp(24px,4vh,40px)}
+  section{padding:clamp(32px,5vh,56px) 0;border-top:1px solid var(--line)}
+  .mono{font-family:var(--mono);font-size:.82rem;line-height:1.9;color:var(--dim)}
+  ul{margin:0 0 1em;padding-left:1.2em;color:var(--dim);max-width:62ch}
+  li{margin-bottom:.55em}
+
+  .eq{border:1px solid var(--line2);padding:1rem 1.3rem;margin:0 0 1.1em;
+    font-family:var(--mono);font-size:.86rem;line-height:2;color:var(--ink);
+    overflow-x:auto;white-space:nowrap}
+  .eq .c{color:var(--faint)}
+
+  .stamp{border:1px solid var(--line2);padding:1.4rem 1.6rem;
+    font-family:var(--mono);font-size:.85rem;color:var(--dim);margin:0 0 1.2rem}
+  .stamp b{color:var(--ink)}
+
+  table{width:100%;border-collapse:collapse;margin:0 0 1.2em;
+    font-size:.85rem;color:var(--dim)}
+  th{font-family:var(--mono);font-size:.7rem;text-transform:uppercase;
+    letter-spacing:.08em;color:var(--faint);text-align:left;font-weight:500}
+  th,td{padding:.55rem .8rem .55rem 0;border-bottom:1px solid var(--line);
+    vertical-align:top}
+  td b{color:var(--ink);font-weight:600}
+  td.v{font-family:var(--mono);white-space:nowrap;color:var(--ink)}
+  .tablewrap{overflow-x:auto}
+
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+    background:var(--line2);border:1px solid var(--line2);margin:0 0 1.2em}
+  .kpi{background:var(--bg);padding:1.1rem 1.2rem}
+  .kpi b{display:block;font-family:var(--mono);font-size:1.25rem;
+    font-weight:600;margin-bottom:.3rem}
+  .kpi span{font-size:.8rem;color:var(--dim);line-height:1.45;display:block}
+  @media (max-width:640px){.kpis{grid-template-columns:1fr}}
+
+  .tag{font-family:var(--mono);font-size:.68rem;text-transform:uppercase;
+    letter-spacing:.08em;padding:.1rem .45rem;border:1px solid var(--line2);
+    white-space:nowrap}
+  .tag.opt{color:var(--hot);border-color:var(--hot)}
+  .tag.prud{color:var(--cold);border-color:var(--cold)}
+  .tag.neutre{color:var(--dim)}
+
+  .bias{list-style:none;padding:0;max-width:none}
+  .bias li{border-top:1px solid var(--line);padding:1rem 0;margin:0;
+    display:grid;grid-template-columns:1fr auto;gap:.4rem 1.2rem;align-items:start}
+  .bias li:last-child{border-bottom:1px solid var(--line)}
+  .bias .t{color:var(--ink);font-weight:600}
+  .bias .d{grid-column:1 / -1;color:var(--dim);font-size:.93rem;max-width:66ch}
+
+  figure{margin:0 0 1.2em;border:1px solid var(--line2);padding:1.2rem;overflow-x:auto}
+  figure svg{display:block;min-width:560px;width:100%;height:auto}
+  figcaption{font-family:var(--mono);font-size:.72rem;color:var(--faint);
+    margin-top:.8rem;letter-spacing:.04em}
+
+  footer{padding:3rem 0 4rem;border-top:1px solid var(--line);
+    font-family:var(--mono);font-size:.72rem;color:var(--faint);line-height:2}
+  footer a{color:var(--dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <nav>
+    <a class="brand" href="index.html">NADIR</a>
+    <a href="index.html">L'app</a>
+    <a href="assistance.html">Assistance</a>
+    <a href="methodologie.html" aria-current="page">Méthodologie</a>
+    <a href="confidentialite.html">Confidentialité</a>
+    <a href="copyright.html">Copyright</a>
+  </nav>
+
+  <header>
+    <div class="eyebrow">Modèle thermique · données · limites</div>
+    <h1>Méthodo&shy;logie</h1>
+    <p style="margin-top:1.4rem">Cette page décrit exactement comment NADIR calcule —
+      les données, les équations, les seuils — et ce que ça vaut : où le modèle est
+      solide, où il se trompe, et <b>dans quel sens</b> il se trompe.
+      Aucun secret : tous les paramètres sont listés ici, tels qu'ils sont dans le code
+      de la version 1.0.</p>
+  </header>
+
+  <section style="border-top:0;padding-top:0">
+    <h2>La question posée</h2>
+    <p>Ouvrir les fenêtres rafraîchit si l'air dehors est plus frais que chez vous.
+      Mais deux choses compliquent l'affaire. D'abord, ouvrir suppose en général de
+      <b>relever les volets</b> : le soleil qui entre peut coûter plus que l'air frais
+      ne rapporte. Ensuite, la fraîcheur gagnée doit se <b>stocker quelque part</b> —
+      dans les murs — sinon elle repart en une heure.</p>
+    <p>C'est donc un problème de <b>timing</b> et d'<b>arbitrage</b>, pas une règle
+      fixe. NADIR le traite de la seule façon honnête : en simulant votre logement
+      heure par heure sur les 30 prochaines heures, et en cherchant les créneaux où
+      ouvrir fait vraiment gagner.</p>
+  </section>
+
+  <section>
+    <h2>Les données d'entrée</h2>
+    <ul>
+      <li><b>La météo : Open-Meteo.</b> Température de l'air à 2 m et point de rosée,
+        heure par heure, sur 3 jours, dans le fuseau du lieu. La simulation ne garde
+        que les <b>30 prochaines heures</b> — assez pour inclure le pic de demain
+        après-midi, celui que la nuit à venir peut encore adoucir.</li>
+      <li><b>Vos quatre réglages.</b> L'inertie des murs (légers / moyens / lourds),
+        la ventilation possible fenêtres ouvertes (faible / moyenne / forte),
+        l'exposition (une ou deux façades), et la <b>température intérieure
+        actuelle</b> — le réglage le plus important, car il fixe l'état de départ
+        exact de la simulation.</li>
+    </ul>
+    <p>Et ce que NADIR <b>n'utilise pas</b>, autant le dire : pas de données de
+      rayonnement solaire mesuré, pas de vent, pas de nébulosité. Le soleil est un
+      modèle géométrique de ciel clair (détaillé plus bas) — c'est une vraie limite,
+      examinée dans la section sur les biais.</p>
+    <p class="mono">Tant qu'aucun lieu réel n'est choisi, l'app affiche une sinusoïde
+      d'exemple étiquetée « Exemple » — et les raccourcis Siri refusent de répondre
+      dessus plutôt que d'inventer un verdict.</p>
+  </section>
+
+  <section>
+    <h2>Le modèle : deux nœuds, l'air et la masse</h2>
+    <p>L'observation de départ : quand vous aérez, <b>l'air se rafraîchit en
+      minutes ; les murs mettent des heures</b>. Un seul « réservoir de chaleur » ne
+      peut pas représenter ça. Deux suffisent : un nœud <b>air</b> (l'air de la pièce
+      et le mobilier léger) et un nœud <b>masse</b> (murs, planchers, cloisons),
+      couplés entre eux et vers l'extérieur.</p>
+
+    <figure>
+      <svg viewBox="0 0 680 250" xmlns="http://www.w3.org/2000/svg" role="img"
+           aria-label="Schéma du modèle à deux nœuds : extérieur, air, masse">
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6"
+                  markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#8c8c8c"/>
+          </marker>
+        </defs>
+        <!-- boîtes -->
+        <rect x="16"  y="95" width="150" height="70" fill="none" stroke="#3a3a3a"/>
+        <rect x="265" y="95" width="150" height="70" fill="none" stroke="#3a3a3a"/>
+        <rect x="514" y="95" width="150" height="70" fill="none" stroke="#3a3a3a"/>
+        <text x="91"  y="124" text-anchor="middle" fill="#fff" font-family="Menlo,monospace" font-size="13" font-weight="bold">DEHORS</text>
+        <text x="91"  y="146" text-anchor="middle" fill="#8c8c8c" font-family="Menlo,monospace" font-size="11">T_ext (météo)</text>
+        <text x="340" y="124" text-anchor="middle" fill="#fff" font-family="Menlo,monospace" font-size="13" font-weight="bold">AIR</text>
+        <text x="340" y="146" text-anchor="middle" fill="#8c8c8c" font-family="Menlo,monospace" font-size="11">T_a · C_a=150 kJ/K</text>
+        <text x="589" y="124" text-anchor="middle" fill="#fff" font-family="Menlo,monospace" font-size="13" font-weight="bold">MASSE</text>
+        <text x="589" y="146" text-anchor="middle" fill="#8c8c8c" font-family="Menlo,monospace" font-size="11">T_m · C_m=2,2–5,2 MJ/K</text>
+        <!-- liaisons -->
+        <line x1="166" y1="130" x2="265" y2="130" stroke="#8c8c8c" marker-start="url(#ah)" marker-end="url(#ah)"/>
+        <text x="215" y="118" text-anchor="middle" fill="#8c8c8c" font-family="Menlo,monospace" font-size="10.5">H_env 50 W/K</text>
+        <text x="215" y="152" text-anchor="middle" fill="#5ad17a" font-family="Menlo,monospace" font-size="10.5">+ H_vent si ouvert</text>
+        <line x1="415" y1="130" x2="514" y2="130" stroke="#8c8c8c" marker-start="url(#ah)" marker-end="url(#ah)"/>
+        <text x="464" y="118" text-anchor="middle" fill="#8c8c8c" font-family="Menlo,monospace" font-size="10.5">H_am 300 W/K</text>
+        <!-- apports -->
+        <line x1="305" y1="40" x2="325" y2="95" stroke="#ff3b1d" marker-end="url(#ah)"/>
+        <text x="296" y="30" text-anchor="middle" fill="#ff3b1d" font-family="Menlo,monospace" font-size="10.5">soleil 0–650 W/façade</text>
+        <line x1="375" y1="40" x2="357" y2="95" stroke="#8c8c8c" marker-end="url(#ah)"/>
+        <text x="404" y="30" text-anchor="middle" fill="#8c8c8c" font-family="Menlo,monospace" font-size="10.5">internes 150 W</text>
+        <!-- note volets -->
+        <text x="340" y="215" text-anchor="middle" fill="#5a5a5a" font-family="Menlo,monospace" font-size="10.5">volets fermés : 30 % du soleil passe · fenêtres ouvertes (volets relevés) : 100 %</text>
+      </svg>
+      <figcaption>Le modèle complet tient dans ce schéma. La ventilation agit sur
+        l'air ; l'air, lentement, sur la masse.</figcaption>
+    </figure>
+
+    <p>À chaque heure de météo, deux bilans d'énergie sont intégrés (10 sous-pas de
+      6 minutes, méthode d'Euler explicite — dimensionnés pour rester sous la limite
+      de stabilité du cas le plus ventilé) :</p>
+
+    <div class="eq">
+      C<sub>a</sub>·dT<sub>a</sub>/dt = H<sub>ext</sub>·(T<sub>ext</sub> − T<sub>a</sub>) + H<sub>am</sub>·(T<sub>m</sub> − T<sub>a</sub>) + Φ(t)<br>
+      C<sub>m</sub>·dT<sub>m</sub>/dt = H<sub>am</sub>·(T<sub>a</sub> − T<sub>m</sub>)<br>
+      <span class="c">avec H<sub>ext</sub> = H<sub>env</sub> (+ H<sub>vent</sub> fenêtres ouvertes) · Φ = internes + soleil admis</span>
+    </div>
+
+    <p>Tous les paramètres, sans exception :</p>
+    <div class="tablewrap">
+    <table>
+      <tr><th>Paramètre</th><th>Valeur</th><th>D'où ça vient</th></tr>
+      <tr><td>Pièce type</td><td class="v">20 m² · 50 m³</td>
+        <td>Pièce de vie type ; voir « biais » pour ce que ça implique</td></tr>
+      <tr><td>Capacité de l'air C<sub>a</sub></td><td class="v">150 kJ/K</td>
+        <td>Air seul ≈ 60 kJ/K (ρc<sub>p</sub> = 1 206 J/m³K × 50 m³) + mobilier léger</td></tr>
+      <tr><td>Capacité de la masse C<sub>m</sub> = κ·A</td><td class="v">2,2 / 3,3 / 5,2 MJ/K</td>
+        <td>κ = 110 / 165 / 260 kJ/(m²K) selon murs légers / moyens / lourds — classes de la norme EN&nbsp;ISO&nbsp;13790</td></tr>
+      <tr><td>Couplage air ↔ masse H<sub>am</sub></td><td class="v">300 W/K</td>
+        <td>Échange convectif/radiatif sur ~40 m² de parois, ≈ 7,7 W/m²K</td></tr>
+      <tr><td>Enveloppe H<sub>env</sub></td><td class="v">50 W/K <span style="color:var(--faint)">(×1,15 traversant)</span></td>
+        <td>Pertes parois + infiltrations, logement ancien type</td></tr>
+      <tr><td>Ventilation n (fenêtres ouvertes)</td><td class="v">3 / 8 / 15 vol/h</td>
+        <td>Renouvellements d'air par heure : entrebâillé / bien ouvert / grand courant d'air</td></tr>
+      <tr><td>Facteur traversant</td><td class="v">×1,5 ou ×1,8</td>
+        <td>Deux façades adjacentes / opposées (le courant traverse)</td></tr>
+      <tr><td>H<sub>vent</sub> = ρc<sub>p</sub>·n·V·f / 3600</td><td class="v">50 → 452 W/K</td>
+        <td>Selon vos réglages ; à comparer aux 50 W/K de l'enveloppe</td></tr>
+      <tr><td>Apports internes</td><td class="v">150 W</td>
+        <td>Occupants + appareils, constant</td></tr>
+      <tr><td>Soleil direct (pic, par façade)</td><td class="v">650 W</td>
+        <td>~2 m² de vitrage en plein soleil, facteur solaire compris</td></tr>
+      <tr><td>Soleil diffus (pic)</td><td class="v">120 W</td>
+        <td>Ciel, toutes orientations</td></tr>
+      <tr><td>Volets fermés</td><td class="v">30 % passe</td>
+        <td>Volets + rideaux imparfaits</td></tr>
+      <tr><td>Hystérésis d'ouverture</td><td class="v">−0,75 / −0,25 °C</td>
+        <td>Voir « la décision d'ouvrir »</td></tr>
+      <tr><td>Pas de calcul</td><td class="v">1 h ÷ 10</td>
+        <td>Sous-pas de 6 min, Euler explicite</td></tr>
+    </table>
+    </div>
+
+    <p>Ces valeurs donnent au logement simulé <b>trois échelles de temps</b>, et
+      c'est elles qui portent tout le comportement :</p>
+    <div class="kpis">
+      <div class="kpi"><b>≈ 3–5 min</b><span>l'air, fenêtres grandes ouvertes :
+        τ = C<sub>a</sub>/H<sub>total</sub>. L'air « suit » le dehors presque
+        instantanément — conforme au vécu.</span></div>
+      <div class="kpi"><b>≈ 2–5 h</b><span>la masse : τ = C<sub>m</sub>/H<sub>am</sub>.
+        C'est pour ça que 10 minutes d'aération rafraîchissent l'air mais pas le
+        logement — et qu'une nuit entière, oui.</span></div>
+      <div class="kpi"><b>≈ 13–30 h</b><span>le bâtiment fermé :
+        τ = (C<sub>a</sub>+C<sub>m</sub>)/H<sub>env</sub>. Fermé, le logement dérive
+        lentement vers la température moyenne extérieure.</span></div>
+    </div>
+    <p>Ces ordres de grandeur correspondent aux constantes de temps mesurées sur de
+      vrais bâtiments (typiquement 15 à 50 h pour un logement fermé). C'est le
+      premier argument de confiance : <b>la dynamique est la bonne</b>, même si les
+      valeurs absolues restent approximatives.</p>
+
+    <h3>L'état de départ</h3>
+    <p>La courbe démarre exactement à la température que vous saisissez : l'air y est
+      fixé, et la température de la masse est <b>déduite</b> en résolvant l'équilibre
+      de l'air à l'instant initial, fenêtres fermées
+      (dT<sub>a</sub>/dt&nbsp;=&nbsp;0) :</p>
+    <div class="eq">
+      T<sub>m</sub> = T<sub>a</sub> − [H<sub>env</sub>·(T<sub>ext</sub> − T<sub>a</sub>) + Φ<sub>0</sub>] / H<sub>am</sub>
+    </div>
+    <p>Concrètement : s'il fait chaud dehors et que le soleil tape, la masse est
+      supposée un peu plus fraîche que l'air (elle absorbe) ; la nuit après une
+      journée chaude, un peu plus chaude (elle restitue). Pas de saut artificiel au
+      départ de la courbe, et votre thermomètre calibre réellement le modèle.</p>
+  </section>
+
+  <section>
+    <h2>Le soleil, sans données de rayonnement</h2>
+    <p>Faute d'utiliser un rayonnement mesuré, chaque façade reçoit une <b>cloche de
+      ciel clair</b> en cos², avec un pic direct de 650 W par façade exposée :</p>
+    <div class="tablewrap">
+    <table>
+      <tr><th>Façade</th><th>Pic</th><th>Fenêtre de soleil direct</th></tr>
+      <tr><td>Est</td><td class="v">09 h 00</td><td class="v">05 h → 13 h</td></tr>
+      <tr><td>Sud</td><td class="v">13 h 00</td><td class="v">08 h 30 → 17 h 30</td></tr>
+      <tr><td>Ouest</td><td class="v">17 h 30</td><td class="v">13 h → 22 h</td></tr>
+      <tr><td>Nord</td><td class="v">—</td><td class="v">diffus uniquement</td></tr>
+    </table>
+    </div>
+    <p>S'y ajoute un diffus de 120 W au pic (cloche large centrée à 13 h 30). En
+      logement traversant, le vitrage se répartit (×0,6 par façade) et le diffus
+      augmente un peu (×1,2 — logement d'angle). Volets fermés, <b>30 %</b> du soleil
+      passe ; fenêtres ouvertes — donc volets relevés — <b>tout</b> passe. Ce dernier
+      point est le cœur de l'arbitrage jour/nuit.</p>
+    <p>Autocritique immédiate : c'est un <b>soleil de ciel clair, tous les jours,
+      toute l'année</b>. Pas de nuages, pas de saison, pas de latitude, pas de
+      masques (arbre, immeuble en face). C'est le morceau le plus schématique du
+      modèle. Sa circonstance atténuante : l'essentiel du verdict se joue la nuit,
+      où le soleil est nul et où cette approximation ne pèse plus rien.</p>
+  </section>
+
+  <section>
+    <h2>La décision d'ouvrir</h2>
+    <p>À chaque heure, la règle compare l'extérieur à l'air intérieur simulé, avec
+      une <b>hystérésis</b> et une <b>pénalité solaire</b> :</p>
+    <div class="eq">
+      ouvrir&nbsp;&nbsp;si&nbsp; T<sub>ext</sub> &lt; T<sub>a</sub> − 0,75 °C − P<br>
+      fermer&nbsp;&nbsp;si&nbsp; T<sub>ext</sub> &gt; T<sub>a</sub> − 0,25 °C − P<br>
+      <span class="c">P = 0,7 · Φ<sub>sol</sub> / H<sub>vent</sub> &nbsp;(le soleil admis en plus volets relevés, converti en °C équivalents)</span>
+    </div>
+    <p>L'hystérésis (ouvrir sous −0,75, ne refermer qu'au-dessus de −0,25) évite un
+      verdict qui clignoterait à chaque frôlement des courbes. La pénalité P dit
+      simplement : ouvrir ne vaut le coup que si le refroidissement par l'air dépasse
+      le surplus de soleil qui entrera volets relevés.</p>
+    <p>Deux exemples chiffrés, tirés du modèle tel quel :</p>
+    <ul>
+      <li><b>13 h, façade sud en plein soleil, ventilation moyenne</b>
+        (H<sub>vent</sub> ≈ 134 W/K) : P ≈ 0,7 × 650 / 134 ≈ <b>3,4 °C</b>. Il faut
+        plus de 4 °C de moins dehors pour que l'ouverture soit conseillée — rare en
+        pleine journée de canicule. Le verdict « gardez fermé » l'après-midi vient
+        de là.</li>
+      <li><b>23 h</b> : soleil nul, P = 0. Un écart de 0,75 °C suffit à déclencher
+        l'ouverture. La nuit, la règle devient très permissive — c'est voulu.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Ce que veulent dire les chiffres affichés</h2>
+    <ul>
+      <li><b>Le créneau</b> (« Ouvrez de 22 h à 07 h ») : les heures consécutives où
+        la règle ci-dessus dit « ouvert ». S'il y en a deux (tôt le matin puis la
+        nuit suivante), les deux sont affichés.</li>
+      <li><b>« X °C de mieux au plus chaud »</b> : le modèle repère l'heure
+        extérieure la plus chaude <b>après le début du premier créneau</b> — le pic
+        que la nuit peut encore influencer — et affiche l'écart entre l'extérieur et
+        l'intérieur simulé à cette heure-là.</li>
+      <li><b>Le minimum de la nuit</b> : le point le plus bas de la courbe intérieure
+        simulée.</li>
+      <li><b>La décomposition murs / ventilation / synergie</b> : quatre simulations
+        sont lancées en faisant varier les réglages — (murs légers + ventilation
+        faible) comme base, puis vos murs seuls, puis votre ventilation seule, puis
+        tout ensemble. L'effet « murs » est ce que vos murs ajoutent à la base,
+        idem pour la ventilation ; la <b>synergie</b> est ce que les deux font
+        ensemble en plus de la somme (affichée seulement si ≥ 0,15 °C). C'est une
+        décomposition <b>comparative</b> : les biais systématiques du modèle s'y
+        annulent en partie, ce qui la rend plus fiable que les valeurs absolues.</li>
+      <li><b>« Air humide »</b> : si le point de rosée moyen pendant le créneau
+        dépasse 16 °C, l'app le signale — aérer humide rafraîchit l'air mais charge
+        le logement en humidité.</li>
+    </ul>
+    <p class="mono">Les widgets et Siri recalculent exactement la même simulation,
+      avec les mêmes données partagées — jamais une version simplifiée.</p>
+  </section>
+
+  <section>
+    <h2>Là où le modèle est solide</h2>
+    <ul>
+      <li><b>Les constantes de temps sont les bonnes.</b> Air en minutes, masse en
+        heures, bâtiment en jours : les trois échelles tombent dans les fourchettes
+        de la littérature. La <i>forme</i> de la courbe est digne de confiance.</li>
+      <li><b>Le verdict dépend de croisements, pas de valeurs absolues.</b>
+        « Quand l'extérieur passe-t-il sous l'intérieur ? » est une question robuste :
+        même si κ était faux de 50 %, le créneau bougerait de quelques dizaines de
+        minutes, pas d'heures. C'est la sortie la plus fiable de l'app.</li>
+      <li><b>Les comparaisons encaissent les erreurs.</b> « Qu'est-ce que je gagne
+        avec plus de ventilation ? » se calcule par différence entre deux simulations
+        qui partagent les mêmes biais — ils s'annulent en partie.</li>
+      <li><b>Aucun paramètre n'est recalé pour faire joli.</b> Les valeurs viennent
+        de la norme (κ), de la physique de base (ρc<sub>p</sub> de l'air) et d'ordres
+        de grandeur documentés ; elles sont toutes listées ci-dessus et identiques
+        pour tout le monde.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Les biais, honnêtement</h2>
+    <p>Chaque simplification pousse le résultat dans un sens. Les voici, du plus
+      important au plus anecdotique —
+      <span class="tag opt">optimiste</span> = l'app promet plus de fraîcheur que la
+      réalité, <span class="tag prud">prudent</span> = elle en promet moins.</p>
+    <ul class="bias">
+      <li>
+        <span class="t">Îlot de chaleur urbain non capté</span>
+        <span class="tag opt">optimiste</span>
+        <span class="d">La prévision vaut pour une maille de plusieurs kilomètres.
+          En centre-ville dense, l'air nocturne réel est souvent 2 à 4 °C plus chaud
+          que la maille — le refroidissement nocturne est donc surestimé. C'est le
+          biais qui compte le plus en canicule urbaine. La température qui fait foi
+          est celle à <b>votre</b> fenêtre.</span>
+      </li>
+      <li>
+        <span class="t">Soleil de ciel clair permanent</span>
+        <span class="tag prud">prudent</span>
+        <span class="d">Un jour nuageux, la pénalité solaire est surestimée : l'app
+          peut dire « gardez fermé » alors qu'ouvrir serait déjà rentable. Elle rate
+          un peu de fraîcheur, elle n'en invente pas.</span>
+      </li>
+      <li>
+        <span class="t">Ventilation fixée par votre réglage, pas par le vent réel</span>
+        <span class="tag neutre">± les deux</span>
+        <span class="d">Les renouvellements d'air (3 / 8 / 15 vol/h) sont une
+          constante choisie par vous. Nuit sans un souffle : surestimés. Nuit ventée :
+          sous-estimés. Le tirage thermique (qui augmente avec l'écart de température)
+          n'est pas modélisé non plus.</span>
+      </li>
+      <li>
+        <span class="t">Enveloppe unique (50 W/K, logement ancien type)</span>
+        <span class="tag neutre">± selon logement</span>
+        <span class="d">Très isolé (récent, RT 2012+) : votre intérieur dérive plus
+          lentement que simulé fenêtres fermées. Passoire thermique : plus vite. Le
+          réglage d'inertie compense en partie, pas totalement.</span>
+      </li>
+      <li>
+        <span class="t">Erreur de la prévision météo elle-même</span>
+        <span class="tag neutre">±</span>
+        <span class="d">Une prévision horaire à 24 h se trompe typiquement de 1 à
+          2 °C. Conséquence directe : les bornes des créneaux sont fiables à
+          ±30 min – 1 h, pas à la minute.</span>
+      </li>
+      <li>
+        <span class="t">Une seule zone de 20 m²</span>
+        <span class="tag neutre">±</span>
+        <span class="d">Pas de multi-pièces, pas d'étage : un duplex sous toit, une
+          chambre nord et un séjour sud vivent des réalités différentes que le modèle
+          moyenne. Les Watts absolus valent pour la pièce type ; les créneaux et les
+          tendances, eux, se transposent bien.</span>
+      </li>
+      <li>
+        <span class="t">Apports internes constants (150 W)</span>
+        <span class="tag opt">optimiste ponctuellement</span>
+        <span class="d">Un dîner à six avec le four allumé injecte bien plus que
+          150 W. Les soirs de réception, l'intérieur réel sera au-dessus de la
+          courbe.</span>
+      </li>
+      <li>
+        <span class="t">Pics solaires fixes (ni saison, ni latitude)</span>
+        <span class="tag neutre">±</span>
+        <span class="d">Les cloches sont calées sur un été de latitude moyenne. En
+          juin à Lille ou en septembre à Nice, les heures de pic réelles décalent
+          d'une heure environ — la pénalité solaire avec elles.</span>
+      </li>
+    </ul>
+    <p style="margin-top:1.2rem">La bonne lecture découle de tout ça :
+      <b>le créneau à ±1 h près, les tendances, les comparaisons — pas la
+      décimale</b>. Le chiffre affiché avec une décimale est une sortie de calcul,
+      pas une promesse de précision.</p>
+  </section>
+
+  <section>
+    <h2>Se calibrer chez soi</h2>
+    <p>Le meilleur correctif ne coûte rien : <b>un thermomètre</b>. La température
+      intérieure que vous saisissez est l'état initial exact du modèle — c'est le
+      levier de précision numéro un, bien devant tous les réglages.</p>
+    <ul>
+      <li>Saisissez la température réelle, comparez le lendemain ce que l'app avait
+        annoncé (minimum de la nuit, intérieur au plus chaud) à ce que vous mesurez.</li>
+      <li>Si votre logement se réchauffe systématiquement <b>plus vite</b> que la
+        courbe : choisissez des murs plus légers. Plus lentement : plus lourds. Deux
+        ou trois itérations suffisent en général.</li>
+      <li>Si le refroidissement nocturne déçoit alors que la météo était bonne,
+        pensez à l'îlot de chaleur : en ville dense, préférez une ventilation
+        réaliste plutôt qu'optimiste.</li>
+      <li>Avec un capteur connecté, le raccourci « Régler la température
+        intérieure » peut alimenter l'app automatiquement (HomeKit, Matter, via
+        l'app Raccourcis) — le modèle reste alors calé sur la mesure.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Sources</h2>
+    <p>Les capacités thermiques κ viennent des classes de la norme
+      <b>EN&nbsp;ISO&nbsp;13790</b>. La démarche (ventilation nocturne, masse
+      thermique, arbitrage solaire) s'appuie sur la littérature publique — MIT
+      CoolVent, OMS/NCBI NBK143285, Kolokotroni et al. 1998, Yam et al. 2007,
+      Building &amp; Environment 2021, AIVC, entre autres. La liste complète est sur
+      la <a href="copyright.html">page copyright</a>. Les données météo proviennent
+      d'<a href="https://open-meteo.com" rel="noopener">Open-Meteo</a>
+      (CC&nbsp;BY&nbsp;4.0).</p>
+    <p class="mono">Une erreur dans cette page, un biais oublié, un désaccord sur un
+      ordre de grandeur ? Écrivez-moi :
+      <a href="mailto:solal.gendrin@gmail.com?subject=NADIR%20%E2%80%94%20m%C3%A9thodologie">solal.gendrin@gmail.com</a>.</p>
+  </section>
+
+  <footer>
+    NADIR · <a href="index.html">L'app</a> · <a href="assistance.html">Assistance</a> ·
+    <a href="confidentialite.html">Politique de confidentialité</a> ·
+    <a href="copyright.html">Copyright</a><br>
+    © 2026 Solal Gendrin
+  </footer>
+
+</div>
+</body>
+</html>
