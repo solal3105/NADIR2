@@ -16,7 +16,7 @@ open NADIR.xcodeproj    # ⌘R sur un simulateur iPhone
 ## Ce que fait l'app
 
 - **Onboarding en 4 réglages** : ville (ou géolocalisation), inertie des murs,
-  ventilation possible, exposition (une ou deux façades — logement traversant).
+  ventilation possible, exposition (une ou deux façades, logement traversant).
 - **Aujourd'hui** : le verdict (« Ouvrez de 22h à 07h » / « Gardez fermé »),
   le graphe extérieur vs intérieur simulé sur 30 h avec le créneau conseillé,
   des **alarmes système** au moment d'ouvrir et de fermer
@@ -26,14 +26,14 @@ open NADIR.xcodeproj    # ⌘R sur un simulateur iPhone
   avant d'ouvrir + le courant d'air.
 - **Comprendre** : la physique (murs éponges), la limite honnête, le résumé
   en cinq points, les sources.
-- **À propos** (onglet dédié) : la démarche — NADIR ne milite pas contre
+- **À propos** (onglet dédié) : la démarche (NADIR ne milite pas contre
   la climatisation, il aide celles et ceux qui n'ont pas d'autre choix que de
-  rafraîchir la nuit —, l'honnêteté sur l'estimation (ordres de grandeur, pas
+  rafraîchir la nuit), l'honnêteté sur l'estimation (ordres de grandeur, pas
   des mesures), et son auteur Solal Gendrin (conseiller métropolitain
   écologiste à la Métropole de Lyon) avec ses projets Open Projets et
   Lyon Pocket.
 - **Siri & Raccourcis** (App Intents) : « Le verdict NADIR » dicté par Siri,
-  et trois actions pour l'app Raccourcis — Obtenir le verdict, Faut-il ouvrir
+  et trois actions pour l'app Raccourcis : Obtenir le verdict, Faut-il ouvrir
   maintenant ? (condition d'automatisation) et Régler la température
   intérieure (alimentable par un capteur connecté HomeKit ou Matter). Pas de
   commissioning Matter direct : l'interop domotique passe par les
@@ -42,7 +42,7 @@ open NADIR.xcodeproj    # ⌘R sur un simulateur iPhone
   le créneau, le verdict et l'alarme armée (carré vert + heure). Une entrée
   de timeline par heure fait avancer la fenêtre avec l'horloge, l'app pousse
   ses mises à jour via l'App Group, et le widget re-télécharge lui-même la
-  météo quand la série ne couvre plus les 30 h à venir — jamais désynchronisé.
+  météo quand la série ne couvre plus les 30 h à venir : jamais désynchronisé.
 
 ## Site (GitHub Pages)
 
@@ -90,3 +90,9 @@ NadirWidgets/       Extension WidgetKit (petit + moyen), timeline horaire
   plutôt que « Votre position ».
 - `design-reference/logic.js` : logique du design d'origine, conservée comme
   source de vérité du port.
+
+## Crédits
+
+- Le moteur thermique et le front-end, entre autres, ont été réalisés avec
+  Claude Fable (Anthropic).
+- La direction artistique et le logo sont faits main, par Solal Gendrin.
