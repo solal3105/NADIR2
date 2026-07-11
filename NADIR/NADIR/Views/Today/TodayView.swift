@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Onglet Aujourd'hui : le verdict, le graphe, les alarmes, vos réglages
-/// et vos chiffres.
+/// Onglet Aujourd'hui : le verdict, le graphe, les notifications, vos
+/// réglages et vos chiffres.
 struct TodayView: View {
     @Environment(AppModel.self) private var model
     @State private var city = ""
@@ -16,8 +16,8 @@ struct TodayView: View {
                     .riseIn(trigger: model.chartAnimationKey, animated: playsIntro, delay: 1.05)
                 locationControl
                 chart(analysis)
-                if let window = model.alarmWindow {
-                    AlarmsSection(window: window)
+                if let window = model.notificationWindow {
+                    NotificationsSection(window: window)
                 }
                 ControlsSection()
                 FiguresSection(analysis: analysis)

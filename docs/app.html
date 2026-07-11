@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NADIR — App web</title>
-<meta name="description" content="La version web de NADIR : le verdict, la courbe et vos réglages, avec le même moteur thermique que l'app iOS. Sans compte, sans pub — les alarmes restent sur iOS.">
+<meta name="description" content="La version web de NADIR : le verdict, la courbe et vos réglages, avec le même moteur thermique que l'app iOS. Sans compte, sans pub. Les notifications restent sur iOS.">
 <link rel="icon" type="image/png" href="assets/logo.png">
 <style>
   :root{
@@ -85,7 +85,7 @@
     @keyframes appear{to{opacity:1}}
   }
 
-  /* Créneau (repères horaires, sans alarmes) */
+  /* Créneau (repères horaires, sans notifications) */
   .window-info{margin-top:20px;border:1px solid var(--line);padding:16px 18px}
   .window-info .rows{display:flex;flex-wrap:wrap;gap:6px 32px;margin-top:12px;
     font-family:var(--mono);font-size:12.5px;color:var(--ink)}
@@ -212,8 +212,8 @@
   <div class="window-info" id="windowInfo" hidden>
     <h2 class="eyebrow">Le créneau</h2>
     <div class="rows" id="windowRows"></div>
-    <p class="ios-note">Les alarmes qui sonnent au bon moment, les widgets et
-      Siri sont réservés à <a href="index.html">l'app iOS</a> — un site web ne
+    <p class="ios-note">Les notifications au bon moment, les widgets et
+      Siri sont réservés à <a href="index.html">l'app iOS</a> : un site web ne
       peut pas vous réveiller. Ici, revenez vérifier le créneau.</p>
   </div>
 

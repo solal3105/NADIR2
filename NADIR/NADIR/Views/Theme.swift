@@ -37,7 +37,7 @@ extension Double {
     }
 }
 
-/// Étiquette de section en petites capitales mono — « LE VERDICT », « ALARMES »…
+/// Étiquette de section en petites capitales mono : « LE VERDICT », « NOTIFICATIONS »…
 struct Eyebrow: View {
     let text: String
     var color: Color = .nadirFaint

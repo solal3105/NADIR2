@@ -26,8 +26,8 @@ struct NadirChartWidget: Widget {
 struct NadirEntry: TimelineEntry {
     let date: Date
     let analysis: ThermalAnalysis
-    let alarmOnOpen: Bool
-    let alarmOnClose: Bool
+    let notifyOnOpen: Bool
+    let notifyOnClose: Bool
 }
 
 struct NadirTimelineProvider: TimelineProvider {
@@ -72,8 +72,8 @@ struct NadirTimelineProvider: TimelineProvider {
                 ventilation: profile.ventilation,
                 exposure: profile.exposure
             ),
-            alarmOnOpen: profile.alarmOnOpen,
-            alarmOnClose: profile.alarmOnClose
+            notifyOnOpen: profile.notifyOnOpen,
+            notifyOnClose: profile.notifyOnClose
         )
     }
 }

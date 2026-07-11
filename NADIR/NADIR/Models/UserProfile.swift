@@ -11,8 +11,12 @@ struct UserProfile: Equatable {
     var latitude: Double?
     var longitude: Double?
     var place = ""
-    var alarmOnOpen = false
-    var alarmOnClose = false
+    var notifyOnOpen = false
+    var notifyOnClose = false
+    /// Heures visées quand les notifications sont armées : une fois passées,
+    /// le réglage s'éteint de lui-même (une notification par créneau).
+    var notifyOpenTarget: Date?
+    var notifyCloseTarget: Date?
     /// Capteur HomeKit qui alimente la température intérieure, si lié.
     var sensorID: UUID?
     var sensorName = ""
@@ -44,7 +48,11 @@ struct UserProfile: Equatable {
 extension UserProfile: Codable {
     private enum CodingKeys: String, CodingKey {
         case onboarded, inertia, ventilation, exposure, indoorNow
-        case latitude, longitude, place, alarmOnOpen, alarmOnClose
+        case latitude, longitude, place
+        // Clés historiques conservées : les réglages de la 1.0 survivent.
+        case notifyOnOpen = "alarmOnOpen"
+        case notifyOnClose = "alarmOnClose"
+        case notifyOpenTarget, notifyCloseTarget
         case sensorID, sensorName
     }
 
@@ -58,8 +66,10 @@ extension UserProfile: Codable {
         latitude = try container.decodeIfPresent(Double.self, forKey: .latitude)
         longitude = try container.decodeIfPresent(Double.self, forKey: .longitude)
         place = try container.decodeIfPresent(String.self, forKey: .place) ?? ""
-        alarmOnOpen = try container.decodeIfPresent(Bool.self, forKey: .alarmOnOpen) ?? false
-        alarmOnClose = try container.decodeIfPresent(Bool.self, forKey: .alarmOnClose) ?? false
+        notifyOnOpen = try container.decodeIfPresent(Bool.self, forKey: .notifyOnOpen) ?? false
+        notifyOnClose = try container.decodeIfPresent(Bool.self, forKey: .notifyOnClose) ?? false
+        notifyOpenTarget = try container.decodeIfPresent(Date.self, forKey: .notifyOpenTarget)
+        notifyCloseTarget = try container.decodeIfPresent(Date.self, forKey: .notifyCloseTarget)
         sensorID = try container.decodeIfPresent(UUID.self, forKey: .sensorID)
         sensorName = try container.decodeIfPresent(String.self, forKey: .sensorName) ?? ""
     }

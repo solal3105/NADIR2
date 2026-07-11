@@ -1,39 +1,40 @@
 import SwiftUI
 
-/// Alarmes système au moment d'ouvrir et de fermer : heure visée, délai,
-/// interrupteur. Celle d'ouverture se grise si le créneau a déjà commencé.
-struct AlarmsSection: View {
+/// Notifications système au moment d'ouvrir et de fermer : heure visée,
+/// délai, interrupteur. Celle d'ouverture se grise si le créneau a déjà
+/// commencé. Chacune ne vaut que pour le créneau en cours.
+struct NotificationsSection: View {
     @Environment(AppModel.self) private var model
-    let window: AppModel.AlarmWindow
+    let window: AppModel.NotificationWindow
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Eyebrow(text: "Alarmes")
+            Eyebrow(text: "Notifications")
                 .padding(.bottom, 4)
 
-            alarmRow(
+            notificationRow(
                 kind: .open,
                 title: "Au moment d'ouvrir",
                 meta: window.startIsPast ? "Créneau déjà ouvert" : model.delayLabel(until: window.start),
                 time: model.clockLabel(for: window.start),
-                isOn: model.profile.alarmOnOpen && !window.startIsPast,
+                isOn: model.profile.notifyOnOpen && !window.startIsPast,
                 isDisabled: window.startIsPast
             )
 
-            alarmRow(
+            notificationRow(
                 kind: .close,
                 title: "Au moment de fermer",
                 meta: model.delayLabel(until: window.end),
                 time: model.clockLabel(for: window.end),
-                isOn: model.profile.alarmOnClose,
+                isOn: model.profile.notifyOnClose,
                 isDisabled: false
             )
             .overlay(alignment: .bottom) { Color.nadirLine.frame(height: 1) }
 
-            Text("Alarme système : sonne même app fermée, puis se répète à +3 et +6 min avant de s'arrêter.")
+            Text("Notification système : arrive même app fermée, une seule fois, pour ce créneau uniquement. Réactivez-la pour le créneau suivant.")
                 .font(.nadirMono(10))
                 .lineSpacing(4)
-                .foregroundStyle(Color.nadirLine2)
+                .foregroundStyle(Color.nadirDim)
                 .padding(.top, 10)
         }
         .padding(.horizontal, 20)
@@ -41,8 +42,8 @@ struct AlarmsSection: View {
         .padding(.bottom, 4)
     }
 
-    private func alarmRow(
-        kind: AlarmScheduler.Kind,
+    private func notificationRow(
+        kind: NotificationScheduler.Kind,
         title: String,
         meta: String,
         time: String,
@@ -66,7 +67,7 @@ struct AlarmsSection: View {
                 .foregroundStyle(ink)
             Toggle(title, isOn: Binding(
                 get: { isOn },
-                set: { _ in Task { await model.toggleAlarm(kind) } }
+                set: { _ in Task { await model.toggleNotification(kind) } }
             ))
             .labelsHidden()
             .toggleStyle(NadirToggleStyle())

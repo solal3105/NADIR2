@@ -1,7 +1,7 @@
 import SwiftUI
 import WidgetKit
 
-/// Petit et moyen : lieu, alarme armée, la courbe, le verdict.
+/// Petit et moyen : lieu, notification armée, la courbe, le verdict.
 struct NadirWidgetView: View {
     @Environment(\.widgetFamily) private var family
     let entry: NadirEntry
@@ -28,13 +28,13 @@ struct NadirWidgetView: View {
                 .foregroundStyle(Color.nadirDim)
                 .lineLimit(1)
             Spacer(minLength: 4)
-            alarmBadge(analysis)
+            notificationBadge(analysis)
         }
     }
 
-    /// L'alarme armée la plus proche : carré vert + heure. Rien si aucune.
-    @ViewBuilder private func alarmBadge(_ analysis: ThermalAnalysis) -> some View {
-        if let time = nextAlarmTime(analysis) {
+    /// La notification armée la plus proche : carré vert + heure. Rien si aucune.
+    @ViewBuilder private func notificationBadge(_ analysis: ThermalAnalysis) -> some View {
+        if let time = nextNotificationTime(analysis) {
             HStack(spacing: 4) {
                 Rectangle()
                     .fill(Color.nadirGo)
@@ -44,11 +44,11 @@ struct NadirWidgetView: View {
                     .monospacedDigit()
                     .foregroundStyle(Color.nadirGo)
             }
-            .accessibilityLabel("Alarme à \(time)")
+            .accessibilityLabel("Notification à \(time)")
         }
     }
 
-    private func nextAlarmTime(_ analysis: ThermalAnalysis) -> String? {
+    private func nextNotificationTime(_ analysis: ThermalAnalysis) -> String? {
         guard let window = analysis.firstWindow else { return nil }
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = analysis.series.timeZone
@@ -56,8 +56,8 @@ struct NadirWidgetView: View {
             let parts = calendar.dateComponents([.hour, .minute], from: date)
             return String(format: "%02d:%02d", parts.hour ?? 0, parts.minute ?? 0)
         }
-        if entry.alarmOnOpen, window.start > entry.date { return clock(window.start) }
-        if entry.alarmOnClose, window.end > entry.date { return clock(window.end) }
+        if entry.notifyOnOpen, window.start > entry.date { return clock(window.start) }
+        if entry.notifyOnClose, window.end > entry.date { return clock(window.end) }
         return nil
     }
 

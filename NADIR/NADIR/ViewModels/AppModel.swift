@@ -2,7 +2,7 @@ import Foundation
 import Observation
 import WidgetKit
 
-/// État central de l'app : profil, météo, simulation, statuts et alarmes.
+/// État central de l'app : profil, météo, simulation, statuts et notifications.
 @MainActor
 @Observable
 final class AppModel {
@@ -39,7 +39,7 @@ final class AppModel {
     /// Géolocalisation en cours — anime le viseur.
     private(set) var isLocating = false
     /// « Maintenant » observé : rafraîchi au retour au premier plan pour que
-    /// la fenêtre de simulation et les alarmes suivent l'heure réelle.
+    /// la fenêtre de simulation et les notifications suivent l'heure réelle.
     var now: Date = .now
 
     /// Change à chaque nouvelle source météo : rejoue l'animation du graphe.
@@ -50,7 +50,7 @@ final class AppModel {
 
     private let weather = WeatherService()
     private let location = LocationService()
-    private let alarms = AlarmScheduler()
+    private let notifications = NotificationScheduler()
     /// Le gestionnaire HomeKit sous-jacent n'est créé qu'à la demande :
     /// au lancement seulement si un capteur est déjà lié.
     let homeKit = HomeKitService()
@@ -67,9 +67,9 @@ final class AppModel {
 
         // Les notifications d'un lancement précédent survivent au force-quit :
         // on repart de zéro puis on replanifie selon le créneau courant.
-        alarms.cancel(.open)
-        alarms.cancel(.close)
-        syncAlarms()
+        notifications.cancel(.open)
+        notifications.cancel(.close)
+        syncNotifications()
 
         Self.shared = self
 
@@ -115,7 +115,7 @@ final class AppModel {
             profile = stored
             indoorNow = stored.indoorNow
         }
-        syncAlarms()
+        syncNotifications()
         // Le capteur lié a pu changer de valeur pendant l'absence.
         homeKit.readNow()
     }
@@ -272,57 +272,101 @@ final class AppModel {
         showOnboarding = true
     }
 
-    // MARK: - Alarmes
+    // MARK: - Notifications
 
-    struct AlarmWindow {
+    struct NotificationWindow {
         var start: Date
         var end: Date
         var startIsPast: Bool
     }
 
-    /// Le créneau à alarmer — seulement tant qu'il n'est pas fini,
+    /// Le créneau à notifier : seulement tant qu'il n'est pas fini,
     /// jugé sur la même horloge (`now`) que tout le reste de l'état.
-    var alarmWindow: AlarmWindow? {
+    var notificationWindow: NotificationWindow? {
         guard let window = analysis.firstWindow, window.end > now else { return nil }
-        return AlarmWindow(start: window.start, end: window.end, startIsPast: window.start <= now)
+        return NotificationWindow(start: window.start, end: window.end, startIsPast: window.start <= now)
     }
 
-    func toggleAlarm(_ kind: AlarmScheduler.Kind) async {
+    func toggleNotification(_ kind: NotificationScheduler.Kind) async {
         let isEnabling = switch kind {
-        case .open: !profile.alarmOnOpen
-        case .close: !profile.alarmOnClose
+        case .open: !profile.notifyOnOpen
+        case .close: !profile.notifyOnClose
         }
         if isEnabling {
-            guard await alarms.requestAuthorization() else {
-                setStatus("Notifications refusées. Autorisez-les dans Réglages pour les alarmes.", in: .main)
+            guard await notifications.requestAuthorization() else {
+                setStatus("Notifications refusées. Autorisez-les dans Réglages.", in: .main)
                 return
             }
             if status.hasPrefix("Notifications refusées") { setStatus("", in: .main) }
         }
         switch kind {
-        case .open: profile.alarmOnOpen = isEnabling
-        case .close: profile.alarmOnClose = isEnabling
+        case .open: profile.notifyOnOpen = isEnabling
+        case .close: profile.notifyOnClose = isEnabling
         }
         persist()
     }
 
     /// Aligne les notifications programmées sur le créneau courant :
-    /// ne replanifie que si l'heure visée a changé.
-    func syncAlarms() {
+    /// ne replanifie que si l'heure visée a changé. Une notification ne
+    /// vaut que pour son créneau : l'heure passée, le réglage s'éteint
+    /// au lieu de se réarmer en silence sur le créneau suivant.
+    func syncNotifications() {
+        expirePastNotifications()
         let window = analysis.firstWindow
-        let openTarget: Date? = (profile.alarmOnOpen && window.map { $0.start > now } == true)
+        let openTarget: Date? = (profile.notifyOnOpen && window.map { $0.start > now } == true)
             ? window?.start : nil
-        let closeTarget: Date? = (profile.alarmOnClose && window.map { $0.end > now } == true)
+        let closeTarget: Date? = (profile.notifyOnClose && window.map { $0.end > now } == true)
             ? window?.end : nil
 
         if openTarget != scheduledOpen {
-            if let openTarget { alarms.schedule(.open, at: openTarget) } else { alarms.cancel(.open) }
+            if let openTarget { notifications.schedule(.open, at: openTarget) } else { notifications.cancel(.open) }
             scheduledOpen = openTarget
         }
         if closeTarget != scheduledClose {
-            if let closeTarget { alarms.schedule(.close, at: closeTarget) } else { alarms.cancel(.close) }
+            if let closeTarget { notifications.schedule(.close, at: closeTarget) } else { notifications.cancel(.close) }
             scheduledClose = closeTarget
         }
+        rememberNotificationTargets(open: openTarget, close: closeTarget)
+    }
+
+    /// L'heure visée est mémorisée sur disque : au retour dans l'app, une
+    /// notification déjà partie éteint son interrupteur, même après relance.
+    private func expirePastNotifications() {
+        var changed = false
+        if profile.notifyOnOpen, let armed = profile.notifyOpenTarget, armed <= now {
+            profile.notifyOnOpen = false
+            profile.notifyOpenTarget = nil
+            changed = true
+        }
+        if profile.notifyOnClose, let armed = profile.notifyCloseTarget, armed <= now {
+            profile.notifyOnClose = false
+            profile.notifyCloseTarget = nil
+            changed = true
+        }
+        if changed { profile.save() }
+    }
+
+    private func rememberNotificationTargets(open: Date?, close: Date?) {
+        var changed = false
+        if profile.notifyOnOpen {
+            if let open, profile.notifyOpenTarget != open {
+                profile.notifyOpenTarget = open
+                changed = true
+            }
+        } else if profile.notifyOpenTarget != nil {
+            profile.notifyOpenTarget = nil
+            changed = true
+        }
+        if profile.notifyOnClose {
+            if let close, profile.notifyCloseTarget != close {
+                profile.notifyCloseTarget = close
+                changed = true
+            }
+        } else if profile.notifyCloseTarget != nil {
+            profile.notifyCloseTarget = nil
+            changed = true
+        }
+        if changed { profile.save() }
     }
 
     // MARK: - Privé
@@ -332,7 +376,7 @@ final class AppModel {
         series = newSeries
         now = .now
         if !newSeries.isDemo { SharedStore.save(series: newSeries) }
-        syncAlarms()
+        syncNotifications()
         scheduleWidgetReload()
     }
 
@@ -345,7 +389,7 @@ final class AppModel {
 
     private func persist() {
         profile.save()
-        syncAlarms()
+        syncNotifications()
         scheduleWidgetReload()
     }
 

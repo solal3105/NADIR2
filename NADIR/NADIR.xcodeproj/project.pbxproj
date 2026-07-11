@@ -36,7 +36,7 @@
 		A1BE4E5683F203C4A866031A /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87435B7D8821B562CBA7A0CB /* OnboardingView.swift */; };
 		A242D24823B07C7F4FA561A2 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C782CCB94A1E42BE3BF832D6 /* TodayView.swift */; };
 		A27C166D9F42A1566F621232 /* NadirWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = E55C2A98F8CBF186C8B3A56A /* NadirWidgets.swift */; };
-		A3B4528DAC85D90F0A0AE7AD /* AlarmsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5416ED8F9D3E4C2C1D3EDC6 /* AlarmsSection.swift */; };
+		A3B4528DAC85D90F0A0AE7AD /* NotificationsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5416ED8F9D3E4C2C1D3EDC6 /* NotificationsSection.swift */; };
 		A63620037078FC9428F5EA92 /* ChoiceCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90E7CB55A25F86DD71009AE2 /* ChoiceCard.swift */; };
 		AC065784CAFD195D8BCFD57B /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03BA61945040D19505BD758F /* AppModel.swift */; };
 		B172B99F7535256BBE63C4EC /* NadirWidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F67ED6A38730B2728085E7EE /* NadirWidgetView.swift */; };
@@ -48,7 +48,7 @@
 		D6DDB4CE00C0BC2762366260 /* SegmentedRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F4B6F1CC7B8321A98E43F0 /* SegmentedRow.swift */; };
 		D725EE6E08C75EA7D59B152C /* NadirApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ED145670E07D0371F2F6B97 /* NadirApp.swift */; };
 		E44D03088DB22A949441722A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ADE4CEC178AB91B3FF1A39F7 /* Assets.xcassets */; };
-		E9A6DA43FB19342126565A6A /* AlarmScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBD76848ADD01277E4ED1CB5 /* AlarmScheduler.swift */; };
+		E9A6DA43FB19342126565A6A /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBD76848ADD01277E4ED1CB5 /* NotificationScheduler.swift */; };
 		EAEC783B4409BBD988483422 /* WeatherSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988657E913FB966E3E50A74E /* WeatherSeries.swift */; };
 		F5052C09A799C88F00EB886F /* ThermalAnalysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = E555150F466C3E1DBBA7BD8E /* ThermalAnalysis.swift */; };
 		FBCBEFC1FD36A8574F209301 /* Icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20111807C7217495A4E0B00 /* Icons.swift */; };
@@ -112,10 +112,10 @@
 		BA855845669C4603F02243BD /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		C782CCB94A1E42BE3BF832D6 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
 		C8D28CFE6358C3AA014CE248 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
-		CBD76848ADD01277E4ED1CB5 /* AlarmScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmScheduler.swift; sourceTree = "<group>"; };
+		CBD76848ADD01277E4ED1CB5 /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
 		CFBA1ACC4129769FD4B7D0CE /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		D971FD90CC93A814B150DC12 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
-		E5416ED8F9D3E4C2C1D3EDC6 /* AlarmsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmsSection.swift; sourceTree = "<group>"; };
+		E5416ED8F9D3E4C2C1D3EDC6 /* NotificationsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSection.swift; sourceTree = "<group>"; };
 		E555150F466C3E1DBBA7BD8E /* ThermalAnalysis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThermalAnalysis.swift; sourceTree = "<group>"; };
 		E55C2A98F8CBF186C8B3A56A /* NadirWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NadirWidgets.swift; sourceTree = "<group>"; };
 		ED8C6C632CEA9CC1E006B04A /* HomeSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSettings.swift; sourceTree = "<group>"; };
@@ -187,7 +187,7 @@
 		3F87AB791DFE051A9EBB13C0 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				CBD76848ADD01277E4ED1CB5 /* AlarmScheduler.swift */,
+				CBD76848ADD01277E4ED1CB5 /* NotificationScheduler.swift */,
 				B0D1CE00A1B2C3D4E5F60001 /* HomeKitService.swift */,
 				C8D28CFE6358C3AA014CE248 /* LocationService.swift */,
 				9A3D0B35D6CB46D54FE3D8EB /* WeatherService.swift */,
@@ -283,7 +283,7 @@
 		ED121D5B40BD93A9FCD01ABC /* Today */ = {
 			isa = PBXGroup;
 			children = (
-				E5416ED8F9D3E4C2C1D3EDC6 /* AlarmsSection.swift */,
+				E5416ED8F9D3E4C2C1D3EDC6 /* NotificationsSection.swift */,
 				98FBEB5A785197C72F48E354 /* ChartView.swift */,
 				07A74040D3F5C91195B3DC7B /* ControlsSection.swift */,
 				2F207B2F1471E902962407C6 /* FiguresSection.swift */,
@@ -404,8 +404,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				5A913EF300BF589DF41370FA /* AboutView.swift in Sources */,
-				E9A6DA43FB19342126565A6A /* AlarmScheduler.swift in Sources */,
-				A3B4528DAC85D90F0A0AE7AD /* AlarmsSection.swift in Sources */,
+				E9A6DA43FB19342126565A6A /* NotificationScheduler.swift in Sources */,
+				A3B4528DAC85D90F0A0AE7AD /* NotificationsSection.swift in Sources */,
 				AC065784CAFD195D8BCFD57B /* AppModel.swift in Sources */,
 				685492F9570CDD224E0BE510 /* ChartView.swift in Sources */,
 				A63620037078FC9428F5EA92 /* ChoiceCard.swift in Sources */,

@@ -69,7 +69,7 @@ struct SetIndoorTemperatureIntent: AppIntent {
         let clamped = (min(34, max(20, temperature)) * 2).rounded() / 2
         if let model = AppModel.shared {
             // L'app vit dans ce process : passer par son état évite d'écraser
-            // un réglage en mémoire, et resynchronise aussitôt les alarmes.
+            // un réglage en mémoire, et resynchronise aussitôt les notifications.
             model.setIndoor(clamped)
         } else {
             var profile = UserProfile.load()
