@@ -22,6 +22,8 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSHomeKitUsageDescription</key>
+	<string>NADIR lit vos capteurs de température connectés (HomeKit, Matter) pour caler le modèle sur la mesure réelle de chez vous.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>NADIR utilise votre position pour récupérer la météo locale et vous dire quand ouvrir ou fermer vos fenêtres.</string>
 	<key>UILaunchScreen</key>

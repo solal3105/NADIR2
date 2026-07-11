@@ -172,6 +172,13 @@ struct AboutView: View {
                     + Text(".")
             )
             paragraph(
+                Text("NADIR peut aussi lire directement une sonde de température HomeKit ou Matter : dans ")
+                    + Text("Aujourd'hui").foregroundColor(.white)
+                    + Text(", sous le curseur de température, touchez « ")
+                    + Text("Utiliser un capteur connecté").foregroundColor(.white)
+                    + Text(" ». La sonde des HomePod n'est pas accessible aux apps : pour elle, passez par une automatisation Raccourcis.")
+            )
+            paragraph(
                 Text("Avec un capteur ou des volets connectés (HomeKit, Matter), une automatisation peut envoyer à NADIR la température mesurée chez vous, ou agir sur vos équipements selon le verdict.")
             )
             Link(destination: URL(string: "shortcuts://")!) {

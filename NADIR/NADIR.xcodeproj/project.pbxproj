@@ -52,6 +52,8 @@
 		EAEC783B4409BBD988483422 /* WeatherSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 988657E913FB966E3E50A74E /* WeatherSeries.swift */; };
 		F5052C09A799C88F00EB886F /* ThermalAnalysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = E555150F466C3E1DBBA7BD8E /* ThermalAnalysis.swift */; };
 		FBCBEFC1FD36A8574F209301 /* Icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20111807C7217495A4E0B00 /* Icons.swift */; };
+		B0D1CE00A1B2C3D4E5F60003 /* HomeKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D1CE00A1B2C3D4E5F60001 /* HomeKitService.swift */; };
+		B0D1CE00A1B2C3D4E5F60004 /* SensorPickerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0D1CE00A1B2C3D4E5F60002 /* SensorPickerSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -119,6 +121,8 @@
 		ED8C6C632CEA9CC1E006B04A /* HomeSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSettings.swift; sourceTree = "<group>"; };
 		F20111807C7217495A4E0B00 /* Icons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Icons.swift; sourceTree = "<group>"; };
 		F67ED6A38730B2728085E7EE /* NadirWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NadirWidgetView.swift; sourceTree = "<group>"; };
+		B0D1CE00A1B2C3D4E5F60001 /* HomeKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeKitService.swift; sourceTree = "<group>"; };
+		B0D1CE00A1B2C3D4E5F60002 /* SensorPickerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorPickerSheet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -184,6 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				CBD76848ADD01277E4ED1CB5 /* AlarmScheduler.swift */,
+				B0D1CE00A1B2C3D4E5F60001 /* HomeKitService.swift */,
 				C8D28CFE6358C3AA014CE248 /* LocationService.swift */,
 				9A3D0B35D6CB46D54FE3D8EB /* WeatherService.swift */,
 			);
@@ -282,6 +287,7 @@
 				98FBEB5A785197C72F48E354 /* ChartView.swift */,
 				07A74040D3F5C91195B3DC7B /* ControlsSection.swift */,
 				2F207B2F1471E902962407C6 /* FiguresSection.swift */,
+				B0D1CE00A1B2C3D4E5F60002 /* SensorPickerSheet.swift */,
 				C782CCB94A1E42BE3BF832D6 /* TodayView.swift */,
 			);
 			path = Today;
@@ -408,6 +414,7 @@
 				3B9F02E035826C5A1EB8688F /* Exposure.swift in Sources */,
 				5FA3E652D10107BC82379230 /* FiguresSection.swift in Sources */,
 				D0CBD4522326F4B1DB200915 /* GuideView.swift in Sources */,
+				B0D1CE00A1B2C3D4E5F60003 /* HomeKitService.swift in Sources */,
 				3D5427D618F6D2F469B15EBD /* HomeSettings.swift in Sources */,
 				FBCBEFC1FD36A8574F209301 /* Icons.swift in Sources */,
 				0A0C04C20BB74C094FFD03CA /* LearnView.swift in Sources */,
@@ -419,6 +426,7 @@
 				84D86ECCA394C41B0705088A /* RiseIn.swift in Sources */,
 				C4ADFEECAFFDB5E64A873C5F /* RootView.swift in Sources */,
 				D6DDB4CE00C0BC2762366260 /* SegmentedRow.swift in Sources */,
+				B0D1CE00A1B2C3D4E5F60004 /* SensorPickerSheet.swift in Sources */,
 				58FF43A085D5DA15683A398A /* SeriesProvider.swift in Sources */,
 				83818D0A07BF1D5B034CA816 /* SharedStore.swift in Sources */,
 				819C5898E14F66CC875844D5 /* Theme.swift in Sources */,

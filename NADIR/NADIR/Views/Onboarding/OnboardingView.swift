@@ -138,7 +138,7 @@ struct OnboardingView: View {
                     isSelected: model.profile.inertia == .light
                 ) { model.set(inertia: .light) }
                 ChoiceCard(
-                    title: "Moyens", hint: "Brique creuse, parpaing — le plus courant",
+                    title: "Moyens", hint: "Brique creuse, parpaing : le plus courant",
                     isSelected: model.profile.inertia == .medium
                 ) { model.set(inertia: .medium) }
                 ChoiceCard(
@@ -178,7 +178,7 @@ struct OnboardingView: View {
             (
                 Text("Ça détermine combien de soleil entre chez vous. Choisissez ")
                     + Text("une ou deux façades").fontWeight(.semibold).foregroundColor(.white)
-                    + Text(" — deux si votre logement est traversant.")
+                    + Text(", deux si votre logement est traversant.")
             )
             .font(.nadirSans(15))
             .lineSpacing(3)
@@ -187,7 +187,7 @@ struct OnboardingView: View {
 
             VStack(spacing: 8) {
                 ChoiceCard(
-                    title: "Nord", hint: "Peu de soleil direct — reste le plus frais",
+                    title: "Nord", hint: "Peu de soleil direct : reste le plus frais",
                     isSelected: exposure.contains(.north)
                 ) { model.toggleExposure(.north) }
                 ChoiceCard(
@@ -195,7 +195,7 @@ struct OnboardingView: View {
                     isSelected: exposure.contains(.east)
                 ) { model.toggleExposure(.east) }
                 ChoiceCard(
-                    title: "Sud", hint: "Soleil direct en milieu de journée — le plus chaud",
+                    title: "Sud", hint: "Soleil direct en milieu de journée : le plus chaud",
                     isSelected: exposure.contains(.south)
                 ) { model.toggleExposure(.south) }
                 ChoiceCard(

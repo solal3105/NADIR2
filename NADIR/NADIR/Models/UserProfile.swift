@@ -13,6 +13,9 @@ struct UserProfile: Equatable {
     var place = ""
     var alarmOnOpen = false
     var alarmOnClose = false
+    /// Capteur HomeKit qui alimente la température intérieure, si lié.
+    var sensorID: UUID?
+    var sensorName = ""
 
     private static let storageKey = "nadir.profile.v1"
 
@@ -42,6 +45,7 @@ extension UserProfile: Codable {
     private enum CodingKeys: String, CodingKey {
         case onboarded, inertia, ventilation, exposure, indoorNow
         case latitude, longitude, place, alarmOnOpen, alarmOnClose
+        case sensorID, sensorName
     }
 
     init(from decoder: Decoder) throws {
@@ -56,5 +60,7 @@ extension UserProfile: Codable {
         place = try container.decodeIfPresent(String.self, forKey: .place) ?? ""
         alarmOnOpen = try container.decodeIfPresent(Bool.self, forKey: .alarmOnOpen) ?? false
         alarmOnClose = try container.decodeIfPresent(Bool.self, forKey: .alarmOnClose) ?? false
+        sensorID = try container.decodeIfPresent(UUID.self, forKey: .sensorID)
+        sensorName = try container.decodeIfPresent(String.self, forKey: .sensorName) ?? ""
     }
 }

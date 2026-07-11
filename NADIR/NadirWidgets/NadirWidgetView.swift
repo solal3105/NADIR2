@@ -73,7 +73,7 @@ struct NadirWidgetView: View {
     private func compactVerdict(_ analysis: ThermalAnalysis) -> String {
         guard let first = analysis.runs.first else { return "Gardez fermé" }
         if analysis.shouldOpenNow { return "Ouvrez jusqu'à \(analysis.endLabel(of: first))" }
-        return "Ouvrez \(analysis.series.hourLabel(at: first.lowerBound))–\(analysis.endLabel(of: first))"
+        return "Ouvrez \(analysis.series.hourLabel(at: first.lowerBound))-\(analysis.endLabel(of: first))"
     }
 }
 

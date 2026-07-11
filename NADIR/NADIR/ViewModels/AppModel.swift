@@ -27,6 +27,13 @@ final class AppModel {
     var profile: UserProfile
     /// Température saisie par l'utilisateur — mémorisée entre les sessions.
     var indoorNow: Double = 26
+    /// Vrai dès qu'une mesure du capteur lié est arrivée cette session :
+    /// distingue « synchronisé » d'un lien mort (capteur retiré, accès révoqué).
+    private(set) var sensorActive = false
+    /// Curseur en cours de glissement : les mesures du capteur attendent
+    /// la fin du geste au lieu de faire sauter le pouce sous le doigt.
+    private var isAdjustingIndoor = false
+    private var pendingSensorValue: Double?
     var series: WeatherSeries
     var status = ""
     /// Géolocalisation en cours — anime le viseur.
@@ -44,6 +51,9 @@ final class AppModel {
     private let weather = WeatherService()
     private let location = LocationService()
     private let alarms = AlarmScheduler()
+    /// Le gestionnaire HomeKit sous-jacent n'est créé qu'à la demande :
+    /// au lancement seulement si un capteur est déjà lié.
+    let homeKit = HomeKitService()
     private var scheduledOpen: Date?
     private var scheduledClose: Date?
     private var widgetReloadTask: Task<Void, Never>?
@@ -62,6 +72,13 @@ final class AppModel {
         syncAlarms()
 
         Self.shared = self
+
+        homeKit.onReading = { [weak self] id, value in
+            self?.adoptSensorReading(id: id, value: value)
+        }
+        if let sensorID = profile.sensorID {
+            homeKit.monitor(sensorID: sensorID)
+        }
     }
 
     var analysis: ThermalAnalysis {
@@ -99,6 +116,8 @@ final class AppModel {
             indoorNow = stored.indoorNow
         }
         syncAlarms()
+        // Le capteur lié a pu changer de valeur pendant l'absence.
+        homeKit.readNow()
     }
 
     // MARK: - Localisation & météo
@@ -168,6 +187,13 @@ final class AppModel {
         persist()
     }
 
+    func setAdjustingIndoor(_ adjusting: Bool) {
+        isAdjustingIndoor = adjusting
+        guard !adjusting, let pending = pendingSensorValue else { return }
+        pendingSensorValue = nil
+        if pending != indoorNow { setIndoor(pending) }
+    }
+
     func set(inertia: WallInertia) {
         profile.inertia = inertia
         persist()
@@ -181,6 +207,43 @@ final class AppModel {
     func toggleExposure(_ facade: Facade) {
         profile.exposure.toggle(facade)
         persist()
+    }
+
+    // MARK: - Capteur connecté
+
+    var sensorLinked: Bool {
+        profile.sensorID != nil
+    }
+
+    func linkSensor(_ sensor: HomeKitService.Sensor) {
+        // Re-lier le capteur déjà lié ne remet pas son état en cause.
+        if profile.sensorID != sensor.id { sensorActive = false }
+        profile.sensorID = sensor.id
+        profile.sensorName = sensor.name
+        persist()
+        homeKit.monitor(sensorID: sensor.id)
+    }
+
+    func unlinkSensor() {
+        homeKit.stopMonitoring()
+        profile.sensorID = nil
+        profile.sensorName = ""
+        sensorActive = false
+        pendingSensorValue = nil
+        persist()
+    }
+
+    private func adoptSensorReading(id: UUID, value: Double) {
+        guard id == profile.sensorID else { return }
+        sensorActive = true
+        // Même pas que le curseur : demi-degré, borné 20 à 34 °C.
+        let clamped = (min(34, max(20, value)) * 2).rounded() / 2
+        if isAdjustingIndoor {
+            pendingSensorValue = clamped
+            return
+        }
+        guard clamped != indoorNow else { return }
+        setIndoor(clamped)
     }
 
     // MARK: - Onboarding
