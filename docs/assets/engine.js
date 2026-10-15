@@ -181,8 +181,9 @@
   }
 
   /** Simule la température intérieure sur la série météo donnée.
+      `keepClosed` : fenêtres toujours fermées (courbe de mi-saison).
       Retourne { indoor: number[], isOpen: boolean[] }. */
-  function simulate(series, indoorNow, inertia, ventilation, exposure) {
+  function simulate(series, indoorNow, inertia, ventilation, exposure, keepClosed) {
     const n = series.outdoor.length;
     if (n === 0) return { indoor: [], isOpen: [] };
 
@@ -207,7 +208,9 @@
     for (let i = 0; i < n; i++) {
       const solar = solarGains(hourAt(series, i), exposure);
       const solarPenalty = (1 - SHADE_FACTOR) * solar / ventilationConductance;
-      if (isOpen) {
+      if (keepClosed) {
+        isOpen = false;
+      } else if (isOpen) {
         if (series.outdoor[i] > airTemp - CLOSE_THRESHOLD - solarPenalty) isOpen = false;
       } else {
         if (series.outdoor[i] < airTemp - OPEN_THRESHOLD - solarPenalty) isOpen = true;
@@ -244,8 +247,8 @@
 
   /** Analyse complète : créneaux, repères du graphe, chiffres du verdict.
       `series` doit déjà être fenêtrée (windowSeries). */
-  function analyze(series, indoorNow, inertia, ventilation, exposure) {
-    const result = simulate(series, indoorNow, inertia, ventilation, exposure);
+  function analyze(series, indoorNow, inertia, ventilation, exposure, keepClosed) {
+    const result = simulate(series, indoorNow, inertia, ventilation, exposure, keepClosed);
 
     const runs = [];
     let start = -1;
@@ -338,6 +341,186 @@
     };
   }
 
+  // --- Aération de mi-saison (AerationAnalysis.swift) ----------------------
+  // Automne, hiver, printemps : on n'ouvre plus pour rafraîchir mais pour
+  // renouveler l'air et chasser l'humidité. Le bon moment est le plus doux
+  // de la journée (moins de chaleur perdue), si l'air du dehors est plus sec.
+
+  /** Au-delà de 25 °C dehors (« journée estivale » de Météo-France), le
+      mode automatique rafraîchit ; en dessous, il conseille d'aérer. */
+  const SUMMER_DAY_MAX = 25;
+  /** Humidité relative supposée chez vous : logement un peu humide. */
+  const INDOOR_HUMIDITY = 0.6;
+  /** Heures éveillées où l'on propose d'aérer (heure locale, incluses). */
+  const AIRING_FIRST_HOUR = 8;
+  const AIRING_LAST_HOUR = 21;
+  /** Le créneau regroupe les heures à moins de 1 °C du plus doux. */
+  const AIRING_SPREAD = 1;
+  /** Vapeur évacuée en dessous de laquelle l'air du dehors n'assèche pas, g. */
+  const DRYING_MIN_GRAMS = 5;
+
+  const MODE_LABEL = { auto: 'auto', cool: 'rafraîchir', air: 'aérer' };
+
+  /** Pression de vapeur saturante (Magnus), hPa. */
+  function saturationPressure(t) {
+    return 6.112 * Math.exp(17.62 * t / (243.12 + t));
+  }
+  /** Point de rosée d'un air à `t` °C et `rh` (0–1) d'humidité relative. */
+  function dewPointOf(t, rh) {
+    const g = Math.log(rh) + 17.62 * t / (243.12 + t);
+    return 243.12 * g / (17.62 - g);
+  }
+  /** Vapeur contenue dans 1 m³ d'air de point de rosée `dew`, porté à `t` °C, g/m³. */
+  function vaporDensity(dew, t) {
+    return 216.7 * saturationPressure(dew) / (t + 273.15);
+  }
+
+  /** Mode effectif : « auto » suit la météo des 24 h à venir. */
+  function resolveMode(mode, series) {
+    if (mode === 'cool' || mode === 'air') return mode;
+    const n = Math.min(24, series.outdoor.length);
+    let max = -Infinity;
+    for (let i = 0; i < n; i++) max = Math.max(max, series.outdoor[i]);
+    return max >= SUMMER_DAY_MAX ? 'cool' : 'air';
+  }
+
+  /** Renouvellements d'air par heure fenêtres ouvertes, courant d'air compris. */
+  function airChangeRate(ventilation, exposure) {
+    const dual = isDual(exposure);
+    return VENT_ACH[ventilation] * (dual ? (isCrossOpposite(exposure) ? 1.8 : 1.5) : 1.0);
+  }
+
+  /** Durée d'aération : le temps de renouveler une fois l'air, de 5 à 15 min. */
+  function airingMinutes(ventilation, exposure) {
+    const minutes = Math.round(60 / airChangeRate(ventilation, exposure));
+    return Math.min(15, Math.max(5, minutes));
+  }
+
+  /** Refroidissement dû à une aération de `minutes` à l'index `index` :
+      même modèle deux nœuds, aération puis fenêtres refermées une heure,
+      comparé au logement resté fermé. Le logement est supposé à `indoorNow`
+      au moment d'aérer (chauffage ou pas, c'est la température qu'il tient).
+      Retourne { during, after } en °C. */
+  function airingDip(series, index, indoorNow, inertia, ventilation, exposure, minutes) {
+    const dual = isDual(exposure);
+    const envelope = ENVELOPE_LOSS * (dual ? 1.15 : 1);
+    const massCapacity = WALL_KAPPA[inertia] * FLOOR_AREA;
+    const ventilationConductance =
+      AIR_HEAT_CAPACITY_PER_VOLUME * airChangeRate(ventilation, exposure) * VOLUME / 3600;
+    const outdoor = series.outdoor[index];
+    const solar = solarGains(hourAt(series, index), exposure);
+    const closedGains = INTERNAL_GAINS + SHADE_FACTOR * solar;
+    const massStart = indoorNow
+      - (envelope * (outdoor - indoorNow) + closedGains) / AIR_MASS_COUPLING;
+    const dt = 60;
+
+    function run(openMinutes, totalMinutes) {
+      let air = indoorNow, mass = massStart;
+      let atClose = air;
+      for (let m = 0; m < totalMinutes; m++) {
+        const open = m < openMinutes;
+        const gains = INTERNAL_GAINS + (open ? 1 : SHADE_FACTOR) * solar;
+        const conductance = envelope + (open ? ventilationConductance : 0);
+        const dAir = (dt / AIR_NODE_CAPACITY)
+          * (conductance * (outdoor - air) + AIR_MASS_COUPLING * (mass - air) + gains);
+        const dMass = (dt / massCapacity) * (AIR_MASS_COUPLING * (air - mass));
+        air += dAir;
+        mass += dMass;
+        if (m === minutes - 1) atClose = air;
+      }
+      return { atClose: atClose, end: air };
+    }
+    const aired = run(minutes, minutes + 60);
+    const closed = run(0, minutes + 60);
+    return {
+      during: Math.max(0, closed.atClose - aired.atClose),
+      after: Math.max(0, closed.end - aired.end),
+    };
+  }
+
+  /** Quand aérer sans trop refroidir : le moment le plus doux des 24 h à
+      venir (heures éveillées), parmi ceux où l'air du dehors assèche.
+      `series` doit déjà être fenêtrée (windowSeries). */
+  function analyzeAeration(series, indoorNow, inertia, ventilation, exposure) {
+    const n = Math.min(24, series.outdoor.length);
+    const outdoor = series.outdoor;
+    const minutes = airingMinutes(ventilation, exposure);
+    const renewed = 1 - Math.exp(-airChangeRate(ventilation, exposure) * minutes / 60);
+    const indoorDewPoint = dewPointOf(indoorNow, INDOOR_HUMIDITY);
+
+    /** Vapeur évacuée par l'aération à l'index i, g (négatif : l'air humidifie). */
+    function waterAt(i) {
+      return (vaporDensity(indoorDewPoint, indoorNow) - vaporDensity(series.dewPoint[i], indoorNow))
+        * VOLUME * renewed;
+    }
+
+    let candidates = [];
+    for (let i = 0; i < n; i++) {
+      const h = hourAt(series, i);
+      if (h >= AIRING_FIRST_HOUR && h <= AIRING_LAST_HOUR) candidates.push(i);
+    }
+    if (!candidates.length) for (let i = 0; i < n; i++) candidates.push(i);
+    const drying = candidates.filter(function (i) { return waterAt(i) >= DRYING_MIN_GRAMS; });
+    const pool = drying.length ? drying : candidates;
+    const inPool = {};
+    pool.forEach(function (i) { inPool[i] = true; });
+
+    // Le plus doux ; à 0,5 °C près, le plus tôt (inutile d'attendre demain).
+    let warmest = -Infinity;
+    pool.forEach(function (i) { warmest = Math.max(warmest, outdoor[i]); });
+    let best = pool[0];
+    for (let k = 0; k < pool.length; k++) {
+      if (outdoor[pool[k]] >= warmest - 0.5) { best = pool[k]; break; }
+    }
+    // Créneau : heures contiguës autour, à moins de AIRING_SPREAD du plus doux.
+    const floor = Math.min(outdoor[best], warmest - AIRING_SPREAD);
+    let a = best, b = best;
+    while (inPool[a - 1] && outdoor[a - 1] >= floor) a--;
+    while (inPool[b + 1] && outdoor[b + 1] >= floor) b++;
+
+    const dip = airingDip(series, best, indoorNow, inertia, ventilation, exposure, minutes);
+    const water = waterAt(best);
+
+    // Pour comparer : la même aération au plus frais des heures éveillées.
+    let coldest = candidates[0];
+    candidates.forEach(function (i) { if (outdoor[i] < outdoor[coldest]) coldest = i; });
+    const coldDip = airingDip(series, coldest, indoorNow, inertia, ventilation, exposure, minutes);
+
+    function endLabel() { return pad2((hourAt(series, b) + 1) % 24) + 'h'; }
+    const isNow = a === 0;
+    // Moins de 24 h devant nous : une heure de début « plus tôt » que
+    // maintenant est forcément demain.
+    const isTomorrow = !isNow && hourAt(series, a) < hourAt(series, 0);
+    const start = series.times[a];
+    const verdictTitle = isNow
+      ? "Aérez jusqu'à " + endLabel()
+      : 'Aérez ' + (isTomorrow ? 'demain ' : '') + 'de ' + hourLabel(series, a) + ' à ' + endLabel();
+
+    return {
+      series: series,
+      window: [a, b],
+      bestIndex: best,
+      minutes: minutes,
+      dipDuring: dip.during,
+      dipAfter: dip.after,
+      outdoorAtBest: outdoor[best],
+      /** Dehors aussi doux que chez vous : aérer ne coûte rien. */
+      isFree: outdoor[best] >= indoorNow,
+      dries: water >= DRYING_MIN_GRAMS,
+      waterGrams: Math.max(0, water),
+      indoorDewPoint: indoorDewPoint,
+      outdoorDewPoint: series.dewPoint[best],
+      coldestIndex: coldest,
+      coldestDipDuring: coldDip.during,
+      isNow: isNow,
+      isTomorrow: isTomorrow,
+      verdictTitle: verdictTitle,
+      /** Pour une alarme : début du créneau, et fin de l'aération. */
+      airing: { start: start, end: start + minutes * 60000 },
+      windowEnd: series.times[b] + 3600000,
+    };
+  }
+
   // --- Formats (Theme.swift) -----------------------------------------------
 
   /** Une décimale, virgule française : 4.7 → « 4,7 ». */
@@ -364,6 +547,9 @@
     windowSeries: windowSeries, demoSeries: demoSeries,
     bell: bell, solarGains: solarGains,
     simulate: simulate, peakDrop: peakDrop, analyze: analyze,
+    SUMMER_DAY_MAX: SUMMER_DAY_MAX, INDOOR_HUMIDITY: INDOOR_HUMIDITY, MODE_LABEL: MODE_LABEL,
+    dewPointOf: dewPointOf, vaporDensity: vaporDensity, resolveMode: resolveMode,
+    airingMinutes: airingMinutes, airingDip: airingDip, analyzeAeration: analyzeAeration,
     oneDecimal: oneDecimal, noDecimal: noDecimal,
   };
 

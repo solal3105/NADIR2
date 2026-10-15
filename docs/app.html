@@ -185,6 +185,7 @@
     <h1 id="verdictTitle">…</h1>
     <p class="closed-note" id="closedNote" hidden>Restez fermé. Attendez une nuit
       plus fraîche.</p>
+    <p class="closed-note" id="airNote" hidden></p>
   </div>
 
   <div class="locate">
@@ -220,9 +221,15 @@
   <div class="controls">
     <h2 class="sr">Vos réglages</h2>
     <div class="block">
+      <div class="question">Que voulez-vous faire ?</div>
+      <div class="segmented" id="modeSeg" role="group" aria-label="Rafraîchir ou aérer"></div>
+      <div class="hint" id="modeHint"></div>
+    </div>
+
+    <div class="block">
       <div class="question">Quelle température fait-il chez vous ?
         <span class="val" id="indoorVal">26 °C</span></div>
-      <input type="range" id="indoorRange" min="20" max="34" step="0.5" value="26"
+      <input type="range" id="indoorRange" min="16" max="34" step="0.5" value="26"
              aria-label="Température chez vous">
     </div>
 
@@ -246,7 +253,22 @@
     </div>
   </div>
 
-  <div class="figures">
+  <div class="figures" id="airFigures" hidden>
+    <h2 class="head"><span class="arrow">→</span><span>Vos chiffres</span></h2>
+    <p class="sub">Aérer au plus doux renouvelle l’air sans vider vos murs de
+      leur chaleur : l’air se réchauffe vite au contact des murs.</p>
+    <div id="airRows"></div>
+    <div class="total">
+      <span class="l" id="airTotalLabel">vapeur évacuée</span>
+      <span class="v" id="airTotalVal"></span>
+    </div>
+    <p class="disclaimer">Estimation : NADIR suppose un logement un peu humide
+      (60 % d’humidité) qui tient sa température. Retenez l'ordre de grandeur,
+      pas la décimale.</p>
+    <div class="notes" id="airNotes" hidden></div>
+  </div>
+
+  <div class="figures" id="coolFigures">
     <h2 class="head"><span class="arrow">→</span><span>Vos chiffres</span></h2>
     <p class="sub">Au plus chaud de la journée, vous serez plus frais que dehors.</p>
     <div id="effectRows"></div>
@@ -299,7 +321,7 @@
     return {
       inertia: 'medium', ventilation: 'medium',
       exposure: { primary: 'south', secondary: null },
-      indoorNow: 26, latitude: null, longitude: null, place: '',
+      indoorNow: 26, latitude: null, longitude: null, place: '', mode: 'auto',
     };
   }
   function loadProfile() {
@@ -311,7 +333,8 @@
       if (!E.VENT_ACH[p.ventilation]) p.ventilation = d.ventilation;
       if (!p.exposure || !E.FACADES[p.exposure.primary]) p.exposure = d.exposure;
       if (p.exposure.secondary && !E.FACADES[p.exposure.secondary]) p.exposure.secondary = null;
-      if (typeof p.indoorNow !== 'number' || !(p.indoorNow >= 20 && p.indoorNow <= 34)) p.indoorNow = 26;
+      if (typeof p.indoorNow !== 'number' || !(p.indoorNow >= 16 && p.indoorNow <= 34)) p.indoorNow = 26;
+      if (!E.MODE_LABEL[p.mode]) p.mode = d.mode;
       if (typeof p.latitude !== 'number' || typeof p.longitude !== 'number') {
         p.latitude = null; p.longitude = null;
       }
@@ -572,7 +595,7 @@
   }
 
   // --- Graphe (ChartView.swift) ----------------------------------------------
-  function renderChart(analysis, animate) {
+  function renderChart(analysis, animate, bands) {
     var container = document.getElementById('chart');
     var s = analysis.series;
     var outdoor = s.outdoor, indoor = analysis.result.indoor;
@@ -603,8 +626,8 @@
     var svg = [];
     var fadeCls = animate ? ' class="fade"' : '';
 
-    // Créneaux d'ouverture conseillés.
-    analysis.runs.forEach(function (run) {
+    // Créneaux d'ouverture conseillés (ou créneau d'aération).
+    (bands || analysis.runs).forEach(function (run) {
       var xa = x(Math.max(0, run[0] - 0.5));
       var xb = x(Math.min(n - 1, run[1] + 0.5));
       svg.push('<rect' + fadeCls + ' x="' + xa.toFixed(2) + '" y="' + padTop
@@ -726,13 +749,27 @@
   }
 
   // --- Rendu ------------------------------------------------------------------
+  /** Mode effectif : rafraîchir (été) ou aérer (mi-saison), et l'analyse
+      qui va avec. En mode aérer, la courbe intérieure reste fenêtres fermées. */
   function analysisNow() {
-    return E.analyze(E.windowSeries(series, nowMs), profile.indoorNow,
-      profile.inertia, profile.ventilation, profile.exposure);
+    var windowed = E.windowSeries(series, nowMs);
+    var mode = E.resolveMode(profile.mode, windowed);
+    var air = mode === 'air';
+    return {
+      mode: mode,
+      thermal: E.analyze(windowed, profile.indoorNow,
+        profile.inertia, profile.ventilation, profile.exposure, air),
+      aeration: air
+        ? E.analyzeAeration(windowed, profile.indoorNow,
+          profile.inertia, profile.ventilation, profile.exposure)
+        : null,
+    };
   }
 
   function render() {
-    var analysis = analysisNow();
+    var current = analysisNow();
+    var analysis = current.thermal;
+    var aeration = current.aeration;
     var animate = sourceKey !== animatedKey;
     animatedKey = sourceKey;
 
@@ -742,27 +779,51 @@
 
     // Verdict.
     var title = document.getElementById('verdictTitle');
-    title.textContent = analysis.verdictTitle.toUpperCase();
-    title.classList.toggle('closed', analysis.runs.length === 0);
-    document.getElementById('closedNote').hidden = analysis.runs.length !== 0;
+    var closed = !aeration && analysis.runs.length === 0;
+    title.textContent = (aeration ? aeration.verdictTitle : analysis.verdictTitle).toUpperCase();
+    title.classList.toggle('closed', closed);
+    document.getElementById('closedNote').hidden = !closed;
+    var airNote = document.getElementById('airNote');
+    airNote.hidden = !aeration;
+    if (aeration) {
+      airNote.textContent = aeration.isFree
+        ? 'Dehors est aussi doux que chez vous : ouvrez aussi longtemps que vous voulez.'
+        : aeration.minutes + ' min, fenêtres grandes ouvertes, puis refermez.';
+    }
 
     // Graphe.
-    renderChart(analysis, animate);
+    renderChart(analysis, animate, aeration ? [aeration.window] : null);
+
+    // Vos chiffres : été ou mi-saison.
+    document.getElementById('coolFigures').hidden = !!aeration;
+    document.getElementById('airFigures').hidden = !aeration;
+    if (aeration) renderAeration(aeration);
 
     // Créneau.
     var info = document.getElementById('windowInfo');
-    var w = analysis.firstWindow;
+    var w = aeration
+      ? { start: aeration.airing.start, end: aeration.airing.end }
+      : analysis.firstWindow;
+    if (aeration && w.end <= nowMs) {
+      // Aération du début de créneau passée : le créneau court encore.
+      w = { start: nowMs, end: nowMs + aeration.minutes * 60000 };
+    }
     if (w && w.end > nowMs) {
       info.hidden = false;
       var rows = '';
       if (w.start > nowMs) {
-        rows += '<span><span class="lbl">ouvrir&nbsp;</span>' + clockLabel(w.start)
+        rows += '<span><span class="lbl">' + (aeration ? 'aérer' : 'ouvrir') + '&nbsp;</span>'
+          + clockLabel(w.start)
           + '<span class="lbl">&nbsp;· ' + delayLabel(w.start).toLowerCase() + '</span></span>';
       } else {
         rows += '<span><span class="lbl">créneau en cours</span></span>';
       }
-      rows += '<span><span class="lbl">fermer&nbsp;</span>' + clockLabel(w.end)
-        + '<span class="lbl">&nbsp;· ' + delayLabel(w.end).toLowerCase() + '</span></span>';
+      if (aeration) {
+        rows += '<span><span class="lbl">durée&nbsp;</span>' + aeration.minutes + ' min</span>';
+      } else {
+        rows += '<span><span class="lbl">fermer&nbsp;</span>' + clockLabel(w.end)
+          + '<span class="lbl">&nbsp;· ' + delayLabel(w.end).toLowerCase() + '</span></span>';
+      }
       document.getElementById('windowRows').innerHTML = rows;
     } else {
       info.hidden = true;
@@ -771,7 +832,8 @@
     // Réglages.
     document.getElementById('indoorVal').textContent = indoorLabel(profile.indoorNow);
     document.getElementById('indoorRange').value = profile.indoorNow;
-    renderSegments();
+    renderSegments(current.mode);
+    if (aeration) return;
 
     // Vos chiffres.
     var b = analysis.breakdown;
@@ -807,7 +869,62 @@
     notesEl.innerHTML = notes.join('');
   }
 
-  function renderSegments() {
+  /** Vos chiffres, mi-saison : ce que coûte l'aération au plus doux, comparée
+      au plus frais, et la vapeur évacuée (AerationSection.swift). */
+  function renderAeration(a) {
+    var s = a.series;
+    var scale = Math.max(3, a.coldestDipDuring);
+    var rows = [
+      ['au plus doux (' + E.hourLabel(s, a.bestIndex) + '), le temps d’aérer', a.dipDuring],
+      ['une heure après, les murs ont rendu la chaleur', a.dipAfter],
+    ];
+    if (a.coldestIndex !== a.bestIndex && a.coldestDipDuring > a.dipDuring + 0.1) {
+      rows.push(['au plus frais (' + E.hourLabel(s, a.coldestIndex) + '), le temps d’aérer',
+        a.coldestDipDuring]);
+    }
+    document.getElementById('airRows').innerHTML = rows.map(function (row) {
+      var pct = Math.min(1, row[1] / scale) * 100;
+      return '<div class="effect"><div class="labels"><span class="l">'
+        + escapeHtml(row[0]) + '</span><span class="v">'
+        + (row[1] < 0.05 ? 'presque rien' : '−' + E.oneDecimal(row[1]) + ' °C dans l’air')
+        + '</span></div><div class="bar"><i style="width:'
+        + pct.toFixed(1) + '%"></i></div></div>';
+    }).join('');
+    document.getElementById('airTotalVal').textContent = a.dries
+      ? '≈ ' + Math.round(a.waterGrams / 10) * 10 + ' g d’eau en moins'
+      : 'rien : l’air du dehors est aussi humide';
+
+    var notes = [];
+    if (!a.dries) {
+      notes.push('<p>L’air du dehors est aussi humide que chez vous : aérez quand même pour '
+        + 'renouveler l’air, mais ça n’asséchera pas le logement.</p>');
+    }
+    if (a.minutes >= 15) {
+      notes.push('<p class="faint">Ouvrez plus grand si vous pouvez : un courant d’air '
+        + 'renouvelle l’air en 5 min, et refroidit moins les murs.</p>');
+    }
+    if (series.isDemo) {
+      notes.push('<p class="faint">Exemple. Tapez votre ville pour votre créneau réel.</p>');
+    }
+    var notesEl = document.getElementById('airNotes');
+    notesEl.hidden = notes.length === 0;
+    notesEl.innerHTML = notes.join('');
+  }
+
+  var MODE_HINTS = {
+    cool: 'Ouvrir quand il fait plus frais dehors, pour rafraîchir le logement.',
+    air: 'Aérer quelques minutes au plus doux de la journée, sans refroidir le logement.',
+  };
+
+  function renderSegments(mode) {
+    buildSegment('modeSeg', ['auto', 'cool', 'air'], E.MODE_LABEL,
+      function (k) { return k === profile.mode; },
+      function (k) { profile.mode = k; persistProfile(); render(); });
+    document.getElementById('modeHint').textContent = profile.mode === 'auto'
+      ? 'Rafraîchir dès qu’il fait ' + E.SUMMER_DAY_MAX + ' °C dehors, aérer sinon. '
+        + 'Aujourd’hui : ' + E.MODE_LABEL[mode] + '.'
+      : MODE_HINTS[profile.mode];
+
     buildSegment('wallsSeg', ['light', 'medium', 'heavy'], E.WALL_LABEL,
       function (k) { return k === profile.inertia; },
       function (k) { profile.inertia = k; persistProfile(); render(); });
@@ -860,7 +977,7 @@
   var resizeTimer = null;
   window.addEventListener('resize', function () {
     clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function () { renderChart(analysisNow(), false); }, 150);
+    resizeTimer = setTimeout(function () { render(); }, 150);
   });
 
   // Série entièrement passée et pas de refetch possible : revenir à l'exemple
