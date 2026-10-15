@@ -36,19 +36,22 @@ struct ThermalAnalysis: Equatable {
     let breakdown: EffectBreakdown
 
     /// `series` doit déjà être fenêtrée (voir `WeatherSeries.window`).
+    /// `keepClosed` : fenêtres toujours fermées (mode aérer).
     init(
         series: WeatherSeries,
         indoorNow: Double,
         inertia: WallInertia,
         ventilation: Ventilation,
-        exposure: Exposure
+        exposure: Exposure,
+        keepClosed: Bool = false
     ) {
         self.series = series
         self.indoorNow = indoorNow
 
         let result = ThermalModel.simulate(
             series: series, indoorNow: indoorNow,
-            inertia: inertia, ventilation: ventilation, exposure: exposure
+            inertia: inertia, ventilation: ventilation, exposure: exposure,
+            keepClosed: keepClosed
         )
         self.result = result
 

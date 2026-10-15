@@ -46,6 +46,8 @@ final class AppModel {
     private let alarms = AlarmScheduler()
     private var scheduledOpen: Date?
     private var scheduledClose: Date?
+    /// Les alarmes programmées portent les textes d'aération.
+    private var scheduledAiring = false
     private var widgetReloadTask: Task<Void, Never>?
 
     init() {
@@ -64,8 +66,27 @@ final class AppModel {
         Self.shared = self
     }
 
+    /// Mode effectif : rafraîchir (été) ou aérer (mi-saison).
+    var mode: AdviceMode {
+        AerationAnalysis.resolve(profile.mode, series: series.window(from: now))
+    }
+
+    /// En mode aérer, la courbe intérieure reste fenêtres fermées.
     var analysis: ThermalAnalysis {
         ThermalAnalysis(
+            series: series.window(from: now),
+            indoorNow: indoorNow,
+            inertia: profile.inertia,
+            ventilation: profile.ventilation,
+            exposure: profile.exposure,
+            keepClosed: mode == .air
+        )
+    }
+
+    /// Quand aérer sans trop refroidir — seulement en mode aérer.
+    var aeration: AerationAnalysis? {
+        guard mode == .air else { return nil }
+        return AerationAnalysis(
             series: series.window(from: now),
             indoorNow: indoorNow,
             inertia: profile.inertia,
@@ -178,6 +199,11 @@ final class AppModel {
         persist()
     }
 
+    func set(mode: AdviceMode) {
+        profile.mode = mode
+        persist()
+    }
+
     func toggleExposure(_ facade: Facade) {
         profile.exposure.toggle(facade)
         persist()
@@ -219,9 +245,15 @@ final class AppModel {
 
     /// Le créneau à alarmer — seulement tant qu'il n'est pas fini,
     /// jugé sur la même horloge (`now`) que tout le reste de l'état.
+    /// En mode aérer : le début du créneau, et la fin de l'aération.
     var alarmWindow: AlarmWindow? {
-        guard let window = analysis.firstWindow, window.end > now else { return nil }
+        guard let window = currentWindow, window.end > now else { return nil }
         return AlarmWindow(start: window.start, end: window.end, startIsPast: window.start <= now)
+    }
+
+    private var currentWindow: (start: Date, end: Date)? {
+        if let aeration { return aeration.airing }
+        return analysis.firstWindow
     }
 
     func toggleAlarm(_ kind: AlarmScheduler.Kind) async {
@@ -246,18 +278,35 @@ final class AppModel {
     /// Aligne les notifications programmées sur le créneau courant :
     /// ne replanifie que si l'heure visée a changé.
     func syncAlarms() {
-        let window = analysis.firstWindow
+        let window = currentWindow
+        let airing = mode == .air
+        if airing != scheduledAiring {
+            // Changement de saison : les textes changent, tout est à refaire.
+            scheduledOpen = nil
+            scheduledClose = nil
+            alarms.cancel(.open)
+            alarms.cancel(.close)
+            scheduledAiring = airing
+        }
         let openTarget: Date? = (profile.alarmOnOpen && window.map { $0.start > now } == true)
             ? window?.start : nil
         let closeTarget: Date? = (profile.alarmOnClose && window.map { $0.end > now } == true)
             ? window?.end : nil
 
         if openTarget != scheduledOpen {
-            if let openTarget { alarms.schedule(.open, at: openTarget) } else { alarms.cancel(.open) }
+            if let openTarget {
+                alarms.schedule(.open, at: openTarget, airing: airing)
+            } else {
+                alarms.cancel(.open)
+            }
             scheduledOpen = openTarget
         }
         if closeTarget != scheduledClose {
-            if let closeTarget { alarms.schedule(.close, at: closeTarget) } else { alarms.cancel(.close) }
+            if let closeTarget {
+                alarms.schedule(.close, at: closeTarget, airing: airing)
+            } else {
+                alarms.cancel(.close)
+            }
             scheduledClose = closeTarget
         }
     }

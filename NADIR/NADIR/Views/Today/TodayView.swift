@@ -8,19 +8,24 @@ struct TodayView: View {
 
     var body: some View {
         let analysis = model.analysis
+        let aeration = model.aeration
         let playsIntro = model.animatedChartKey != model.chartAnimationKey
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 navigationRow
-                verdict(analysis)
+                verdict(analysis, aeration: aeration)
                     .riseIn(trigger: model.chartAnimationKey, animated: playsIntro, delay: 1.05)
                 locationControl
-                chart(analysis)
+                chart(analysis, bands: aeration.map { [$0.window] })
                 if let window = model.alarmWindow {
                     AlarmsSection(window: window)
                 }
                 ControlsSection()
-                FiguresSection(analysis: analysis)
+                if let aeration {
+                    AerationSection(aeration: aeration)
+                } else {
+                    FiguresSection(analysis: analysis)
+                }
             }
             .padding(.bottom, 104)
         }
@@ -49,17 +54,26 @@ struct TodayView: View {
         .padding(.top, 12)
     }
 
-    private func verdict(_ analysis: ThermalAnalysis) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
+    private func verdict(_ analysis: ThermalAnalysis, aeration: AerationAnalysis?) -> some View {
+        let isClosed = aeration == nil && analysis.runs.isEmpty
+        return VStack(alignment: .leading, spacing: 0) {
             Eyebrow(text: "Le verdict")
                 .padding(.bottom, 14)
-            Text(analysis.verdictTitle.uppercased())
+            Text((aeration?.verdictTitle ?? analysis.verdictTitle).uppercased())
                 .font(.nadirSans(42, weight: .heavy))
                 .tracking(-1.7)
                 .lineSpacing(-4)
-                .foregroundStyle(analysis.runs.isEmpty ? Color.nadirHot : Color.white)
+                .foregroundStyle(isClosed ? Color.nadirHot : Color.white)
                 .fixedSize(horizontal: false, vertical: true)
-            if analysis.runs.isEmpty {
+            if let aeration {
+                Text(aeration.isFree
+                    ? "Dehors est aussi doux que chez vous : ouvrez aussi longtemps que vous voulez."
+                    : "\(aeration.minutes) min, fenêtres grandes ouvertes, puis refermez.")
+                    .font(.nadirMono(12.5))
+                    .lineSpacing(3)
+                    .foregroundStyle(Color.nadirDim)
+                    .padding(.top, 16)
+            } else if isClosed {
                 Text("Restez fermé. Attendez une nuit plus fraîche.")
                     .font(.nadirMono(12.5))
                     .lineSpacing(3)
@@ -135,12 +149,13 @@ struct TodayView: View {
         .padding(.bottom, 20)
     }
 
-    private func chart(_ analysis: ThermalAnalysis) -> some View {
+    private func chart(_ analysis: ThermalAnalysis, bands: [ClosedRange<Int>]?) -> some View {
         ChartView(
             analysis: analysis,
             animationKey: model.chartAnimationKey,
             hasPlayed: model.animatedChartKey == model.chartAnimationKey,
-            onPlayed: { model.animatedChartKey = model.chartAnimationKey }
+            onPlayed: { model.animatedChartKey = model.chartAnimationKey },
+            bands: bands
         )
             .frame(maxWidth: .infinity)
             .background(Color.nadirChartBackground)

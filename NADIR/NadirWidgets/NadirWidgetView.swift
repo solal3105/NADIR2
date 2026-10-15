@@ -9,10 +9,14 @@ struct NadirWidgetView: View {
     private var isSmall: Bool { family == .systemSmall }
 
     var body: some View {
-        let analysis = entry.analysis
+        let analysis = entry.advice.analysis
         VStack(alignment: .leading, spacing: isSmall ? 6 : 8) {
             header(analysis)
-            WidgetChart(analysis: analysis, showsHours: !isSmall)
+            WidgetChart(
+                analysis: analysis,
+                bands: entry.advice.aeration.map { [$0.window] } ?? analysis.runs,
+                showsHours: !isSmall
+            )
             verdict(analysis)
         }
     }
@@ -49,7 +53,7 @@ struct NadirWidgetView: View {
     }
 
     private func nextAlarmTime(_ analysis: ThermalAnalysis) -> String? {
-        guard let window = analysis.firstWindow else { return nil }
+        guard let window = entry.advice.window else { return nil }
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = analysis.series.timeZone
         func clock(_ date: Date) -> String {
@@ -65,12 +69,19 @@ struct NadirWidgetView: View {
         Text(compactVerdict(analysis).uppercased())
             .font(.nadirSans(isSmall ? 13 : 15, weight: .heavy))
             .tracking(isSmall ? -0.3 : -0.4)
-            .foregroundStyle(analysis.runs.isEmpty ? Color.nadirHot : Color.white)
+            .foregroundStyle(entry.advice.aeration == nil && analysis.runs.isEmpty
+                ? Color.nadirHot : Color.white)
             .lineLimit(1)
             .minimumScaleFactor(0.7)
     }
 
     private func compactVerdict(_ analysis: ThermalAnalysis) -> String {
+        if let aeration = entry.advice.aeration {
+            let series = aeration.series
+            let end = String(format: "%02dh", (series.hour(at: aeration.window.upperBound) + 1) % 24)
+            if aeration.isNow { return "Aérez jusqu'à \(end)" }
+            return "Aérez \(series.hourLabel(at: aeration.window.lowerBound))–\(end)"
+        }
         guard let first = analysis.runs.first else { return "Gardez fermé" }
         if analysis.shouldOpenNow { return "Ouvrez jusqu'à \(analysis.endLabel(of: first))" }
         return "Ouvrez \(analysis.series.hourLabel(at: first.lowerBound))–\(analysis.endLabel(of: first))"
@@ -81,6 +92,8 @@ struct NadirWidgetView: View {
 /// blanc léger, chez vous en bleu, repère « maintenant ».
 struct WidgetChart: View {
     let analysis: ThermalAnalysis
+    /// Créneaux d'ouverture, ou créneau d'aération en mi-saison.
+    let bands: [ClosedRange<Int>]
     let showsHours: Bool
 
     var body: some View {
@@ -110,8 +123,8 @@ struct WidgetChart: View {
                 }
             }
 
-            // Créneaux d'ouverture conseillés.
-            for run in analysis.runs {
+            // Créneaux d'ouverture conseillés (ou créneau d'aération).
+            for run in bands {
                 let xa = x(max(0, Double(run.lowerBound) - 0.5))
                 let xb = x(min(Double(n - 1), Double(run.upperBound) + 0.5))
                 context.fill(

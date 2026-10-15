@@ -13,6 +13,7 @@ struct UserProfile: Equatable {
     var place = ""
     var alarmOnOpen = false
     var alarmOnClose = false
+    var mode: AdviceMode = .auto
 
     private static let storageKey = "nadir.profile.v1"
 
@@ -41,7 +42,7 @@ struct UserProfile: Equatable {
 extension UserProfile: Codable {
     private enum CodingKeys: String, CodingKey {
         case onboarded, inertia, ventilation, exposure, indoorNow
-        case latitude, longitude, place, alarmOnOpen, alarmOnClose
+        case latitude, longitude, place, alarmOnOpen, alarmOnClose, mode
     }
 
     init(from decoder: Decoder) throws {
@@ -56,5 +57,6 @@ extension UserProfile: Codable {
         place = try container.decodeIfPresent(String.self, forKey: .place) ?? ""
         alarmOnOpen = try container.decodeIfPresent(Bool.self, forKey: .alarmOnOpen) ?? false
         alarmOnClose = try container.decodeIfPresent(Bool.self, forKey: .alarmOnClose) ?? false
+        mode = try container.decodeIfPresent(AdviceMode.self, forKey: .mode) ?? .auto
     }
 }

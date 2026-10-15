@@ -25,7 +25,7 @@ struct NadirChartWidget: Widget {
 
 struct NadirEntry: TimelineEntry {
     let date: Date
-    let analysis: ThermalAnalysis
+    let advice: Advice
     let alarmOnOpen: Bool
     let alarmOnClose: Bool
 }
@@ -65,13 +65,7 @@ struct NadirTimelineProvider: TimelineProvider {
     private func entry(at date: Date, series: WeatherSeries, profile: UserProfile) -> NadirEntry {
         NadirEntry(
             date: date,
-            analysis: ThermalAnalysis(
-                series: series.window(from: date),
-                indoorNow: profile.indoorNow,
-                inertia: profile.inertia,
-                ventilation: profile.ventilation,
-                exposure: profile.exposure
-            ),
+            advice: Advice(series: series, profile: profile, at: date),
             alarmOnOpen: profile.alarmOnOpen,
             alarmOnClose: profile.alarmOnClose
         )

@@ -56,12 +56,15 @@ enum ThermalModel {
     /// l'utilisateur, en résolvant l'équilibre de l'air à t = 0 fenêtres
     /// fermées (dTa/dt = 0) : la courbe démarre exactement à la température
     /// saisie, sans saut artificiel.
+    ///
+    /// `keepClosed` : fenêtres toujours fermées (courbe de mi-saison).
     static func simulate(
         series: WeatherSeries,
         indoorNow: Double,
         inertia: WallInertia,
         ventilation: Ventilation,
-        exposure: Exposure
+        exposure: Exposure,
+        keepClosed: Bool = false
     ) -> Result {
         let n = series.outdoor.count
         guard n > 0 else { return Result(indoor: [], isOpen: []) }
@@ -91,7 +94,9 @@ enum ThermalModel {
             // le soleil supplémentaire admis fenêtre ouverte : pénalité
             // exprimée en degrés équivalents.
             let solarPenalty = (1 - shadeFactor) * solar / ventilationConductance
-            if isOpen {
+            if keepClosed {
+                isOpen = false
+            } else if isOpen {
                 if series.outdoor[i] > airTemp - closeThreshold - solarPenalty { isOpen = false }
             } else {
                 if series.outdoor[i] < airTemp - openThreshold - solarPenalty { isOpen = true }

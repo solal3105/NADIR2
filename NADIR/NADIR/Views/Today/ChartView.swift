@@ -10,6 +10,8 @@ struct ChartView: View {
     /// L'animation de cette source a déjà été jouée (retour d'onglet).
     let hasPlayed: Bool
     let onPlayed: () -> Void
+    /// Bandes vertes à la place des créneaux d'ouverture (mode aérer).
+    var bands: [ClosedRange<Int>]? = nil
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var animationStart: Date?
@@ -109,8 +111,8 @@ struct ChartView: View {
             Text(string).font(.nadirMono(size, weight: weight)).foregroundStyle(color)
         }
 
-        // Créneaux d'ouverture conseillés.
-        for run in analysis.runs {
+        // Créneaux d'ouverture conseillés (ou créneau d'aération).
+        for run in bands ?? analysis.runs {
             let xa = x(max(0, Double(run.lowerBound) - 0.5))
             let xb = x(min(Double(n - 1), Double(run.upperBound) + 0.5))
             let band = CGRect(x: xa, y: padTop, width: xb - xa, height: plotBottom - padTop)

@@ -1,12 +1,13 @@
 import SwiftUI
 
-/// Vos réglages : température actuelle, inertie des murs, ventilation
-/// possible et exposition (une ou deux façades).
+/// Vos réglages : rafraîchir ou aérer, température actuelle, inertie des
+/// murs, ventilation possible et exposition (une ou deux façades).
 struct ControlsSection: View {
     @Environment(AppModel.self) private var model
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
+            modePicker
             temperatureSlider
             wallsPicker
             ventilationPicker
@@ -32,13 +33,30 @@ struct ControlsSection: View {
             }
             Slider(
                 value: Binding(get: { model.indoorNow }, set: { model.setIndoor($0) }),
-                in: 20 ... 34,
+                in: 16 ... 34,
                 step: 0.5
             )
             .tint(.white)
             .accessibilityLabel("Température chez vous")
         }
         .padding(.bottom, 22)
+    }
+
+    private var modePicker: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            question("Que voulez-vous faire ?")
+            SegmentedRow(
+                options: AdviceMode.allCases,
+                label: \.label,
+                isSelected: { $0 == model.profile.mode },
+                select: { model.set(mode: $0) }
+            )
+            .padding(.bottom, 8)
+            hint(model.profile.mode == .auto
+                ? "Rafraîchir dès qu'il fait \(AerationAnalysis.summerDayMax.noDecimal) °C dehors, aérer sinon. Aujourd'hui : \(model.mode.label)."
+                : model.profile.mode.hint)
+        }
+        .padding(.bottom, 18)
     }
 
     private var wallsPicker: some View {
@@ -111,6 +129,15 @@ extension WallInertia {
         case .light: "Exemple : cloison, bois, préfabriqué"
         case .medium: "Exemple : brique creuse, parpaing"
         case .heavy: "Exemple : pierre, béton, brique pleine"
+        }
+    }
+}
+
+extension AdviceMode {
+    var hint: String {
+        switch self {
+        case .auto, .cool: "Ouvrir quand il fait plus frais dehors, pour rafraîchir le logement."
+        case .air: "Aérer quelques minutes au plus doux de la journée, sans refroidir le logement."
         }
     }
 }

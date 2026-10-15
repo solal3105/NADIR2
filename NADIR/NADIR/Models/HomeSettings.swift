@@ -24,6 +24,22 @@ enum WallInertia: String, CaseIterable, Identifiable, Codable {
     }
 }
 
+/// Ce que l'on cherche en ouvrant : rafraîchir (été) ou aérer sans trop
+/// refroidir (mi-saison). « Auto » choisit selon la météo du jour.
+enum AdviceMode: String, CaseIterable, Identifiable, Codable {
+    case auto, cool, air
+
+    var id: Self { self }
+
+    var label: String {
+        switch self {
+        case .auto: "auto"
+        case .cool: "rafraîchir"
+        case .air: "aérer"
+        }
+    }
+}
+
 /// Intensité de la ventilation fenêtres ouvertes, en renouvellements d'air par heure.
 enum Ventilation: String, CaseIterable, Identifiable, Codable {
     case low, medium, high

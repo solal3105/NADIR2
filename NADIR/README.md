@@ -22,6 +22,14 @@ open NADIR.xcodeproj    # ⌘R sur un simulateur iPhone
   des **alarmes système** au moment d'ouvrir et de fermer
   (notifications locales, répétées à +3 et +6 min), vos réglages et la
   décomposition du gain (« vos chiffres »).
+- **Mi-saison : quand aérer** (automne, hiver, printemps) : « À quelle heure
+  aérer sans trop refroidir ? ». NADIR conseille le moment le plus doux de la
+  journée (heures éveillées) où l'air du dehors assèche le logement, la durée
+  d'aération selon la ventilation (le temps de renouveler l'air une fois,
+  5 à 15 min), ce qu'elle coûte en degrés comparée au plus frais, et la
+  vapeur évacuée. Réglage « Que voulez-vous faire ? » : auto (rafraîchir dès
+  25 °C dehors, aérer sinon), rafraîchir ou aérer. Verdict, graphe, alarmes,
+  widgets et Siri suivent le mode.
 - **Le geste** : le mode d'emploi en quatre moments + les deux questions
   avant d'ouvrir + le courant d'air.
 - **Comprendre** : la physique (murs éponges), la limite honnête, le résumé

@@ -21,10 +21,13 @@ struct GetVerdictIntent: AppIntent {
     )
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> & ProvidesDialog {
-        let analysis = await SeriesProvider.currentAnalysis(profile: UserProfile.load())
+        let advice = await SeriesProvider.currentAdvice(profile: UserProfile.load())
+        let analysis = advice.analysis
         guard !analysis.series.isDemo else { throw NadirIntentError.notConfigured }
-        var verdict = analysis.verdictTitle
-        if let second = analysis.secondWindowLabel {
+        var verdict = advice.verdictTitle
+        if let aeration = advice.aeration {
+            verdict += ", \(aeration.minutes) minutes fenêtres grandes ouvertes."
+        } else if let second = analysis.secondWindowLabel {
             verdict += ". Un deuxième créneau s'ouvre \(second)."
         }
         return .result(value: verdict, dialog: IntentDialog(stringLiteral: verdict))
@@ -41,12 +44,15 @@ struct ShouldOpenNowIntent: AppIntent {
     )
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> & ProvidesDialog {
-        let analysis = await SeriesProvider.currentAnalysis(profile: UserProfile.load())
-        guard !analysis.series.isDemo else { throw NadirIntentError.notConfigured }
-        let shouldOpen = analysis.shouldOpenNow
-        let dialog: IntentDialog = shouldOpen
-            ? "Oui : il fait plus frais dehors, ouvrez en grand."
-            : "Non : gardez fermé pour l'instant."
+        let advice = await SeriesProvider.currentAdvice(profile: UserProfile.load())
+        guard !advice.analysis.series.isDemo else { throw NadirIntentError.notConfigured }
+        let shouldOpen = advice.shouldOpenNow
+        let dialog: IntentDialog = switch (shouldOpen, advice.aeration) {
+        case (true, nil): "Oui : il fait plus frais dehors, ouvrez en grand."
+        case (true, let aeration?):
+            IntentDialog(stringLiteral: "Oui : c'est le plus doux de la journée, aérez \(aeration.minutes) minutes.")
+        case (false, _): "Non : gardez fermé pour l'instant."
+        }
         return .result(value: shouldOpen, dialog: dialog)
     }
 }
@@ -60,13 +66,13 @@ struct SetIndoorTemperatureIntent: AppIntent {
         categoryName: "Réglages"
     )
 
-    @Parameter(title: "Température (°C)", inclusiveRange: (20, 34))
+    @Parameter(title: "Température (°C)", inclusiveRange: (16, 34))
     var temperature: Double
 
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        // Même pas que le curseur de l'app : demi-degré, borné 20–34 °C.
-        let clamped = (min(34, max(20, temperature)) * 2).rounded() / 2
+        // Même pas que le curseur de l'app : demi-degré, borné 16–34 °C.
+        let clamped = (min(34, max(16, temperature)) * 2).rounded() / 2
         if let model = AppModel.shared {
             // L'app vit dans ce process : passer par son état évite d'écraser
             // un réglage en mémoire, et resynchronise aussitôt les alarmes.

@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		0A0C04C20BB74C094FFD03CA /* LearnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3BEAE1CD7097A991C23F7CF /* LearnView.swift */; };
 		14ABEA62FD3C2F4B2EE59859 /* ThermalModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D5AD2C700C82F3944C0855 /* ThermalModel.swift */; };
+		A3E7A71C0F5E4B2D9C81A002 /* AerationAnalysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3E7A71C0F5E4B2D9C81A001 /* AerationAnalysis.swift */; };
+		A3E7A71C0F5E4B2D9C81A003 /* AerationAnalysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3E7A71C0F5E4B2D9C81A001 /* AerationAnalysis.swift */; };
+		A3E7A71C0F5E4B2D9C81A005 /* AerationSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3E7A71C0F5E4B2D9C81A004 /* AerationSection.swift */; };
 		1D3252DF5567E1CF839DA372 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D28CFE6358C3AA014CE248 /* LocationService.swift */; };
 		1E9ECFB477BF96FBC0C27140 /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A3D0B35D6CB46D54FE3D8EB /* WeatherService.swift */; };
 		1F3C07ABF2FA8D6C6B0BDF39 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA855845669C4603F02243BD /* UserProfile.swift */; };
@@ -93,6 +96,8 @@
 		4810EEB10D9B1E56FECD6ADC /* SharedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedStore.swift; sourceTree = "<group>"; };
 		4DE01C0B70183430843951E0 /* DisclosureRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisclosureRow.swift; sourceTree = "<group>"; };
 		66D5AD2C700C82F3944C0855 /* ThermalModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThermalModel.swift; sourceTree = "<group>"; };
+		A3E7A71C0F5E4B2D9C81A001 /* AerationAnalysis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AerationAnalysis.swift; sourceTree = "<group>"; };
+		A3E7A71C0F5E4B2D9C81A004 /* AerationSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AerationSection.swift; sourceTree = "<group>"; };
 		6A8DB27ABA635F14E3D68C6C /* SeriesProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeriesProvider.swift; sourceTree = "<group>"; };
 		6CE072F0738B7ABC943539E7 /* NadirWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = NadirWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F6022E91E3EA76805F433A0 /* RiseIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiseIn.swift; sourceTree = "<group>"; };
@@ -278,6 +283,7 @@
 		ED121D5B40BD93A9FCD01ABC /* Today */ = {
 			isa = PBXGroup;
 			children = (
+				A3E7A71C0F5E4B2D9C81A004 /* AerationSection.swift */,
 				E5416ED8F9D3E4C2C1D3EDC6 /* AlarmsSection.swift */,
 				98FBEB5A785197C72F48E354 /* ChartView.swift */,
 				07A74040D3F5C91195B3DC7B /* ControlsSection.swift */,
@@ -290,6 +296,7 @@
 		EE4B44F7065CA7AB516DC6C1 /* Engine */ = {
 			isa = PBXGroup;
 			children = (
+				A3E7A71C0F5E4B2D9C81A001 /* AerationAnalysis.swift */,
 				E555150F466C3E1DBBA7BD8E /* ThermalAnalysis.swift */,
 				66D5AD2C700C82F3944C0855 /* ThermalModel.swift */,
 			);
@@ -424,6 +431,8 @@
 				819C5898E14F66CC875844D5 /* Theme.swift in Sources */,
 				266580FE6859EABB4A884377 /* ThermalAnalysis.swift in Sources */,
 				14ABEA62FD3C2F4B2EE59859 /* ThermalModel.swift in Sources */,
+				A3E7A71C0F5E4B2D9C81A002 /* AerationAnalysis.swift in Sources */,
+				A3E7A71C0F5E4B2D9C81A005 /* AerationSection.swift in Sources */,
 				A242D24823B07C7F4FA561A2 /* TodayView.swift in Sources */,
 				1F3C07ABF2FA8D6C6B0BDF39 /* UserProfile.swift in Sources */,
 				77B90F86F7B07D12F2AB0046 /* WeatherSeries.swift in Sources */,
@@ -444,6 +453,7 @@
 				B89B00E97391D5CAD5D530D8 /* Theme.swift in Sources */,
 				F5052C09A799C88F00EB886F /* ThermalAnalysis.swift in Sources */,
 				630F3A60D69B58FA4DA521D9 /* ThermalModel.swift in Sources */,
+				A3E7A71C0F5E4B2D9C81A003 /* AerationAnalysis.swift in Sources */,
 				D27F6D40CD3C118AC364CDC4 /* UserProfile.swift in Sources */,
 				EAEC783B4409BBD988483422 /* WeatherSeries.swift in Sources */,
 				9A477DABECA03D16ECB6E001 /* WeatherService.swift in Sources */,

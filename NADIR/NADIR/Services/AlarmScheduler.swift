@@ -7,19 +7,25 @@ struct AlarmScheduler {
     enum Kind: String, CaseIterable {
         case open, close
 
-        var title: String {
-            switch self {
-            case .open: "Ouvrez en grand"
-            case .close: "Fermez tout"
+        func title(airing: Bool) -> String {
+            switch (self, airing) {
+            case (.open, false): "Ouvrez en grand"
+            case (.close, false): "Fermez tout"
+            case (.open, true): "Aérez maintenant"
+            case (.close, true): "Refermez"
             }
         }
 
-        var body: String {
-            switch self {
-            case .open:
+        func body(airing: Bool) -> String {
+            switch (self, airing) {
+            case (.open, false):
                 "Il fait plus frais dehors que chez vous. L'air de la nuit recharge vos murs en fraîcheur."
-            case .close:
+            case (.close, false):
                 "Dehors se réchauffe. Fermez fenêtres et volets pour enfermer la fraîcheur."
+            case (.open, true):
+                "C'est le moment le plus doux de la journée : ouvrez en grand quelques minutes."
+            case (.close, true):
+                "L'air est renouvelé. Refermez pour garder la chaleur de vos murs."
             }
         }
     }
@@ -31,15 +37,15 @@ struct AlarmScheduler {
         return (try? await center.requestAuthorization(options: [.alert, .sound])) ?? false
     }
 
-    func schedule(_ kind: Kind, at date: Date) {
+    func schedule(_ kind: Kind, at date: Date, airing: Bool = false) {
         cancel(kind)
         let center = UNUserNotificationCenter.current()
         for (index, offset) in Self.repeatOffsets.enumerated() {
             let delay = date.addingTimeInterval(offset).timeIntervalSinceNow
             guard delay > 0 else { continue }
             let content = UNMutableNotificationContent()
-            content.title = kind.title
-            content.body = kind.body
+            content.title = kind.title(airing: airing)
+            content.body = kind.body(airing: airing)
             content.sound = .default
             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: delay, repeats: false)
             center.add(UNNotificationRequest(
