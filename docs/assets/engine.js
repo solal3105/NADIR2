@@ -106,9 +106,22 @@
     return new Date(series.times[index]).getHours();
   }
 
-  /** Étiquette d'heure façon « 06h », dans le fuseau du lieu. */
+  /** Étiquette d'heure façon « 06h », dans le fuseau du lieu (axe du graphe). */
   function hourLabel(series, index) {
     return pad2(hourAt(series, index)) + 'h';
+  }
+
+  /** Heure à écrire dans une phrase : « 7 h », « 22 h ». */
+  function hourText(hour) {
+    return hour + '\u00a0h';
+  }
+
+  /** L'index tombe-t-il demain (un minuit passé depuis l'index 0) ? */
+  function isTomorrowAt(series, index) {
+    for (let i = 1; i <= index && i < series.times.length; i++) {
+      if (hourAt(series, i) === 0) return true;
+    }
+    return false;
   }
 
   /** Fenêtre de simulation : démarre à l'heure courante (incluse) et couvre
@@ -302,10 +315,10 @@
     const humidDuringOpenings = dewCount > 0 && dewSum / dewCount > 16;
 
     function endLabel(run) {
-      return pad2((hourAt(series, run[1]) + 1) % 24) + 'h';
+      return hourText((hourAt(series, run[1]) + 1) % 24);
     }
     function rangeLabel(run) {
-      return 'de ' + hourLabel(series, run[0]) + ' à ' + endLabel(run);
+      return 'de ' + hourText(hourAt(series, run[0])) + ' à ' + endLabel(run);
     }
 
     const shouldOpenNow = result.isOpen.length ? result.isOpen[0] : false;
@@ -314,7 +327,7 @@
       verdictTitle = 'Gardez fermé';
     } else {
       verdictTitle = shouldOpenNow
-        ? "Ouvrez jusqu'à " + endLabel(runs[0])
+        ? 'Ouvrez jusqu’à ' + endLabel(runs[0])
         : 'Ouvrez ' + rangeLabel(runs[0]);
     }
 
@@ -486,15 +499,16 @@
     candidates.forEach(function (i) { if (outdoor[i] < outdoor[coldest]) coldest = i; });
     const coldDip = airingDip(series, coldest, indoorNow, inertia, ventilation, exposure, minutes);
 
-    function endLabel() { return pad2((hourAt(series, b) + 1) % 24) + 'h'; }
+    function endLabel() { return hourText((hourAt(series, b) + 1) % 24); }
     const isNow = a === 0;
     // Moins de 24 h devant nous : une heure de début « plus tôt » que
     // maintenant est forcément demain.
-    const isTomorrow = !isNow && hourAt(series, a) < hourAt(series, 0);
+    const isTomorrow = !isNow && isTomorrowAt(series, a);
     const start = series.times[a];
     const verdictTitle = isNow
-      ? "Aérez jusqu'à " + endLabel()
-      : 'Aérez ' + (isTomorrow ? 'demain ' : '') + 'de ' + hourLabel(series, a) + ' à ' + endLabel();
+      ? 'Aérez maintenant, jusqu’à ' + endLabel()
+      : 'Aérez ' + (isTomorrow ? 'demain ' : '') + 'entre ' + hourText(hourAt(series, a))
+        + ' et ' + endLabel();
 
     return {
       series: series,
@@ -543,7 +557,7 @@
     isDual: isDual, facadesOf: facadesOf, isCrossOpposite: isCrossOpposite,
     exposureContains: exposureContains, exposureLabel: exposureLabel,
     toggleExposure: toggleExposure,
-    hourAt: hourAt, hourLabel: hourLabel,
+    hourAt: hourAt, hourLabel: hourLabel, hourText: hourText, isTomorrowAt: isTomorrowAt,
     windowSeries: windowSeries, demoSeries: demoSeries,
     bell: bell, solarGains: solarGains,
     simulate: simulate, peakDrop: peakDrop, analyze: analyze,
