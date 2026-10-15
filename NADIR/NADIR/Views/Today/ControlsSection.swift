@@ -21,7 +21,7 @@ struct IndoorTemperatureRow: View {
             }
             Slider(
                 value: Binding(get: { model.indoorNow }, set: { model.setIndoor($0) }),
-                in: 16 ... 34,
+                in: 8 ... 45,
                 step: 0.5
             )
             .tint(.white)

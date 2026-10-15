@@ -68,13 +68,13 @@ struct SetIndoorTemperatureIntent: AppIntent {
         categoryName: "Réglages"
     )
 
-    @Parameter(title: "Température (°C)", inclusiveRange: (16, 34))
+    @Parameter(title: "Température (°C)", inclusiveRange: (8, 45))
     var temperature: Double
 
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        // Même pas que le curseur de l'app : demi-degré, borné 16–34 °C.
-        let clamped = (min(34, max(16, temperature)) * 2).rounded() / 2
+        // Même pas que le curseur de l'app : demi-degré, borné 8–45 °C.
+        let clamped = (min(45, max(8, temperature)) * 2).rounded() / 2
         if let model = AppModel.shared {
             // L'app vit dans ce process : passer par son état évite d'écraser
             // un réglage en mémoire, et resynchronise aussitôt les alarmes.

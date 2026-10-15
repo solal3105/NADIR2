@@ -167,7 +167,7 @@
   <section class="block">
     <div class="label">Quelle température fait-il chez vous&nbsp;?
       <span class="val num" id="indoorVal">26 °C</span></div>
-    <input type="range" id="indoorRange" min="16" max="34" step="0.5" value="26"
+    <input type="range" id="indoorRange" min="8" max="45" step="0.5" value="26"
            aria-label="Température chez vous">
   </section>
 
@@ -282,7 +282,7 @@
       if (!E.VENT_ACH[p.ventilation]) p.ventilation = d.ventilation;
       if (!p.exposure || !E.FACADES[p.exposure.primary]) p.exposure = d.exposure;
       if (p.exposure.secondary && !E.FACADES[p.exposure.secondary]) p.exposure.secondary = null;
-      if (typeof p.indoorNow !== 'number' || !(p.indoorNow >= 16 && p.indoorNow <= 34)) p.indoorNow = 26;
+      if (typeof p.indoorNow !== 'number' || !(p.indoorNow >= 8 && p.indoorNow <= 45)) p.indoorNow = 26;
       if (!E.MODE_LABEL[p.mode]) p.mode = d.mode;
       if (typeof p.latitude !== 'number' || typeof p.longitude !== 'number') {
         p.latitude = null; p.longitude = null;
