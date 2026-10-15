@@ -107,19 +107,18 @@ struct AerationAnalysis: Equatable {
     /// Le créneau a déjà commencé.
     var isNow: Bool { window.lowerBound == 0 }
 
-    /// Moins de 24 h devant nous : une heure de début « plus tôt » que
-    /// maintenant est forcément demain.
+    /// Le créneau commence demain.
     var isTomorrow: Bool {
-        !isNow && series.hour(at: window.lowerBound) < series.hour(at: 0)
+        !isNow && series.isTomorrow(at: window.lowerBound)
     }
 
-    /// Titre du verdict : « Aérez jusqu'à 17h », « Aérez de 14h à 17h »
-    /// ou « Aérez demain de 14h à 17h ».
+    /// Titre du verdict : « Aérez maintenant, jusqu’à 17 h »,
+    /// « Aérez entre 14 h et 17 h » ou « Aérez demain entre 14 h et 17 h ».
     var verdictTitle: String {
-        let end = String(format: "%02dh", (series.hour(at: window.upperBound) + 1) % 24)
-        if isNow { return "Aérez jusqu'à \(end)" }
+        let end = WeatherSeries.hourText((series.hour(at: window.upperBound) + 1) % 24)
+        if isNow { return "Aérez maintenant, jusqu’à \(end)" }
         let day = isTomorrow ? "demain " : ""
-        return "Aérez \(day)de \(series.hourLabel(at: window.lowerBound)) à \(end)"
+        return "Aérez \(day)entre \(series.hourText(at: window.lowerBound)) et \(end)"
     }
 
     /// Le moment d'aérer (début du créneau) et celui de refermer.

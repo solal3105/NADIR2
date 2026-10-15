@@ -18,7 +18,7 @@ struct NadirChartWidget: Widget {
                 .containerBackground(Color.black, for: .widget)
         }
         .configurationDisplayName("NADIR")
-        .description("La courbe dehors / chez vous et le créneau d'ouverture, actualisés toutes les heures.")
+        .description("La courbe dehors et chez vous, et le conseil du moment. Mis à jour toutes les heures.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }

@@ -7,17 +7,17 @@ enum NadirIntentError: Error, CustomLocalizedStringResourceConvertible {
     case notConfigured
 
     var localizedStringResource: LocalizedStringResource {
-        "Configurez d'abord votre lieu dans NADIR : votre ville, ou votre position."
+        "Indiquez d’abord votre ville dans NADIR."
     }
 }
 
-/// « Le verdict NADIR » : la consigne du moment, dictée par Siri ou
-/// utilisée dans une automatisation Raccourcis.
+/// « Le conseil NADIR » : le conseil du moment, dicté par Siri ou utilisé
+/// dans une automatisation Raccourcis.
 struct GetVerdictIntent: AppIntent {
-    static let title: LocalizedStringResource = "Obtenir le verdict"
+    static let title: LocalizedStringResource = "Obtenir le conseil"
     static let description = IntentDescription(
-        "Donne la consigne du moment : quand ouvrir et quand fermer les fenêtres.",
-        categoryName: "Verdict"
+        "Donne le conseil du moment : quand ouvrir et fermer vos fenêtres, ou quand aérer.",
+        categoryName: "Conseil"
     )
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> & ProvidesDialog {
@@ -26,9 +26,11 @@ struct GetVerdictIntent: AppIntent {
         guard !analysis.series.isDemo else { throw NadirIntentError.notConfigured }
         var verdict = advice.verdictTitle
         if let aeration = advice.aeration {
-            verdict += ", \(aeration.minutes) minutes fenêtres grandes ouvertes."
+            verdict += ". Ouvrez grand pendant \(aeration.minutes) minutes."
         } else if let second = analysis.secondWindowLabel {
-            verdict += ". Un deuxième créneau s'ouvre \(second)."
+            verdict += ". Vous pourrez rouvrir \(second)."
+        } else {
+            verdict += "."
         }
         return .result(value: verdict, dialog: IntentDialog(stringLiteral: verdict))
     }
@@ -39,8 +41,8 @@ struct GetVerdictIntent: AppIntent {
 struct ShouldOpenNowIntent: AppIntent {
     static let title: LocalizedStringResource = "Faut-il ouvrir maintenant ?"
     static let description = IntentDescription(
-        "Vrai si c'est le moment d'ouvrir les fenêtres. À utiliser comme condition dans vos automatisations.",
-        categoryName: "Verdict"
+        "Répond oui si c’est le moment d’ouvrir, ou d’aérer. Pratique comme condition dans une automatisation.",
+        categoryName: "Conseil"
     )
 
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> & ProvidesDialog {
@@ -48,10 +50,10 @@ struct ShouldOpenNowIntent: AppIntent {
         guard !advice.analysis.series.isDemo else { throw NadirIntentError.notConfigured }
         let shouldOpen = advice.shouldOpenNow
         let dialog: IntentDialog = switch (shouldOpen, advice.aeration) {
-        case (true, nil): "Oui : il fait plus frais dehors, ouvrez en grand."
+        case (true, nil): "Oui, il fait plus frais dehors. Ouvrez grand."
         case (true, let aeration?):
-            IntentDialog(stringLiteral: "Oui : c'est le plus doux de la journée, aérez \(aeration.minutes) minutes.")
-        case (false, _): "Non : gardez fermé pour l'instant."
+            IntentDialog(stringLiteral: "Oui, c’est le moment le plus doux de la journée. Aérez \(aeration.minutes) minutes.")
+        case (false, _): "Non, gardez fermé pour l’instant."
         }
         return .result(value: shouldOpen, dialog: dialog)
     }
@@ -60,9 +62,9 @@ struct ShouldOpenNowIntent: AppIntent {
 /// Met à jour la température mesurée chez vous — par exemple envoyée par un
 /// capteur connecté (HomeKit, Matter) via une automatisation Raccourcis.
 struct SetIndoorTemperatureIntent: AppIntent {
-    static let title: LocalizedStringResource = "Régler la température intérieure"
+    static let title: LocalizedStringResource = "Indiquer la température chez vous"
     static let description = IntentDescription(
-        "Met à jour la température chez vous, par exemple depuis un capteur connecté.",
+        "Met à jour la température de votre logement, par exemple depuis un capteur connecté.",
         categoryName: "Réglages"
     )
 
@@ -83,7 +85,7 @@ struct SetIndoorTemperatureIntent: AppIntent {
             profile.save()
         }
         WidgetCenter.shared.reloadAllTimelines()
-        return .result(dialog: "Température intérieure réglée sur \(clamped.oneDecimal) °C.")
+        return .result(dialog: "C’est noté : il fait \(clamped.degreesText) chez vous.")
     }
 }
 
@@ -92,11 +94,13 @@ struct NadirAppShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: GetVerdictIntent(),
             phrases: [
+                "Le conseil \(.applicationName)",
                 "Le verdict \(.applicationName)",
-                "Demande le verdict à \(.applicationName)",
+                "Demande le conseil à \(.applicationName)",
                 "Quand ouvrir les fenêtres avec \(.applicationName)",
+                "Quand aérer avec \(.applicationName)",
             ],
-            shortTitle: "Le verdict",
+            shortTitle: "Le conseil",
             systemImageName: "wind"
         )
         AppShortcut(

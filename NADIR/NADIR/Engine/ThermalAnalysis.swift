@@ -128,24 +128,24 @@ struct ThermalAnalysis: Equatable {
         )
     }
 
-    /// Heure de fin exclusive d'un créneau, façon « 07h » (heure suivante).
+    /// Heure de fin exclusive d'un créneau, façon « 7 h » (heure suivante).
     func endLabel(of run: ClosedRange<Int>) -> String {
-        String(format: "%02dh", (series.hour(at: run.upperBound) + 1) % 24)
+        WeatherSeries.hourText((series.hour(at: run.upperBound) + 1) % 24)
     }
 
-    /// Créneau formaté « de 22h à 07h ».
+    /// Créneau formaté « de 22 h à 7 h ».
     func rangeLabel(of run: ClosedRange<Int>) -> String {
-        "de \(series.hourLabel(at: run.lowerBound)) à \(endLabel(of: run))"
+        "de \(series.hourText(at: run.lowerBound)) à \(endLabel(of: run))"
     }
 
-    /// Titre du verdict : « Ouvrez jusqu'à 07h », « Ouvrez de 22h à 07h »
+    /// Titre du verdict : « Ouvrez jusqu’à 7 h », « Ouvrez de 22 h à 7 h »
     /// ou « Gardez fermé ».
     var verdictTitle: String {
         guard let first = runs.first else { return "Gardez fermé" }
-        return shouldOpenNow ? "Ouvrez jusqu'à \(endLabel(of: first))" : "Ouvrez \(rangeLabel(of: first))"
+        return shouldOpenNow ? "Ouvrez jusqu’à \(endLabel(of: first))" : "Ouvrez \(rangeLabel(of: first))"
     }
 
-    /// Second créneau éventuel, formaté « de 22h à 07h ».
+    /// Second créneau éventuel, formaté « de 22 h à 7 h ».
     var secondWindowLabel: String? {
         runs.count > 1 ? rangeLabel(of: runs[1]) : nil
     }

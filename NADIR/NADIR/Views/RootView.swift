@@ -39,15 +39,15 @@ struct RootView: View {
     }
 }
 
-/// Barre d'onglets du design : icônes filaires, libellés mono en capitales,
-/// fond noir translucide flouté.
+/// Barre d'onglets : icônes filaires, libellés courts, fond noir
+/// translucide flouté.
 struct TabBarView: View {
     @Environment(AppModel.self) private var model
 
     var body: some View {
         HStack(spacing: 0) {
-            tabButton(.today, glyph: .today, label: "Aujourd'hui")
-            tabButton(.guide, glyph: .guide, label: "Le geste")
+            tabButton(.today, glyph: .today, label: "Aujourd’hui")
+            tabButton(.guide, glyph: .guide, label: "Mode d’emploi")
             tabButton(.learn, glyph: .learn, label: "Comprendre")
             tabButton(.about, glyph: .about, label: "À propos")
         }
@@ -69,9 +69,9 @@ struct TabBarView: View {
         } label: {
             VStack(spacing: 6) {
                 TabIcon(glyph: glyph)
-                Text(label.uppercased())
-                    .font(.nadirMono(10))
-                    .tracking(0.4)
+                Text(label)
+                    .font(.nadirSans(11, weight: .medium))
+                    .lineLimit(1)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 6)

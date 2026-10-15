@@ -9,23 +9,23 @@ struct AlarmScheduler {
 
         func title(airing: Bool) -> String {
             switch (self, airing) {
-            case (.open, false): "Ouvrez en grand"
-            case (.close, false): "Fermez tout"
-            case (.open, true): "Aérez maintenant"
-            case (.close, true): "Refermez"
+            case (.open, false): "C’est l’heure d’ouvrir"
+            case (.close, false): "C’est l’heure de fermer"
+            case (.open, true): "C’est l’heure d’aérer"
+            case (.close, true): "Vous pouvez refermer"
             }
         }
 
         func body(airing: Bool) -> String {
             switch (self, airing) {
             case (.open, false):
-                "Il fait plus frais dehors que chez vous. L'air de la nuit recharge vos murs en fraîcheur."
+                "Il fait plus frais dehors que chez vous. Ouvrez grand vos fenêtres."
             case (.close, false):
-                "Dehors se réchauffe. Fermez fenêtres et volets pour enfermer la fraîcheur."
+                "Dehors, il commence à faire plus chaud. Fermez fenêtres et volets pour garder la fraîcheur."
             case (.open, true):
-                "C'est le moment le plus doux de la journée : ouvrez en grand quelques minutes."
+                "C’est le moment le plus doux de la journée. Ouvrez grand quelques minutes."
             case (.close, true):
-                "L'air est renouvelé. Refermez pour garder la chaleur de vos murs."
+                "L’air est renouvelé. Refermez pour garder la chaleur."
             }
         }
     }

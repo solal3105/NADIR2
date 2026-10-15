@@ -1,20 +1,22 @@
 import SwiftUI
 
-/// Alarmes système au moment d'ouvrir et de fermer : heure visée, délai,
-/// interrupteur. Celle d'ouverture se grise si le créneau a déjà commencé.
+/// Me prévenir : une notification à l'heure d'ouvrir (ou d'aérer) et à
+/// l'heure de fermer. Celle d'ouverture se grise si l'heure est passée.
 struct AlarmsSection: View {
     @Environment(AppModel.self) private var model
     let window: AppModel.AlarmWindow
+    /// Mode aérer : « aérer » et « refermer » au lieu d'« ouvrir » et « fermer ».
+    let isAiring: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Eyebrow(text: "Alarmes")
-                .padding(.bottom, 4)
+            Eyebrow(text: "Me prévenir")
+                .padding(.bottom, 6)
 
             alarmRow(
                 kind: .open,
-                title: "Au moment d'ouvrir",
-                meta: window.startIsPast ? "Créneau déjà ouvert" : model.delayLabel(until: window.start),
+                title: isAiring ? "À l’heure d’aérer" : "À l’heure d’ouvrir",
+                meta: window.startIsPast ? "C’est déjà l’heure" : model.delayLabel(until: window.start).capitalizedFirst,
                 time: model.clockLabel(for: window.start),
                 isOn: model.profile.alarmOnOpen && !window.startIsPast,
                 isDisabled: window.startIsPast
@@ -22,23 +24,24 @@ struct AlarmsSection: View {
 
             alarmRow(
                 kind: .close,
-                title: "Au moment de fermer",
-                meta: model.delayLabel(until: window.end),
+                title: isAiring ? "À l’heure de refermer" : "À l’heure de fermer",
+                meta: model.delayLabel(until: window.end).capitalizedFirst,
                 time: model.clockLabel(for: window.end),
                 isOn: model.profile.alarmOnClose,
                 isDisabled: false
             )
             .overlay(alignment: .bottom) { Color.nadirLine.frame(height: 1) }
 
-            Text("Alarme système : sonne même app fermée, puis se répète à +3 et +6 min avant de s'arrêter.")
-                .font(.nadirMono(10))
-                .lineSpacing(4)
-                .foregroundStyle(Color.nadirLine2)
+            Text("La notification arrive même si l’app est fermée, puis se répète deux fois, à 3 minutes d’intervalle.")
+                .font(.nadirSans(13))
+                .lineSpacing(3)
+                .foregroundStyle(Color.nadirDim)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 10)
         }
         .padding(.horizontal, 20)
         .padding(.top, 24)
-        .padding(.bottom, 4)
+        .padding(.bottom, 24)
     }
 
     private func alarmRow(
@@ -51,17 +54,17 @@ struct AlarmsSection: View {
     ) -> some View {
         let ink: Color = isDisabled ? .nadirFaint : .white
         return HStack(alignment: .center, spacing: 14) {
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 3) {
                 Text(title)
                     .font(.nadirSans(16, weight: .semibold))
                     .foregroundStyle(ink)
                 Text(meta)
-                    .font(.nadirMono(11.5))
-                    .foregroundStyle(Color.nadirFaint)
+                    .font(.nadirSans(13))
+                    .foregroundStyle(Color.nadirDim)
             }
             Spacer(minLength: 0)
             Text(time)
-                .font(.nadirMono(16))
+                .font(.nadirSans(17, weight: .medium))
                 .monospacedDigit()
                 .foregroundStyle(ink)
             Toggle(title, isOn: Binding(
@@ -73,7 +76,7 @@ struct AlarmsSection: View {
             .disabled(isDisabled)
             .opacity(isDisabled ? 0.5 : 1)
         }
-        .padding(.vertical, 16)
+        .padding(.vertical, 14)
         .overlay(alignment: .top) { Color.nadirLine.frame(height: 1) }
     }
 }

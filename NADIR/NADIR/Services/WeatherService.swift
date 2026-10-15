@@ -12,8 +12,8 @@ enum WeatherServiceError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .cityNotFound: "Ville introuvable. Vérifiez l'orthographe."
-        case .badResponse: "Météo indisponible pour le moment."
+        case .cityNotFound: "Cette ville est introuvable. Vérifiez l’orthographe."
+        case .badResponse: "La météo n’a pas pu être chargée. Réessayez dans un instant."
         }
     }
 }

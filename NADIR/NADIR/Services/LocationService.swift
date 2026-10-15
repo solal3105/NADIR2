@@ -6,8 +6,8 @@ enum LocationServiceError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .denied: "Localisation refusée. Tapez votre ville."
-        case .unavailable: "Position introuvable. Tapez votre ville."
+        case .denied: "Vous avez refusé la localisation. Tapez plutôt le nom de votre ville."
+        case .unavailable: "Impossible de vous localiser. Tapez plutôt le nom de votre ville."
         }
     }
 }

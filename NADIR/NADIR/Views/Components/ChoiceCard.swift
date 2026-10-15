@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Carte de choix de l'onboarding : titre + exemple, inversée en blanc
+/// Carte de choix de l'onboarding : un titre et un exemple, inversée en blanc
 /// quand elle est sélectionnée.
 struct ChoiceCard: View {
     let title: String
@@ -15,8 +15,8 @@ struct ChoiceCard: View {
                     .font(.nadirSans(15, weight: .semibold))
                     .foregroundStyle(isSelected ? Color.black : Color.white)
                 Text(hint)
-                    .font(.nadirMono(11.5))
-                    .foregroundStyle(isSelected ? Color.black.opacity(0.55) : Color.nadirFaint)
+                    .font(.nadirSans(13))
+                    .foregroundStyle(isSelected ? Color.black.opacity(0.6) : Color.nadirDim)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(16)

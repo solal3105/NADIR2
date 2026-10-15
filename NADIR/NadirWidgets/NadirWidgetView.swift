@@ -26,9 +26,8 @@ struct NadirWidgetView: View {
             Circle()
                 .fill(analysis.series.isDemo ? Color.nadirDim : Color.nadirGo)
                 .frame(width: 5, height: 5)
-            Text(analysis.series.place.uppercased())
-                .font(.nadirMono(isSmall ? 8.5 : 9.5))
-                .tracking(0.5)
+            Text(analysis.series.isDemo ? "Exemple" : analysis.series.place)
+                .font(.nadirSans(isSmall ? 10 : 11))
                 .foregroundStyle(Color.nadirDim)
                 .lineLimit(1)
             Spacer(minLength: 4)
@@ -36,7 +35,7 @@ struct NadirWidgetView: View {
         }
     }
 
-    /// L'alarme armée la plus proche : carré vert + heure. Rien si aucune.
+    /// La notification programmée la plus proche : carré vert + heure. Rien si aucune.
     @ViewBuilder private func alarmBadge(_ analysis: ThermalAnalysis) -> some View {
         if let time = nextAlarmTime(analysis) {
             HStack(spacing: 4) {
@@ -44,11 +43,11 @@ struct NadirWidgetView: View {
                     .fill(Color.nadirGo)
                     .frame(width: 5, height: 5)
                 Text(time)
-                    .font(.nadirMono(isSmall ? 8.5 : 9.5))
+                    .font(.nadirSans(isSmall ? 10 : 11, weight: .medium))
                     .monospacedDigit()
                     .foregroundStyle(Color.nadirGo)
             }
-            .accessibilityLabel("Alarme à \(time)")
+            .accessibilityLabel("Notification à \(time)")
         }
     }
 
@@ -66,8 +65,8 @@ struct NadirWidgetView: View {
     }
 
     private func verdict(_ analysis: ThermalAnalysis) -> some View {
-        Text(compactVerdict(analysis).uppercased())
-            .font(.nadirSans(isSmall ? 13 : 15, weight: .heavy))
+        Text(compactVerdict(analysis))
+            .font(.nadirSans(isSmall ? 14 : 16, weight: .heavy))
             .tracking(isSmall ? -0.3 : -0.4)
             .foregroundStyle(entry.advice.aeration == nil && analysis.runs.isEmpty
                 ? Color.nadirHot : Color.white)
@@ -75,16 +74,17 @@ struct NadirWidgetView: View {
             .minimumScaleFactor(0.7)
     }
 
+    /// Le conseil en version courte : « Ouvrez 22 h – 7 h », « Aérez jusqu’à 17 h ».
     private func compactVerdict(_ analysis: ThermalAnalysis) -> String {
         if let aeration = entry.advice.aeration {
             let series = aeration.series
-            let end = String(format: "%02dh", (series.hour(at: aeration.window.upperBound) + 1) % 24)
-            if aeration.isNow { return "Aérez jusqu'à \(end)" }
-            return "Aérez \(series.hourLabel(at: aeration.window.lowerBound))–\(end)"
+            let end = WeatherSeries.hourText((series.hour(at: aeration.window.upperBound) + 1) % 24)
+            if aeration.isNow { return "Aérez jusqu’à \(end)" }
+            return "Aérez \(series.hourText(at: aeration.window.lowerBound)) – \(end)"
         }
         guard let first = analysis.runs.first else { return "Gardez fermé" }
-        if analysis.shouldOpenNow { return "Ouvrez jusqu'à \(analysis.endLabel(of: first))" }
-        return "Ouvrez \(analysis.series.hourLabel(at: first.lowerBound))–\(analysis.endLabel(of: first))"
+        if analysis.shouldOpenNow { return "Ouvrez jusqu’à \(analysis.endLabel(of: first))" }
+        return "Ouvrez \(analysis.series.hourText(at: first.lowerBound)) – \(analysis.endLabel(of: first))"
     }
 }
 

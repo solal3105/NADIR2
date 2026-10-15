@@ -16,23 +16,22 @@ struct SegmentedRow<Option: Hashable>: View {
                 Button {
                     select(option)
                 } label: {
-                    Text(label(option).uppercased())
-                        .font(.nadirMono(11))
-                        .tracking(0.66)
+                    Text(label(option))
+                        .font(.nadirSans(14, weight: selected ? .semibold : .regular))
                         .lineLimit(1)
                         .minimumScaleFactor(0.8)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 11)
+                        .padding(.vertical, 12)
                         .padding(.horizontal, 2)
-                        .foregroundStyle(selected ? Color.black : Color.nadirDim)
+                        .foregroundStyle(selected ? Color.black : Color.nadirSoft)
                         .background(selected ? Color.white : Color.black)
                 }
                 .buttonStyle(.plain)
                 .accessibilityAddTraits(selected ? .isSelected : [])
             }
         }
-        .background(Color.nadirLine)
-        .border(Color.nadirLine, width: 1)
+        .background(Color.nadirLine2)
+        .border(Color.nadirLine2, width: 1)
         .animation(.easeOut(duration: 0.12), value: selection)
     }
 }

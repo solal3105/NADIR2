@@ -36,9 +36,31 @@ struct WeatherSeries: Equatable {
         return calendar.component(.hour, from: times[index])
     }
 
-    /// Étiquette d'heure façon « 06h », dans le fuseau du lieu.
+    /// Étiquette d'heure façon « 06h », dans le fuseau du lieu (axe du graphe).
     func hourLabel(at index: Int) -> String {
         String(format: "%02dh", hour(at: index))
+    }
+
+    /// Heure à écrire dans une phrase : « 7 h », « 22 h ».
+    static func hourText(_ hour: Int) -> String {
+        "\(hour)\u{00A0}h"
+    }
+
+    /// Heure de l'index, à écrire dans une phrase : « 7 h ».
+    func hourText(at index: Int) -> String {
+        Self.hourText(hour(at: index))
+    }
+
+    /// « demain vers 16 h » ou « vers 16 h ».
+    func momentText(at index: Int) -> String {
+        (isTomorrow(at: index) ? "demain " : "") + "vers \(hourText(at: index))"
+    }
+
+    /// L'index tombe-t-il demain (un minuit passé depuis l'index 0) ?
+    func isTomorrow(at index: Int) -> Bool {
+        let last = min(index, count - 1)
+        guard last >= 1 else { return false }
+        return (1 ... last).contains { hour(at: $0) == 0 }
     }
 
     /// Série de démonstration : sinusoïde réaliste (min vers 5 h, max vers 17 h),

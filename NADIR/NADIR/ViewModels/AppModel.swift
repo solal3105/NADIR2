@@ -101,12 +101,12 @@ final class AppModel {
     func start() async {
         guard let latitude = profile.latitude, let longitude = profile.longitude else { return }
         let place = profile.place.isEmpty ? "Votre logement" : profile.place
-        setStatus("Récupération de la météo…", in: .main)
+        setStatus("Chargement de la météo…", in: .main)
         do {
             adopt(try await weather.forecast(latitude: latitude, longitude: longitude, placeName: place))
             setStatus("", in: .main)
         } catch {
-            setStatus("Météo indisponible.", in: .main)
+            setStatus("La météo n’a pas pu être chargée. Réessayez dans un instant.", in: .main)
         }
     }
 
@@ -130,7 +130,7 @@ final class AppModel {
         setStatus("Localisation en cours…", in: context)
         do {
             let coordinate = try await location.currentCoordinate()
-            setStatus("Récupération de la météo…", in: context)
+            setStatus("Chargement de la météo…", in: context)
             let city = await location.cityName(for: coordinate)
             let series = try await weather.forecast(
                 latitude: coordinate.latitude, longitude: coordinate.longitude,
@@ -143,7 +143,7 @@ final class AppModel {
         } catch let error as LocationServiceError {
             setStatus(error.localizedDescription, in: context)
         } catch {
-            setStatus("Météo indisponible.", in: context)
+            setStatus("La météo n’a pas pu être chargée. Réessayez dans un instant.", in: context)
         }
     }
 
@@ -156,7 +156,7 @@ final class AppModel {
         setStatus("Recherche de « \(city) »…", in: context)
         do {
             let place = try await weather.geocode(city: city)
-            setStatus("Récupération de la météo…", in: context)
+            setStatus("Chargement de la météo…", in: context)
             let series = try await weather.forecast(
                 latitude: place.latitude, longitude: place.longitude, placeName: place.name
             )
@@ -167,15 +167,15 @@ final class AppModel {
         } catch WeatherServiceError.cityNotFound {
             setStatus(
                 context == .onboarding
-                    ? "Ville introuvable. Vérifiez l'orthographe, ou continuez sans ville."
-                    : "Ville introuvable. Vérifiez l'orthographe.",
+                    ? "Cette ville est introuvable. Vérifiez l’orthographe, ou passez cette étape."
+                    : "Cette ville est introuvable. Vérifiez l’orthographe.",
                 in: context
             )
         } catch {
             setStatus(
                 context == .onboarding
-                    ? "Connexion impossible. Réessayez, ou continuez sans ville."
-                    : "Connexion impossible. Réessayez dans un instant.",
+                    ? "Pas de connexion. Réessayez, ou passez cette étape."
+                    : "Pas de connexion. Réessayez dans un instant.",
                 in: context
             )
         }
@@ -263,10 +263,10 @@ final class AppModel {
         }
         if isEnabling {
             guard await alarms.requestAuthorization() else {
-                setStatus("Notifications refusées. Autorisez-les dans Réglages pour les alarmes.", in: .main)
+                setStatus("Les notifications sont désactivées pour NADIR. Activez-les dans les Réglages de l’iPhone pour être prévenu.", in: .main)
                 return
             }
-            if status.hasPrefix("Notifications refusées") { setStatus("", in: .main) }
+            if status.hasPrefix("Les notifications sont désactivées") { setStatus("", in: .main) }
         }
         switch kind {
         case .open: profile.alarmOnOpen = isEnabling
@@ -372,12 +372,12 @@ extension AppModel {
         return String(format: "%02d:%02d", parts.hour ?? 0, parts.minute ?? 0)
     }
 
-    /// « Dans 45 min », « Dans 3 h 05 » ou « Dans 3 h ».
+    /// « dans 45 min », « dans 3 h 05 » ou « dans 3 h ».
     func delayLabel(until date: Date) -> String {
         let minutes = max(0, Int((date.timeIntervalSince(now) / 60).rounded()))
-        guard minutes >= 60 else { return "Dans \(minutes) min" }
+        guard minutes >= 60 else { return "dans \(minutes) min" }
         let hours = minutes / 60
         let rest = minutes % 60
-        return rest > 0 ? "Dans \(hours) h \(String(format: "%02d", rest))" : "Dans \(hours) h"
+        return rest > 0 ? "dans \(hours) h \(String(format: "%02d", rest))" : "dans \(hours) h"
     }
 }

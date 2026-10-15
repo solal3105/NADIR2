@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// Onglet Le geste : le mode d'emploi en quatre moments, puis les deux
-/// questions avant d'ouvrir, puis comment faire un vrai courant d'air.
+/// Onglet Mode d'emploi : les quatre moments de l'été, les deux questions à
+/// se poser avant d'ouvrir, le courant d'air, puis l'aération le reste de
+/// l'année.
 struct GuideView: View {
     var body: some View {
         ScrollView {
@@ -10,71 +11,68 @@ struct GuideView: View {
 
                 stepCard(
                     glyph: .openNight,
-                    kicker: "Dès que dehors est 2 °C plus frais",
+                    kicker: "Quand il fait 2 °C de moins dehors que chez vous",
                     kickerColor: .nadirCold,
-                    title: "Ouvrez en grand",
-                    body: Text("L'air frais refroidit vos murs. Ce sont eux qui garderont votre logement au frais demain.")
+                    title: "Ouvrez grand",
+                    body: Text("L’air frais refroidit vos murs pendant la nuit. Ce sont eux qui garderont votre logement frais demain.")
                 ) {
                     DisclosureRow(
-                        title: "Pourquoi l'heure change chaque nuit ?",
-                        verticalPadding: 9, borderColor: .nadirHairline
+                        title: "Pourquoi l’heure change chaque nuit\u{00A0}?",
+                        verticalPadding: 10, borderColor: .nadirHairline
                     ) {
-                        Text("Il fait souvent plus froid ")
-                            + Text("juste avant le lever du jour").underline()
-                            + Text(" qu'à minuit. Mais ça change selon la météo, donc on ne peut pas vous donner une heure fixe.")
+                        Text("Le plus frais de la nuit arrive souvent juste avant le lever du soleil, mais cela dépend de la météo. C’est pour ça que NADIR recalcule l’heure chaque jour.")
                     }
                 }
 
                 stepCard(
                     glyph: .closeShutters,
-                    kicker: "Dès qu'il refait plus chaud dehors",
+                    kicker: "Quand il recommence à faire chaud dehors",
                     kickerColor: .nadirHot,
                     title: "Fermez tout",
-                    body: Text("Fermez les fenêtres. Si vous avez des ")
+                    body: Text("Fermez les fenêtres, et les ")
                         + Text("volets").foregroundColor(.white)
-                        + Text(", fermez-les aussi : la fraîcheur de la nuit reste enfermée chez vous.")
+                        + Text(" si vous en avez. La fraîcheur de la nuit reste ainsi à l’intérieur.")
                 ) {
                     DisclosureRow(
-                        title: "Volets ou rideaux ?",
-                        verticalPadding: 9, borderColor: .nadirHairline
+                        title: "Volets ou rideaux\u{00A0}?",
+                        verticalPadding: 10, borderColor: .nadirHairline
                     ) {
-                        Text("Un volet arrête le soleil avant qu'il touche la vitre. Un rideau agit trop tard : la chaleur est déjà entrée.")
+                        Text("Un volet arrête le soleil avant la vitre. Un rideau l’arrête après, quand la chaleur est déjà entrée.")
                     }
                 }
 
                 stepCard(
                     glyph: .stayClosed,
-                    kicker: "Tant que dehors reste plus chaud",
+                    kicker: "Tant qu’il fait plus chaud dehors",
                     kickerColor: .nadirHot,
                     title: "Restez fermé",
-                    body: Text("Ouvrir ferait entrer un air ")
-                        + Text("encore plus chaud").foregroundColor(.white)
-                        + Text(" que le vôtre. Ça ne peut pas aider.")
+                    body: Text("Ouvrir ferait entrer de l’air plus chaud que le vôtre.")
                 ) {
                     DisclosureRow(
-                        title: "Et si j'étouffe ?",
-                        verticalPadding: 9, borderColor: .nadirHairline
+                        title: "Et si j’ai trop chaud\u{00A0}?",
+                        verticalPadding: 10, borderColor: .nadirHairline
                     ) {
-                        Text("Un ventilateur ne refroidit pas la pièce, mais il vous rafraîchit ")
-                            + Text("vous").underline()
-                            + Text(". Utilisez-le si vous en avez un.")
+                        Text("Un ventilateur ne refroidit pas la pièce, mais il vous rafraîchit, ")
+                            + Text("vous").foregroundColor(.white)
+                            + Text(". Utilisez-le sans hésiter.")
                     }
                 }
 
                 stepCard(
                     glyph: .reopen,
-                    kicker: "Dès que dehors repasse à 2 °C plus frais",
+                    kicker: "Quand il refait 2 °C de moins dehors",
                     kickerColor: .nadirCold,
                     title: "Rouvrez",
-                    body: Text("C'est la même règle que le matin. Si vous hésitez, regardez ")
-                        + Text("Aujourd'hui").foregroundColor(.white)
+                    body: Text("C’est la même règle que la veille. L’heure exacte est dans ")
+                        + Text("Aujourd’hui").foregroundColor(.white)
                         + Text(".")
                 ) {
                     EmptyView()
                 }
 
-                openOrClose
+                beforeOpening
                 crossDraft
+                restOfTheYear
             }
             .padding(.bottom, 104)
         }
@@ -84,13 +82,17 @@ struct GuideView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Eyebrow(text: "Le mode d'emploi")
-            SectionTitle(text: "Le geste", size: 44)
-                .padding(.top, 10)
+            SectionTitle(text: "Mode d’emploi", size: 38)
+            Text("En été, tout se joue sur deux moments : quand ouvrir, et quand fermer. NADIR vous donne les heures dans Aujourd’hui.")
+                .font(.nadirSans(16))
+                .lineSpacing(3)
+                .foregroundStyle(Color.nadirSoft)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 12)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 20)
-        .padding(.top, 16)
+        .padding(.top, 20)
         .padding(.bottom, 28)
         .riseIn(trigger: 0, delay: 0.05)
     }
@@ -108,18 +110,20 @@ struct GuideView: View {
                 WindowIcon(glyph: glyph)
                 VStack(alignment: .leading, spacing: 4) {
                     Text(kicker)
-                        .font(.nadirSans(15))
+                        .font(.nadirSans(14, weight: .medium))
                         .foregroundStyle(kickerColor)
-                    Text(title.uppercased())
-                        .font(.nadirSans(25, weight: .heavy))
-                        .tracking(-0.75)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(title)
+                        .font(.nadirSans(24, weight: .heavy))
+                        .tracking(-0.6)
                         .foregroundStyle(.white)
                 }
             }
             body
                 .font(.nadirSans(15))
                 .lineSpacing(3)
-                .foregroundStyle(Color.nadirDim)
+                .foregroundStyle(Color.nadirSoft)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 14)
             detail()
                 .padding(.top, 12)
@@ -130,60 +134,46 @@ struct GuideView: View {
         .overlay(alignment: .top) { Color.nadirLine.frame(height: 1) }
     }
 
-    private var openOrClose: some View {
+    private var beforeOpening: some View {
         VStack(alignment: .leading, spacing: 0) {
-            VStack(alignment: .leading, spacing: 0) {
-                SectionTitle(text: "Ouvrir,\nou fermer ?")
-                Text("En dehors de ce cycle, deux questions suffisent avant d'ouvrir.")
-                    .font(.nadirSans(15))
-                    .lineSpacing(3)
-                    .foregroundStyle(Color.nadirDim)
-                    .padding(.top, 16)
-                    .padding(.bottom, 22)
-            }
-            .padding(.horizontal, 20)
-            .padding(.top, 32)
-            .overlay(alignment: .top) { Color.nadirLine.frame(height: 1) }
-            .padding(.top, 8)
+            sectionHeader(
+                "Avant d’ouvrir, deux questions",
+                intro: "En dehors de ces quatre moments, posez-vous ces deux questions."
+            )
 
             VStack(spacing: 0) {
                 ledgerRow(
                     number: "1",
-                    title: "Fait-il plus frais dehors que chez vous ?",
-                    detail: "Il faut au moins 2 °C de différence, sinon ouvrir ne change presque rien."
+                    title: "Fait-il au moins 2 °C de moins dehors\u{00A0}?",
+                    detail: "En dessous, ouvrir ne change presque rien."
                 )
                 ledgerRow(
                     number: "2",
-                    title: "L'air du dehors est-il sec ?",
-                    detail: "Un air frais mais humide ne rafraîchit pas vraiment : il laisse juste une sensation collante."
+                    title: "L’air du dehors est-il sec\u{00A0}?",
+                    detail: "Un air frais mais humide ne rafraîchit pas vraiment : il colle."
                 )
             }
             .overlay(alignment: .top) { Color.nadirLine2.frame(height: 1) }
 
-            (
-                Text("Deux ")
-                    + Text("oui").foregroundColor(.white)
-                    + Text(" : ouvrez. Sinon, attendez.")
-            )
-            .font(.nadirSans(15))
-            .lineSpacing(3)
-            .foregroundStyle(Color.nadirDim)
-            .padding(.horizontal, 20)
-            .padding(.top, 20)
+            Text("Oui aux deux : ouvrez. Sinon, attendez.")
+                .font(.nadirSans(15, weight: .medium))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
         }
     }
 
     private func ledgerRow(number: String, title: String, detail: String) -> some View {
         HStack(alignment: .top, spacing: 16) {
             Text(number)
-                .font(.nadirMono(13))
+                .font(.nadirSans(15, weight: .semibold))
                 .foregroundStyle(Color.nadirGo)
-            VStack(alignment: .leading, spacing: 7) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text(title)
                     .font(.nadirSans(16, weight: .semibold))
                     .foregroundStyle(.white)
                 Text(detail)
-                    .font(.nadirSans(13))
+                    .font(.nadirSans(14))
                     .lineSpacing(3)
                     .foregroundStyle(Color.nadirDim)
             }
@@ -195,55 +185,84 @@ struct GuideView: View {
 
     private var crossDraft: some View {
         VStack(alignment: .leading, spacing: 0) {
-            VStack(alignment: .leading, spacing: 0) {
-                SectionTitle(text: "Un vrai\ncourant d'air")
-                (
-                    Text("Ouvrir une fenêtre laisse entrer un peu d'air. Le faire ")
-                        + Text("circuler").foregroundColor(.white)
-                        + Text(" en laisse entrer beaucoup plus.")
-                )
-                .font(.nadirSans(15))
-                .lineSpacing(3)
-                .foregroundStyle(Color.nadirDim)
-                .padding(.top, 16)
-                .padding(.bottom, 8)
-            }
-            .padding(.horizontal, 20)
-            .padding(.top, 32)
-            .overlay(alignment: .top) { Color.nadirLine.frame(height: 1) }
-            .padding(.top, 24)
+            sectionHeader(
+                "Faire un courant d’air",
+                intro: "Une fenêtre ouverte laisse entrer un peu d’air. Un courant d’air en fait entrer beaucoup plus."
+            )
+            .padding(.top, 16)
 
             VStack(spacing: 0) {
                 adviceRow(
-                    title: "Si vous avez deux façades",
-                    body: Text("Ouvrez des deux côtés en même temps : l'air rentre d'un côté et ressort de l'autre. Un seul côté ? Ouvrez au moins une porte à l'intérieur.")
+                    title: "Ouvrez des deux côtés",
+                    body: "Si vous avez des fenêtres sur deux côtés, ouvrez-les en même temps : l’air entre d’un côté et sort de l’autre. Sinon, laissez au moins les portes intérieures ouvertes."
                 )
                 adviceRow(
-                    title: "Si vous avez de la hauteur",
-                    body: Text("Ouvrez en bas ")
-                        + Text("et").foregroundColor(.white)
-                        + Text(" en haut. L'air chaud sort par le haut, et ça aspire le frais par le bas.")
+                    title: "Ouvrez en bas et en haut",
+                    body: "Avec un étage ou une fenêtre de toit, ouvrez aussi en haut. L’air chaud sort par le haut et aspire l’air frais par le bas."
                 )
                 adviceRow(
-                    title: "Si vous connaissez le vent",
-                    body: Text("Repérez d'où il souffle, et ouvrez la fenêtre qui lui fait face.")
+                    title: "Tenez compte du vent",
+                    body: "Ouvrez en priorité la fenêtre qui fait face au vent."
                 )
             }
             .padding(.horizontal, 20)
-            .padding(.top, 8)
         }
     }
 
-    private func adviceRow(title: String, body: Text) -> some View {
-        VStack(alignment: .leading, spacing: 7) {
+    private var restOfTheYear: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            sectionHeader(
+                "Le reste de l’année, aérer",
+                intro: "Quand il ne fait pas chaud, il faut quand même aérer chaque jour pour chasser l’humidité. NADIR vous indique alors le moment le plus doux de la journée."
+            )
+            .padding(.top, 16)
+
+            VStack(spacing: 0) {
+                adviceRow(
+                    title: "Aérez peu de temps, mais en grand",
+                    body: "Quelques minutes fenêtres grandes ouvertes suffisent à renouveler l’air. Une fenêtre entrouverte toute la journée refroidit les murs sans mieux aérer."
+                )
+                adviceRow(
+                    title: "Aérez au plus doux",
+                    body: "Plus il fait doux dehors, moins votre logement perd de chaleur. C’est souvent en début d’après-midi."
+                )
+                adviceRow(
+                    title: "Baissez le chauffage pendant ce temps",
+                    body: "Inutile de chauffer l’air qui sort par la fenêtre."
+                )
+            }
+            .padding(.horizontal, 20)
+        }
+    }
+
+    private func sectionHeader(_ title: String, intro: String) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            SectionTitle(text: title, size: 26)
+            Text(intro)
+                .font(.nadirSans(15))
+                .lineSpacing(3)
+                .foregroundStyle(Color.nadirSoft)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 12)
+                .padding(.bottom, 20)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 20)
+        .padding(.top, 32)
+        .overlay(alignment: .top) { Color.nadirLine.frame(height: 1) }
+        .padding(.top, 8)
+    }
+
+    private func adviceRow(title: String, body: String) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
             Text(title)
-                .font(.nadirSans(17, weight: .bold))
-                .tracking(-0.17)
+                .font(.nadirSans(16, weight: .semibold))
                 .foregroundStyle(.white)
-            body
+            Text(body)
                 .font(.nadirSans(15))
                 .lineSpacing(3)
                 .foregroundStyle(Color.nadirDim)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical, 16)

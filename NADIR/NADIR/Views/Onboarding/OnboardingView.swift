@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Onboarding en quatre réglages : ville, murs, ventilation, exposition.
-/// Chaque étape est facultative — « Passer » sort à tout moment.
+/// Onboarding en quatre réglages : ville, murs, façon d'ouvrir, côté des
+/// fenêtres. Chaque étape est facultative : « Passer » sort à tout moment.
 struct OnboardingView: View {
     @Environment(AppModel.self) private var model
     @State private var city = ""
@@ -11,8 +11,6 @@ struct OnboardingView: View {
             header
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    Eyebrow(text: "Réglage \(model.onboardingStep + 1) / 4")
-                        .padding(.bottom, 12)
                     ZStack { step.transition(.opacity) }
                         .animation(.easeOut(duration: 0.22), value: model.onboardingStep)
                 }
@@ -41,10 +39,9 @@ struct OnboardingView: View {
             Button {
                 model.finishOnboarding()
             } label: {
-                Text("PASSER")
-                    .font(.nadirMono(11))
-                    .tracking(0.33)
-                    .foregroundStyle(Color.nadirFaint)
+                Text("Passer")
+                    .font(.nadirSans(15))
+                    .foregroundStyle(Color.nadirDim)
                     .padding(4)
             }
             .buttonStyle(.plain)
@@ -66,16 +63,16 @@ struct OnboardingView: View {
 
     private var cityStep: some View {
         VStack(alignment: .leading, spacing: 0) {
-            title("Où habitez-vous ?", size: 25)
-            subtitle("Pour comparer, heure par heure, la température chez vous à celle du dehors.")
+            title("Où habitez-vous\u{00A0}?", size: 25)
+            subtitle("NADIR a besoin de la météo de chez vous pour savoir quand ouvrir vos fenêtres.")
                 .padding(.bottom, 24)
 
             HStack(spacing: 0) {
                 TextField(
                     "", text: $city,
-                    prompt: Text("votre ville").foregroundStyle(Color.nadirFaint)
+                    prompt: Text("Ex. : Lyon").foregroundStyle(Color.nadirFaint)
                 )
-                .font(.nadirSans(15))
+                .font(.nadirSans(16))
                 .foregroundStyle(.white)
                 .tint(.white)
                 .autocorrectionDisabled()
@@ -105,9 +102,8 @@ struct OnboardingView: View {
             } label: {
                 HStack(spacing: 7) {
                     LocatingCrosshair(active: model.isLocating)
-                    Text("UTILISER MA POSITION")
-                        .font(.nadirMono(11))
-                        .tracking(0.33)
+                    Text("Utiliser ma position")
+                        .font(.nadirSans(15))
                 }
                 .padding(.horizontal, 14)
                 .frame(height: 44)
@@ -119,7 +115,7 @@ struct OnboardingView: View {
 
             if !model.onboardingStatus.isEmpty {
                 Text(model.onboardingStatus)
-                    .font(.nadirMono(11))
+                    .font(.nadirSans(14))
                     .lineSpacing(3)
                     .foregroundStyle(Color.nadirDim)
                     .padding(.top, 16)
@@ -129,16 +125,16 @@ struct OnboardingView: View {
 
     private var wallsStep: some View {
         VStack(alignment: .leading, spacing: 0) {
-            title("Vos murs sont plutôt légers, moyens ou lourds ?")
-            subtitle("Des murs lourds mettent plus de temps à chauffer, et plus de temps à refroidir.")
+            title("De quoi sont faits vos murs\u{00A0}?")
+            subtitle("Des murs lourds se réchauffent lentement, et se refroidissent lentement. Si vous ne savez pas, choisissez Moyens.")
                 .padding(.bottom, 22)
             VStack(spacing: 8) {
                 ChoiceCard(
-                    title: "Légers", hint: "Cloison, bois, préfabriqué",
+                    title: "Légers", hint: "Cloisons, bois, préfabriqué",
                     isSelected: model.profile.inertia == .light
                 ) { model.set(inertia: .light) }
                 ChoiceCard(
-                    title: "Moyens", hint: "Brique creuse, parpaing — le plus courant",
+                    title: "Moyens", hint: "Brique creuse, parpaing. C’est le cas le plus courant.",
                     isSelected: model.profile.inertia == .medium
                 ) { model.set(inertia: .medium) }
                 ChoiceCard(
@@ -151,20 +147,20 @@ struct OnboardingView: View {
 
     private var ventilationStep: some View {
         VStack(alignment: .leading, spacing: 0) {
-            title("Quelle ventilation pouvez-vous faire la nuit ?")
-            subtitle("Plus l'air circule, plus vite la fraîcheur du dehors remplace la chaleur accumulée.")
+            title("Comment pouvez-vous ouvrir\u{00A0}?")
+            subtitle("Plus l’air circule, plus vite votre logement profite de l’air du dehors.")
                 .padding(.bottom, 22)
             VStack(spacing: 8) {
                 ChoiceCard(
-                    title: "Faible", hint: "Une fenêtre entrouverte",
+                    title: "Entrouvert", hint: "Une seule fenêtre, entrouverte",
                     isSelected: model.profile.ventilation == .low
                 ) { model.set(ventilation: .low) }
                 ChoiceCard(
-                    title: "Moyenne", hint: "Une fenêtre grande ouverte",
+                    title: "Grand ouvert", hint: "Une fenêtre grande ouverte",
                     isSelected: model.profile.ventilation == .medium
                 ) { model.set(ventilation: .medium) }
                 ChoiceCard(
-                    title: "Forte", hint: "Plusieurs fenêtres, un courant d'air d'un bout à l'autre",
+                    title: "Courant d’air", hint: "Plusieurs fenêtres ouvertes, d’un côté à l’autre du logement",
                     isSelected: model.profile.ventilation == .high
                 ) { model.set(ventilation: .high) }
             }
@@ -174,11 +170,11 @@ struct OnboardingView: View {
     private var exposureStep: some View {
         let exposure = model.profile.exposure
         return VStack(alignment: .leading, spacing: 0) {
-            title("Quelle exposition a votre logement ?")
+            title("De quel côté sont vos fenêtres\u{00A0}?")
             (
-                Text("Ça détermine combien de soleil entre chez vous. Choisissez ")
-                    + Text("une ou deux façades").fontWeight(.semibold).foregroundColor(.white)
-                    + Text(" — deux si votre logement est traversant.")
+                Text("NADIR saura à quelle heure le soleil entre chez vous. Si votre logement est traversant, ")
+                    + Text("choisissez deux côtés").fontWeight(.semibold).foregroundColor(.white)
+                    + Text(".")
             )
             .font(.nadirSans(15))
             .lineSpacing(3)
@@ -187,19 +183,19 @@ struct OnboardingView: View {
 
             VStack(spacing: 8) {
                 ChoiceCard(
-                    title: "Nord", hint: "Peu de soleil direct — reste le plus frais",
+                    title: "Nord", hint: "Le soleil n’entre presque pas",
                     isSelected: exposure.contains(.north)
                 ) { model.toggleExposure(.north) }
                 ChoiceCard(
-                    title: "Est", hint: "Soleil direct le matin",
+                    title: "Est", hint: "Le soleil entre le matin",
                     isSelected: exposure.contains(.east)
                 ) { model.toggleExposure(.east) }
                 ChoiceCard(
-                    title: "Sud", hint: "Soleil direct en milieu de journée — le plus chaud",
+                    title: "Sud", hint: "Le soleil entre en milieu de journée",
                     isSelected: exposure.contains(.south)
                 ) { model.toggleExposure(.south) }
                 ChoiceCard(
-                    title: "Ouest", hint: "Soleil direct l'après-midi et le soir",
+                    title: "Ouest", hint: "Le soleil entre l’après-midi et le soir",
                     isSelected: exposure.contains(.west)
                 ) { model.toggleExposure(.west) }
             }
@@ -229,9 +225,8 @@ struct OnboardingView: View {
                 Button {
                     model.backOnboarding()
                 } label: {
-                    Text("PRÉCÉDENT")
-                        .font(.nadirMono(12))
-                        .tracking(0.36)
+                    Text("Retour")
+                        .font(.nadirSans(15))
                         .padding(.horizontal, 20)
                         .frame(height: 48)
                         .contentShape(Rectangle())
@@ -249,7 +244,7 @@ struct OnboardingView: View {
                     }
                 }
             } else {
-                primaryButton("Terminer") { model.finishOnboarding() }
+                primaryButton("C’est parti") { model.finishOnboarding() }
             }
         }
         .padding(.horizontal, 20)

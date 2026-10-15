@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Vos chiffres : décomposition du gain au plus chaud, poste par poste,
-/// puis le total — et les notes de contexte (second créneau, humidité, démo).
+/// « D’où vient ce chiffre ? » : l'écart prévu au plus chaud, décomposé
+/// poste par poste. Replié par défaut.
 struct FiguresSection: View {
     @Environment(AppModel.self) private var model
     let analysis: ThermalAnalysis
@@ -12,119 +12,86 @@ struct FiguresSection: View {
     private var rows: [(label: String, value: Double)] {
         let breakdown = analysis.breakdown
         var rows: [(String, Double)] = [
-            ("ouvrir au bon moment", breakdown.base),
-            ("murs \(model.profile.inertia.label)", breakdown.walls),
-            ("ventilation \(model.profile.ventilation.label)", breakdown.ventilation),
+            ("Ouvrir aux bonnes heures", breakdown.base),
+            ("Vos murs \(model.profile.inertia.choiceLabel.lowercased())", breakdown.walls),
+            ("Votre façon d’ouvrir", breakdown.ventilation),
         ]
         if breakdown.showsSynergy {
-            rows.append(("les deux combinés", breakdown.synergy))
+            rows.append(("Les deux ensemble", breakdown.synergy))
         }
         return rows
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 12) {
-                Text("→").foregroundStyle(.white)
-                Text("VOS CHIFFRES")
-            }
-            .font(.nadirMono(11))
-            .tracking(1.3)
-            .foregroundStyle(Color.nadirDim)
-            .padding(.bottom, 16)
+        ExpandableSection(title: "D’où vient ce chiffre\u{00A0}?") {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("NADIR estime qu’il fera \(analysis.breakdown.total.degreesText) de moins chez vous que dehors \(analysis.series.momentText(at: analysis.peakIndex)). Voici ce qui fait cet écart.")
+                    .font(.nadirSans(15))
+                    .lineSpacing(3)
+                    .foregroundStyle(Color.nadirSoft)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.bottom, 18)
 
-            Text("Au plus chaud de la journée, vous serez plus frais que dehors.")
-                .font(.nadirSans(15))
-                .lineSpacing(3)
-                .foregroundStyle(Color.nadirDim)
-                .padding(.bottom, 20)
-
-            VStack(alignment: .leading, spacing: 11) {
-                ForEach(rows, id: \.label) { row in
-                    effectRow(label: row.label, value: row.value)
+                VStack(alignment: .leading, spacing: 14) {
+                    ForEach(rows, id: \.label) { row in
+                        BarRow(
+                            label: row.label,
+                            value: row.value < 0.05 ? "presque rien" : row.value.degreesText,
+                            fraction: row.value / Self.barScale
+                        )
+                    }
                 }
+                .animation(.easeOut(duration: 0.35), value: analysis.breakdown)
+
+                EstimateNote()
             }
-            .animation(.easeOut(duration: 0.35), value: analysis.breakdown)
-
-            totalRow
-            disclaimer
-            notes
         }
-        .padding(.horizontal, 20)
-        .padding(.top, 24)
-        .overlay(alignment: .top) { Color.nadirLine.frame(height: 1) }
-        .padding(.top, 16)
     }
+}
 
-    private func effectRow(label: String, value: Double) -> some View {
-        VStack(alignment: .leading, spacing: 3) {
-            HStack(alignment: .firstTextBaseline, spacing: 10) {
+extension ThermalAnalysis {
+    /// Le détail n'a de sens que s'il y a un créneau et un écart perceptible.
+    var showsBreakdown: Bool { !runs.isEmpty && breakdown.total >= 0.5 }
+}
+
+/// Une ligne de barre : libellé, valeur en bleu, barre fine dessous.
+struct BarRow: View {
+    let label: String
+    let value: String
+    let fraction: Double
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .firstTextBaseline, spacing: 12) {
                 Text(label)
-                    .font(.nadirMono(11.5))
-                    .foregroundStyle(Color.nadirDim)
+                    .font(.nadirSans(14))
+                    .foregroundStyle(Color.nadirSoft)
                 Spacer(minLength: 0)
-                Text("\(value.oneDecimal)°C de moins")
-                    .font(.nadirMono(12.5))
+                Text(value)
+                    .font(.nadirSans(14))
+                    .monospacedDigit()
                     .foregroundStyle(Color.nadirCold)
             }
             GeometryReader { geometry in
                 Color.nadirHairline
                     .overlay(alignment: .leading) {
                         Color.nadirCold
-                            .frame(width: geometry.size.width * min(1, value / Self.barScale))
+                            .frame(width: geometry.size.width * min(1, max(0, fraction)))
                     }
             }
             .frame(height: 3)
         }
     }
+}
 
-    private var totalRow: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 10) {
-            Text("au total")
-                .font(.nadirMono(12))
-                .foregroundStyle(.white)
-            Spacer(minLength: 0)
-            Text("\(analysis.breakdown.total.oneDecimal)°C de moins que dehors")
-                .font(.nadirMono(17))
-                .foregroundStyle(Color.nadirGo)
-        }
-        .padding(.top, 11)
-        .overlay(alignment: .top) { Color.nadirLine2.frame(height: 1) }
-        .padding(.top, 11)
-    }
-
-    private var disclaimer: some View {
-        Text("Estimation : NADIR ne peut pas connaître toutes les données de votre logement (isolation, vitrage, étage, environnement…). Retenez l'ordre de grandeur, pas la décimale.")
-            .font(.nadirMono(10))
-            .lineSpacing(4)
-            .foregroundStyle(Color.nadirLine2)
-            .padding(.top, 12)
-    }
-
-    @ViewBuilder private var notes: some View {
-        let second = analysis.secondWindowLabel
-        let humid = analysis.humidDuringOpenings
-        let demo = analysis.series.isDemo
-        if second != nil || humid || demo {
-            VStack(alignment: .leading, spacing: 10) {
-                if let second {
-                    Text("Un deuxième créneau s'ouvre \(second).")
-                        .foregroundStyle(Color.nadirDim)
-                }
-                if humid {
-                    Text("L'air sera humide : n'ouvrez pas trop longtemps.")
-                        .foregroundStyle(Color.nadirFaint)
-                }
-                if demo {
-                    Text("Exemple. Tapez votre ville pour votre créneau réel.")
-                        .foregroundStyle(Color.nadirFaint)
-                }
-            }
-            .font(.nadirSans(15))
+/// Rappel que les chiffres sont des estimations.
+struct EstimateNote: View {
+    var body: some View {
+        Text("C’est une estimation. NADIR ne connaît ni l’isolation, ni le vitrage, ni l’étage de votre logement : fiez-vous à l’ordre de grandeur, pas aux décimales.")
+            .font(.nadirSans(13))
             .lineSpacing(3)
+            .foregroundStyle(Color.nadirDim)
+            .fixedSize(horizontal: false, vertical: true)
             .padding(.top, 18)
-            .overlay(alignment: .top) { Color.nadirLine.frame(height: 1) }
-            .padding(.top, 24)
-        }
     }
 }

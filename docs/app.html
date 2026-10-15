@@ -578,7 +578,8 @@
       svg.push('<line x1="' + mx.toFixed(2) + '" y1="' + padTop + '" x2="' + mx.toFixed(2)
         + '" y2="' + plotBottom + '" stroke="rgba(255,255,255,0.14)" stroke-dasharray="3 5"/>');
       if (!tomorrowLabelled) {
-        svg.push(txt('demain', mx + 5, padTop + 6, 10, '#8c8c8c'));
+        // Sous « maintenant » quand minuit est tout proche.
+        svg.push(txt('demain', mx + 5, mx - x(0) < 70 ? padTop + 20 : padTop + 6, 10, '#8c8c8c'));
         tomorrowLabelled = true;
       }
     }
@@ -774,7 +775,7 @@
     var show = a.runs.length > 0 && b.total >= 0.5;
     document.getElementById('detailPanel').hidden = !show;
     if (!show) return;
-    document.getElementById('detailTitle').textContent = 'D’où vient ce chiffre ?';
+    document.getElementById('detailTitle').textContent = 'D’où vient ce chiffre\u00a0?';
     document.getElementById('detailIntro').textContent = 'NADIR estime qu’il fera '
       + degreesText(b.total) + ' de moins chez vous que dehors '
       + momentText(a.series, a.peakIndex) + '. Voici ce qui fait cet écart.';
@@ -785,14 +786,14 @@
     ];
     if (b.showsSynergy) rows.push(['Les deux ensemble', b.synergy]);
     document.getElementById('detailBars').innerHTML = barRows(rows.map(function (row) {
-      return [row[0], row[1], degreesText(row[1])];
+      return [row[0], row[1], row[1] < 0.05 ? 'presque rien' : degreesText(row[1])];
     }), 8);
     document.getElementById('detailMore').hidden = true;
   }
 
   function renderAirDetail(r) {
     document.getElementById('detailPanel').hidden = false;
-    document.getElementById('detailTitle').textContent = 'Pourquoi à cette heure-là ?';
+    document.getElementById('detailTitle').textContent = 'Pourquoi à cette heure-là\u00a0?';
     var intro;
     if (r.isFree) {
       intro = 'Il fait aussi doux dehors que chez vous : aérer ne refroidit pas votre logement.';

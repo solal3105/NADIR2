@@ -17,21 +17,22 @@ open NADIR.xcodeproj    # ⌘R sur un simulateur iPhone
 
 - **Onboarding en 4 réglages** : ville (ou géolocalisation), inertie des murs,
   ventilation possible, exposition (une ou deux façades, logement traversant).
-- **Aujourd'hui** : le verdict (« Ouvrez de 22h à 07h » / « Gardez fermé »),
-  le graphe extérieur vs intérieur simulé sur 30 h avec le créneau conseillé,
-  des **alarmes système** au moment d'ouvrir et de fermer
-  (notifications locales, répétées à +3 et +6 min), vos réglages et la
-  décomposition du gain (« vos chiffres »).
+- **Aujourd'hui** : le conseil (« Ouvrez de 22 h à 7 h » / « Gardez fermé »)
+  et une phrase qui dit quoi faire, le graphe dehors / chez vous simulé sur
+  30 h avec le créneau conseillé, des **notifications** au moment d'ouvrir et
+  de fermer (locales, répétées à +3 et +6 min) et la température chez vous.
+  Les réglages du logement sont rangés dans « Votre logement » (feuille) et
+  le détail du chiffre est replié (« D'où vient ce chiffre ? »).
 - **Mi-saison : quand aérer** (automne, hiver, printemps) : « À quelle heure
   aérer sans trop refroidir ? ». NADIR conseille le moment le plus doux de la
   journée (heures éveillées) où l'air du dehors assèche le logement, la durée
   d'aération selon la ventilation (le temps de renouveler l'air une fois,
   5 à 15 min), ce qu'elle coûte en degrés comparée au plus frais, et la
-  vapeur évacuée. Réglage « Que voulez-vous faire ? » : auto (rafraîchir dès
-  25 °C dehors, aérer sinon), rafraîchir ou aérer. Verdict, graphe, alarmes,
-  widgets et Siri suivent le mode.
-- **Le geste** : le mode d'emploi en quatre moments + les deux questions
-  avant d'ouvrir + le courant d'air.
+  vapeur évacuée. Réglage « Que cherchez-vous ? » : automatique (rafraîchir
+  dès 25 °C dehors, aérer sinon), rafraîchir ou aérer. Conseil, graphe,
+  notifications, widgets et Siri suivent le mode.
+- **Mode d'emploi** : les quatre moments de l'été, les deux questions
+  avant d'ouvrir, le courant d'air, et l'aération le reste de l'année.
 - **Comprendre** : la physique (murs éponges), la limite honnête, le résumé
   en cinq points, les sources.
 - **À propos** (onglet dédié) : la démarche (NADIR ne milite pas contre
@@ -40,14 +41,14 @@ open NADIR.xcodeproj    # ⌘R sur un simulateur iPhone
   des mesures), et son auteur Solal Gendrin (conseiller métropolitain
   écologiste à la Métropole de Lyon) avec ses projets Open Projets et
   Lyon Pocket.
-- **Siri & Raccourcis** (App Intents) : « Le verdict NADIR » dicté par Siri,
-  et trois actions pour l'app Raccourcis : Obtenir le verdict, Faut-il ouvrir
-  maintenant ? (condition d'automatisation) et Régler la température
-  intérieure (alimentable par un capteur connecté HomeKit ou Matter). Pas de
+- **Siri & Raccourcis** (App Intents) : « Le conseil NADIR » dicté par Siri
+  (« Le verdict NADIR » marche toujours), et trois actions pour l'app
+  Raccourcis : Obtenir le conseil, Faut-il ouvrir maintenant ? (condition
+  d'automatisation) et Indiquer la température chez vous (alimentable par un capteur connecté HomeKit ou Matter). Pas de
   commissioning Matter direct : l'interop domotique passe par les
   automatisations Raccourcis/Maison.
 - **Widgets (petit et moyen)** : la courbe en continu sur l'écran d'accueil,
-  le créneau, le verdict et l'alarme armée (carré vert + heure). Une entrée
+  le créneau, le conseil et la notification programmée (carré vert + heure). Une entrée
   de timeline par heure fait avancer la fenêtre avec l'horloge, l'app pousse
   ses mises à jour via l'App Group, et le widget re-télécharge lui-même la
   météo quand la série ne couvre plus les 30 h à venir : jamais désynchronisé.

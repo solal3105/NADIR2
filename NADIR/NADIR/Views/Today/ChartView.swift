@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Le graphe : extérieur (trait fin blanc) et intérieur modélisé (bleu, la
-/// star), créneaux d'ouverture conseillés en vert, écart coté au plus chaud.
+/// Le graphe : dehors (trait fin blanc) et chez vous (bleu), créneaux
+/// conseillés en vert, écart coté au plus chaud.
 /// Le tracé s'anime à chaque nouvelle source météo.
 struct ChartView: View {
     let analysis: ThermalAnalysis
@@ -30,7 +30,7 @@ struct ChartView: View {
         .frame(height: Self.height)
         .onAppear { if !hasPlayed { startAnimation() } }
         .onChange(of: animationKey) { startAnimation() }
-        .accessibilityLabel("Température extérieure et intérieure modélisée")
+        .accessibilityLabel("Température dehors et chez vous, sur les 30 prochaines heures")
     }
 
     // MARK: - Animation
@@ -170,8 +170,9 @@ struct ChartView: View {
             )
             if !tomorrowLabelled {
                 context.draw(
-                    text("demain", size: 9, color: .nadirDim),
-                    at: CGPoint(x: mx + 5, y: plotBottom - 12), anchor: .leading
+                    text("demain", size: 10, color: .nadirDim),
+                    // Sous « maintenant » quand minuit est tout proche.
+                    at: CGPoint(x: mx + 5, y: mx - x(0) < 70 ? padTop + 20 : padTop + 6), anchor: .leading
                 )
                 tomorrowLabelled = true
             }
@@ -265,12 +266,6 @@ struct ChartView: View {
         context.draw(
             text("maintenant", size: 10, color: .nadirDim),
             at: CGPoint(x: x(0) + 4, y: padTop + 6), anchor: .leading
-        )
-
-        // Lieu.
-        context.draw(
-            text(series.place, size: 11, color: .white),
-            at: CGPoint(x: width - padRight, y: padTop + 6), anchor: .trailing
         )
 
         // Verrouillage : un cercle fin se resserre sur « maintenant » —

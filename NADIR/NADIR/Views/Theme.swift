@@ -6,6 +6,7 @@ extension Color {
     static let nadirHot = Color(red: 1, green: 59 / 255, blue: 29 / 255)          // #ff3b1d
     static let nadirCold = Color(red: 62 / 255, green: 166 / 255, blue: 1)        // #3ea6ff
     static let nadirGo = Color(red: 90 / 255, green: 209 / 255, blue: 122 / 255)  // #5ad17a
+    static let nadirSoft = Color(white: 196 / 255)      // #c4c4c4 : texte courant
     static let nadirDim = Color(white: 140 / 255)       // #8c8c8c
     static let nadirFaint = Color(white: 90 / 255)      // #5a5a5a
     static let nadirLine = Color(white: 36 / 255)       // #242424
@@ -35,31 +36,43 @@ extension Double {
     var noDecimal: String {
         String(format: "%.0f", self)
     }
+
+    /// Écart en degrés pour une phrase : « 4,2 °C », « 4 °C ».
+    var degreesText: String {
+        let value = oneDecimal.hasSuffix(",0") ? String(oneDecimal.dropLast(2)) : oneDecimal
+        return "\(value)\u{00A0}°C"
+    }
 }
 
-/// Étiquette de section en petites capitales mono — « LE VERDICT », « ALARMES »…
+extension String {
+    /// Première lettre en majuscule : « demain vers 16 h » → « Demain vers 16 h ».
+    var capitalizedFirst: String {
+        prefix(1).uppercased() + dropFirst()
+    }
+}
+
+/// Petit titre de section, en gris : « Me prévenir », « Qui est derrière ? »…
 struct Eyebrow: View {
     let text: String
-    var color: Color = .nadirFaint
+    var color: Color = .nadirDim
 
     var body: some View {
-        Text(text.uppercased())
-            .font(.nadirMono(11))
-            .tracking(1.3)
+        Text(text)
+            .font(.nadirSans(14, weight: .semibold))
             .foregroundStyle(color)
     }
 }
 
-/// Titre de section majuscules ultra-serré — « LE GESTE », « COMPRENDRE »…
+/// Grand titre de section, gras et serré : « Mode d’emploi », « Comprendre »…
 struct SectionTitle: View {
     let text: String
-    var size: CGFloat = 34
+    var size: CGFloat = 30
 
     var body: some View {
-        Text(text.uppercased())
+        Text(text)
             .font(.nadirSans(size, weight: .heavy))
-            .tracking(size * -0.035)
-            .lineSpacing(size * -0.06)
+            .tracking(size * -0.03)
             .foregroundStyle(.white)
+            .fixedSize(horizontal: false, vertical: true)
     }
 }
